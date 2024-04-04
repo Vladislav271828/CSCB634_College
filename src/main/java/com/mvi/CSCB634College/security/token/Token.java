@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -27,6 +29,10 @@ public class Token {
     private boolean expired;
     private boolean revoked;
 
+    private Date IssuedAt;
+    private Date ExpirationTime;
+
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -41,6 +47,9 @@ public class Token {
                 ", tokenType=" + tokenType +
                 ", expired=" + expired +
                 ", revoked=" + revoked +
+                ", IssuedAt=" + IssuedAt +
+                ", ExpirationTime=" + ExpirationTime +
+                ", user=" + user.getId() +
                 '}';
     }
 }

@@ -18,6 +18,16 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * Configures the security settings for the application, defining how CORS, CSRF, session management,
+ * authentication, and authorization are handled. It sets up a security filter chain that includes
+ * custom authentication and logout handling, as well as configuring CORS to allow requests from
+ * specific origins.
+ * <p>
+ * This configuration is crucial for applying security measures to protect the application against
+ * common vulnerabilities and ensuring that only authenticated and authorized users can access
+ * certain resources.
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -27,6 +37,15 @@ public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
 
+    /**
+     * Defines the security filter chain that applies to HTTP requests, configuring security
+     * behaviors such as CORS, CSRF prevention, session management, and routes security.
+     * It integrates custom authentication and logout handling into the Spring Security filter chain.
+     *
+     * @param http the {@link HttpSecurity} to configure
+     * @return the configured {@link SecurityFilterChain}
+     * @throws Exception if an error occurs during the configuration
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -53,8 +72,13 @@ public class SecurityConfiguration {
     }
 
 
-
-
+    /**
+     * Configures the CORS policy for the application, allowing requests from specific origins
+     * with certain HTTP methods, headers, and credentials. This bean is essential for cross-origin
+     * resource sharing, enabling the frontend application to communicate with the backend securely.
+     *
+     * @return the {@link CorsConfigurationSource} that provides the CORS configuration
+     */
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

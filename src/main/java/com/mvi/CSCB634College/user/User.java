@@ -1,7 +1,6 @@
 package com.mvi.CSCB634College.user;
 
 
-
 import com.mvi.CSCB634College.security.Role;
 import com.mvi.CSCB634College.security.token.Token;
 import jakarta.persistence.*;
