@@ -76,7 +76,7 @@ public class AuthenticationService {
 
         var refreshToken = jwtService.generateRefreshToken(user);
 
-        saveUserToken(user, refreshToken, TokenType.REFRESH_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 1000 * 120));//save the token 1209600000
+        saveUserToken(user, refreshToken, TokenType.REFRESH_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 1000 * 60 * 2));//save the token 1209600000
 
 
         return AuthenticationResponse.builder()
@@ -120,7 +120,7 @@ public class AuthenticationService {
             //Create new Refresh Token
             var refreshToken = jwtService.generateRefreshToken(user);
             //Save RefreshToken
-            saveUserToken(user, refreshToken, TokenType.REFRESH_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 100 * 120));//14 days
+            saveUserToken(user, refreshToken, TokenType.REFRESH_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 1000 * 60 * 2));//14 days
 
             //Create new Access Token
             jwtToken = jwtService.generateToken(user);
@@ -162,7 +162,7 @@ public class AuthenticationService {
                 //Create new Refresh Token
                 var refreshToken = jwtService.generateRefreshToken(user);
                 //Save RefreshToken
-                saveUserToken(user, refreshToken, TokenType.REFRESH_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 100 * 120));//14 days
+                saveUserToken(user, refreshToken, TokenType.REFRESH_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 1000 * 60 * 2));//14 days
 
 
             } else if (counter == 1) { //If there is one active refresh token then we check if it's active
@@ -181,7 +181,7 @@ public class AuthenticationService {
                     //Create new Refresh Token
                     var refreshToken = jwtService.generateRefreshToken(user);
                     //Save RefreshToken
-                    saveUserToken(user, refreshToken, TokenType.REFRESH_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 100 * 120));//14 days
+                    saveUserToken(user, refreshToken, TokenType.REFRESH_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 1000 * 60 * 2));//14 days
 
                     //Create new Access Token
                     jwtToken = jwtService.generateToken(user);
@@ -252,7 +252,7 @@ public class AuthenticationService {
                     .accessToken(jwtToken)
                     .build();
         } else {
-            throw new InternalError("Oops.. something went wrong.");
+            throw new InternalError("Invalid Refresh Token. Log in again.");
         }
 
 

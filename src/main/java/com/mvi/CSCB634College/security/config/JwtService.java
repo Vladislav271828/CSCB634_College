@@ -77,7 +77,7 @@ public class JwtService {
      */
     public String generateRefreshToken(UserDetails userDetails) {
         // Set long expiration time for refresh tokens
-        long expirationTimeLong = 1000 * 120; // Example: 14 days1209600000
+        long expirationTimeLong = 1000 * 60 * 2; // Example: 14 days
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
