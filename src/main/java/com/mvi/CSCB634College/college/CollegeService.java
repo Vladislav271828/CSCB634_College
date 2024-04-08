@@ -19,23 +19,24 @@ public class CollegeService {
 
     private final CollegeRepository collegeRepository;
     private final AuthenticationService authenticationService;
-    private final ModelMapper modelMapper = new ModelMapper();
     private final UserRepository userRepository;
 
+    private final ModelMapper modelMapper;
+
     @Autowired
-    public CollegeService(CollegeRepository collegeRepository, AuthenticationService authenticationService, UserRepository userRepository) {
+    public CollegeService(CollegeRepository collegeRepository, AuthenticationService authenticationService, UserRepository userRepository, ModelMapper modelMapper) {
         this.collegeRepository = collegeRepository;
         this.authenticationService = authenticationService;
         this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
     }
 
     public DtoCollege createCollege(DtoCollege dtoCollege) {
         if (!authenticationService.getCurrentlyLoggedUser().getRole().equals(Role.ADMIN)){
             throw new BadRequestException("User needs to be admin to create colleges");
         }
-
+        dtoCollege.setId(null);
         College college = modelMapper.map(dtoCollege, College.class);
-
         return saveAndRetrieveDtoCollege(college);
     }
 
@@ -55,8 +56,8 @@ public class CollegeService {
         College college = collegeRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("College with id " + id + " not found"));
 
+        dtoCollege.setId(null);
         modelMapper.map(dtoCollege, college);
-
         return saveAndRetrieveDtoCollege(college);
     }
 
