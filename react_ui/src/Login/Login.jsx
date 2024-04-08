@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../API/axios.jsx";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import the CSS for react-toastify
@@ -27,7 +27,7 @@ function SignInForm() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/v1/auth/authenticate",
+        "/auth/authenticate",
         formData
       );
       localStorage.setItem("jwtToken", response.data.token);
@@ -62,7 +62,7 @@ function SignInForm() {
         <h1 className="text-4xl font-semibold mb-2">Welcome Back!</h1>
         <p className="text-lg">
           If you're here for the first time, we'd be very happy to have you on
-          board. 
+          board.
         </p>
       </div>
       <ToastContainer />
@@ -86,9 +86,8 @@ function SignInForm() {
                     setInputError(false);
                   }}
                   required
-                  className={`shadow appearance-none border ${
-                    inputError ? "bg-red-100" : "bg-white"
-                  } rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
+                  className={`shadow appearance-none border ${inputError ? "bg-red-100" : "bg-white"
+                    } rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
                 />
               </div>
               <div className="mb-6">
@@ -104,9 +103,8 @@ function SignInForm() {
                     setInputError(false);
                   }}
                   required
-                  className={`shadow appearance-none border ${
-                    inputError ? "bg-red-100" : "bg-white"
-                  } rounded w-full py-3 px-4 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline`}
+                  className={`shadow appearance-none border ${inputError ? "bg-red-100" : "bg-white"
+                    } rounded w-full py-3 px-4 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline`}
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -128,6 +126,7 @@ function SignInForm() {
         </div>
       </div>
     </div>
-  );}
+  );
+}
 
 export default SignInForm;
