@@ -1,7 +1,6 @@
 package com.mvi.CSCB634College.exception;
 
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -29,5 +28,10 @@ public class ExceptionAdvice {
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ErrorResponse> handleNoSuchElementException(NoSuchElementException exc) {
         return buildErrorResponse(exc, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserAlreadyExist.class)
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExists(UserAlreadyExist exc) {
+        return buildErrorResponse(exc, HttpStatus.BAD_REQUEST);
     }
 }

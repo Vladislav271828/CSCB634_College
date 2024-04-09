@@ -8,29 +8,29 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/college")
+@RequestMapping("/api/v1/admin/college")
 @RequiredArgsConstructor
 public class CollegeController {
 
     private final CollegeService collegeService;
 
     @PostMapping("/create")
-    public ResponseEntity<DtoCollege> createCollege(
-            @Valid @RequestBody DtoCollege dtoCollege) {
-        return ResponseEntity.ok(collegeService.createCollege(dtoCollege));
+    public ResponseEntity<DtoCollegeRequest> createCollege(
+            @Valid @RequestBody DtoCollegeRequest dtoCollegeRequest) {
+        return ResponseEntity.ok(collegeService.createCollege(dtoCollegeRequest));
     }
 
     @GetMapping("/getById/{id}")
-    public ResponseEntity<DtoCollege> getCollegeById(
+    public ResponseEntity<DtoCollegeRequest> getCollegeById(
             @PathVariable Integer id) {
         return ResponseEntity.ok(collegeService.getCollegeById(id));
     }
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<DtoCollege> updateCollege(
-            @PathVariable ("id") Integer id,
-            @Valid @RequestBody DtoCollege dtoCollege) {
-        return ResponseEntity.ok(collegeService.updateCollege(id, dtoCollege));
+    public ResponseEntity<DtoCollegeRequest> updateCollege(
+            @PathVariable("id") Integer id,
+            @Valid @RequestBody DtoCollegeRequest dtoCollegeRequest) {
+        return ResponseEntity.ok(collegeService.updateCollege(id, dtoCollegeRequest));
     }
 
     @DeleteMapping("/{id}/delete")
@@ -41,19 +41,19 @@ public class CollegeController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<DtoCollege>> getAllColleges() {
+    public ResponseEntity<List<DtoCollegeRequest>> getAllColleges() {
         return ResponseEntity.ok(collegeService.getAllColleges());
     }
 
     @PatchMapping("/{id}/addRector/{rectorId}")
-    public ResponseEntity<DtoCollege> addRector(
+    public ResponseEntity<DtoCollegeRequest> addRector(
             @PathVariable Integer id,
             @PathVariable Integer rectorId) {
         return ResponseEntity.ok(collegeService.addRectorToCollege(id, rectorId));
     }
 
     @PatchMapping("/{id}/removeRector")
-    public ResponseEntity<DtoCollege> removeRector(
+    public ResponseEntity<DtoCollegeRequest> removeRector(
             @PathVariable Integer id) {
         return ResponseEntity.ok(collegeService.removeRectorFromCollege(id));
     }

@@ -1,6 +1,7 @@
 package com.mvi.CSCB634College.security.config;
 
 
+import com.mvi.CSCB634College.exception.UserNotFound;
 import com.mvi.CSCB634College.security.token.TokenRepository;
 import com.mvi.CSCB634College.user.User;
 import com.mvi.CSCB634College.user.UserRepository;
@@ -51,7 +52,15 @@ public class LogoutService implements LogoutHandler {
         jwt = authHeader.substring(7);
         var storedToken = tokenRepository.findByToken(jwt)
                 .orElse(null);
-        User user = userRepository.findUserByToken(jwt).orElseThrow();
+
+        User user;
+        try {
+
+            user = userRepository.findUserByToken(jwt).orElseThrow();
+        } catch (Exception e) {
+
+            throw new UserNotFound(e.getMessage());
+        }
 
 
         if (storedToken != null) {

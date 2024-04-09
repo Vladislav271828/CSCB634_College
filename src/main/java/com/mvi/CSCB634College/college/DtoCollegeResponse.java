@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DtoCollege {
-    private Long id;
-    private String name;
-    private String address;
+public class DtoCollegeResponse {
+    private College college;
     private User rector;
 }

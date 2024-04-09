@@ -2,18 +2,23 @@ package com.mvi.CSCB634College.security.config;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mvi.CSCB634College.exception.DatabaseException;
 import com.mvi.CSCB634College.exception.ErrorResponse;
+import com.mvi.CSCB634College.security.Role;
 import com.mvi.CSCB634College.security.token.Token;
 import com.mvi.CSCB634College.security.token.TokenRepository;
 import com.mvi.CSCB634College.security.token.TokenType;
 import com.mvi.CSCB634College.user.User;
 import com.mvi.CSCB634College.user.UserRepository;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,11 +46,11 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
     private final TokenRepository tokenRepository;
     private final UserRepository userRepository;
-
 
     /**
      * The main method that executes the filter logic. It checks the Authorization header for
@@ -70,13 +75,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt = authHeader.substring(7);
         try {
             String userEmail = jwtService.extractUsername(jwt);
+            logger.debug("Attempting to authenticate user: {}", userEmail);
+
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+                UserDetails userDetails;
+                try {
+
+                    userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+                } catch (UsernameNotFoundException e) {
+                    sendErrorResponse(response, "User Not Found", HttpStatus.NOT_FOUND.value());
+                    return;
+                }
                 var isTokenValid = tokenRepository.findByToken(jwt)
                         .map(t -> !t.isRevoked() && !t.isExpired())
                         .orElse(false);
 
+
                 if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
+                    logger.info("JWT token is valid for user: {}", userEmail);
 
                     List<Token> allTokens = tokenRepository.findAllValidTokensByUser(userRepository.findUserByToken(jwt).orElseThrow().getId());
                     for (Token token : allTokens) {
@@ -92,13 +108,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 } else {
+                    logger.info("JWT token validation failed for user: {}", userEmail);
+
                     sendErrorResponse(response, "Expired JWT Access Token.", HttpStatus.UNAUTHORIZED.value());
                     return;
+                }
+
+                if (request.getRequestURI().contains("/api/v1/admin")) {
+                    logger.info("User has role: {}", userDetails.getAuthorities().toString());
+
+
+                    //Check if the User has authority ADMIN
+                    if (userDetails.getAuthorities().stream().noneMatch(authority -> authority.getAuthority().equals(Role.ADMIN.toString()))) {
+                        sendErrorResponse(response, "User with role " + userDetails.getAuthorities().toString() + " doesn't have permissions to perform the action. Required role " + Role.ADMIN, HttpStatus.UNAUTHORIZED.value());
+                        return;
+                    }
                 }
             }
 
             filterChain.doFilter(request, response);
+        } catch (MalformedJwtException e) {
+            sendErrorResponse(response, e.getMessage(), HttpStatus.BAD_REQUEST.value());
+
         } catch (ExpiredJwtException ex) {
+            logger.error("JWT token expired: {}", ex.getMessage(), ex);
+
             if (request.getRequestURI().equals("/api/v1/auth/refresh")) {
                 Token token;
                 try {
@@ -123,11 +157,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 sendErrorResponse(response, "Expired JWT token.", HttpStatus.UNAUTHORIZED.value());
             }
         } catch (UsernameNotFoundException ex) {
-            logger.error("User not found: " + ex.getMessage(), ex);
+            logger.error("User not found: {}", ex.getMessage(), ex);
             sendErrorResponse(response, "User not found.", HttpStatus.NOT_FOUND.value());
-        } catch (Exception ex) {
-            logger.error("Unexpected error during authentication: " + ex.getMessage(), ex);
-            sendErrorResponse(response, "Unexpected error occurred processing the authentication.", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        } catch (DatabaseException dbExc) {
+            logger.error("Database Exception caught: {}", dbExc.getMessage(), dbExc);
+            sendErrorResponse(response, "User not found.", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        } catch (Exception e) {
+            logger.error("Oops error: {}", e.getMessage(), e);
+
+            sendErrorResponse(response, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
     }
 
