@@ -1,7 +1,9 @@
 package com.mvi.CSCB634College.college;
 
 import com.mvi.CSCB634College.exception.BadRequestException;
+import com.mvi.CSCB634College.exception.CollegeNotFound;
 import com.mvi.CSCB634College.exception.DatabaseException;
+import com.mvi.CSCB634College.exception.UserNotFound;
 import com.mvi.CSCB634College.security.Role;
 import com.mvi.CSCB634College.security.auth.AuthenticationService;
 import com.mvi.CSCB634College.security.config.JwtAuthenticationFilter;
@@ -44,7 +46,7 @@ public class CollegeService {
             throw new BadRequestException("User " + dtoCollegeRequest.getRectorEmail() + " is not found.");
         }
 
-        if (!isRectorAlreadyRectoring(rector)) {//Check if the user is already a rector in the database
+        if (isRectorAlreadyRectoring(rector)) {//Check if the user is already a rector in the database
             throw new BadRequestException("User " + rector.getEmail() + " is already a rector.");
         }
 
@@ -69,22 +71,73 @@ public class CollegeService {
 
     public DtoCollegeRequest getCollegeById(Integer id) {
         College college = collegeRepository.findById(id)
-                .orElseThrow(() -> new BadRequestException("College with id " + id + " not found"));
+                .orElseThrow(() -> new CollegeNotFound("College with id " + id + " not found"));
 
         return modelMapper.map(college, DtoCollegeRequest.class);
     }
 
     public DtoCollegeRequest updateCollege(Integer id, DtoCollegeRequest dtoCollegeRequest) {
-        if (!authenticationService.getCurrentlyLoggedUser().getRole().equals(Role.ADMIN)) {
-            throw new BadRequestException("User needs to be admin to create colleges");
+        User currentUser = authenticationService.getCurrentlyLoggedUser();
+
+        // Find college by id
+        College college = collegeRepository.findById(id)
+                .orElseThrow(() -> new CollegeNotFound("College with id " + id + " not found"));
+
+        // Check if at least one field is provided
+        if (dtoCollegeRequest.getName() == null && dtoCollegeRequest.getAddress() == null && dtoCollegeRequest.getRectorEmail() == null) {
+            throw new BadRequestException("At least one field must be updated.");
         }
 
-        College college = collegeRepository.findById(id)
-                .orElseThrow(() -> new BadRequestException("College with id " + id + " not found"));
+        // Update name if it's provided and unique
+        if (dtoCollegeRequest.getName() != null && !dtoCollegeRequest.getName().isBlank()) {
+            if (!isNameUnique(dtoCollegeRequest.getName(), id)) {
+                throw new BadRequestException("College with name " + dtoCollegeRequest.getName() + " already exists.");
+            }
+            college.setName(dtoCollegeRequest.getName());
+        }
 
-        modelMapper.map(dtoCollegeRequest, college);
+        // Update address if it's provided
+        if (dtoCollegeRequest.getAddress() != null && !dtoCollegeRequest.getAddress().isBlank()) {
+            if (!dtoCollegeRequest.getAddress().equals(college.getAddress())) {
+
+                college.setAddress(dtoCollegeRequest.getAddress());
+            } else {
+                throw new BadRequestException("Address must be different than the current college address.");
+            }
+        }
+
+        // Update rector if the email is provided and the user is not a rector of another college
+        if (dtoCollegeRequest.getRectorEmail() != null && !dtoCollegeRequest.getRectorEmail().isBlank()) {
+            User rector = userRepository.findByEmail(dtoCollegeRequest.getRectorEmail())
+                    .orElseThrow(() -> new UserNotFound("User with email " + dtoCollegeRequest.getRectorEmail() + " not found"));
+
+            if  (college.getRector().getEmail().equals(rector.getEmail())) {
+                throw new BadRequestException("User " + rector.getEmail() + " is already a rector of this college.");
+
+
+            } else if (dtoCollegeRequest.getRectorEmail().equals(currentUser.getEmail())){
+                throw new BadRequestException("User " + currentUser.getEmail() + " can't become college rector by themselves.");
+
+
+            } else if(isRectorAlreadyRectoring(rector)) {
+                throw new BadRequestException("User " + rector.getEmail() + " is already a rector of another college.");
+
+            } else {
+                college.setRector(rector);
+            }
+
+        }
+
+        // Save the updated college
         return saveAndRetrieveDtoCollege(college);
     }
+
+    private boolean isNameUnique(String name, Integer collegeId) {
+        return collegeRepository.findByNameIgnoreCase(name)
+                .stream()
+                .noneMatch(c -> !c.getId().equals(collegeId));
+    }
+
 
     private DtoCollegeRequest saveAndRetrieveDtoCollege(College college) {
         try {
@@ -147,7 +200,7 @@ public class CollegeService {
     }
 
     private boolean isRectorAlreadyRectoring(User rector) {
-        return collegeRepository.findByRector_EmailAllIgnoreCase(rector.getEmail()).isEmpty();
+        return !collegeRepository.findByRector_EmailAllIgnoreCase(rector.getEmail()).isEmpty();
     }
 
     private boolean isCollegeUnique(College college) {

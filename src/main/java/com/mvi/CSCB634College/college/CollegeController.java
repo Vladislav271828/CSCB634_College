@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/admin/college")
+@RequestMapping("/api/v1/college")
 @RequiredArgsConstructor
 public class CollegeController {
 
     private final CollegeService collegeService;
 
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     public ResponseEntity<DtoCollegeRequest> createCollege(
             @Valid @RequestBody DtoCollegeRequest dtoCollegeRequest) {
         return ResponseEntity.ok(collegeService.createCollege(dtoCollegeRequest));
@@ -26,33 +26,33 @@ public class CollegeController {
         return ResponseEntity.ok(collegeService.getCollegeById(id));
     }
 
-    @PatchMapping("/update/{id}")
+    @PutMapping("/admin/update/{id}")
     public ResponseEntity<DtoCollegeRequest> updateCollege(
             @PathVariable("id") Integer id,
-            @Valid @RequestBody DtoCollegeRequest dtoCollegeRequest) {
+            @RequestBody DtoCollegeRequest dtoCollegeRequest) {
         return ResponseEntity.ok(collegeService.updateCollege(id, dtoCollegeRequest));
     }
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/admin/{id}/delete")
     public ResponseEntity<Void> deleteCollege(
             @PathVariable Integer id) {
         collegeService.deleteCollege(id);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/admin/getAll")
     public ResponseEntity<List<DtoCollegeRequest>> getAllColleges() {
         return ResponseEntity.ok(collegeService.getAllColleges());
     }
 
-    @PatchMapping("/{id}/addRector/{rectorId}")
+    @PatchMapping("/admin/{id}/addRector/{rectorId}")
     public ResponseEntity<DtoCollegeRequest> addRector(
             @PathVariable Integer id,
             @PathVariable Integer rectorId) {
         return ResponseEntity.ok(collegeService.addRectorToCollege(id, rectorId));
     }
 
-    @PatchMapping("/{id}/removeRector")
+    @PatchMapping("/admin/{id}/removeRector")
     public ResponseEntity<DtoCollegeRequest> removeRector(
             @PathVariable Integer id) {
         return ResponseEntity.ok(collegeService.removeRectorFromCollege(id));

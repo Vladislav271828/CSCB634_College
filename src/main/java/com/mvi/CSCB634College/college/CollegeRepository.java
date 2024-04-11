@@ -7,6 +7,7 @@ import java.util.List;
 
 @Repository
 public interface CollegeRepository extends JpaRepository<College, Integer> {
+    List<College> findByNameIgnoreCase(String name);
     List<College> findByRector_EmailAllIgnoreCase(String email);
 
     List<College> findByNameIgnoreCaseOrAddressIgnoreCase(String name, String address);
