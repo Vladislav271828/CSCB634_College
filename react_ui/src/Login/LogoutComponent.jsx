@@ -1,6 +1,7 @@
+//this is currently not in use, will either delete or repurpose
+
 import React from 'react';
 import axios from "../API/axios.jsx";
-import { FiLogOut } from 'react-icons/fi';
 
 function LogoutComponent() {
   const handleLogout = async () => {
@@ -19,8 +20,8 @@ function LogoutComponent() {
   };
 
   return (
-    <div className="w-full flex justify-center">
-      <FiLogOut size={24} onClick={handleLogout} className="cursor-pointer hover:text-gray-400 text-white" />
+    <div>
+      <button onClick={handleLogout}>Log out</button>
     </div>
   );
 }

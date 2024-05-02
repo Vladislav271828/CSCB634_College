@@ -1,3 +1,5 @@
+//page to help with debugging, will be discarded later
+
 import React, { useState } from 'react';
 import axios from "../API/axios.jsx";
 import { useNavigate } from 'react-router-dom';
@@ -81,34 +83,38 @@ function SignUpForm() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <div className="m-auto shadow-lg rounded-lg overflow-hidden max-w-md w-full">
-        <form onSubmit={handleSubmit} className="bg-white p-8">
-          <div className="mb-4">
-            <label className="block text-gray-700 text-lg font-bold mb-2">First Name:</label>
-            <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-            {errors.firstName && <div className="text-red-500 text-xs italic">{errors.firstName}</div>}
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-lg font-bold mb-2">Last Name:</label>
-            <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-lg font-bold mb-2">Email:</label>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-            {errors.email && <div className="text-red-500 text-xs italic">{errors.email}</div>}
-          </div>
-          <div className="mb-6">
-            <label className="block text-gray-700 text-lg font-bold mb-2">Password:</label>
-            <input type="password" name="password" value={formData.password} onChange={handleChange} className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" />
-            {errors.password && <div className="text-red-500 text-xs italic">{errors.password}</div>}
-          </div>
-          <div className="flex items-center justify-between">
-            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-lg">Sign Up</button>
-            <button type="button" onClick={handleSignInRedirect} className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" style={{ marginLeft: '10px' }}>Sign In</button>
-          </div>
-        </form>
-      </div>
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
+      flexDirection: 'column'
+    }}>
+      {errors.firstName && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.firstName}</div>}
+      {errors.email && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.email}</div>}
+      {errors.password && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.password}</div>}
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>First Name:</label>
+          <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} />
+        </div>
+        <div>
+          <label>Last Name:</label>
+          <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
+        </div>
+        <div>
+          <label>Email:</label>
+          <input type="email" name="email" value={formData.email} onChange={handleChange} />
+        </div>
+        <div>
+          <label>Password:</label>
+          <input type="password" name="password" value={formData.password} onChange={handleChange} />
+        </div>
+        <div>
+          <button type="submit">Sign Up</button>
+          <button type="button" onClick={handleSignInRedirect} style={{ marginLeft: '10px' }}>Go back</button>
+        </div>
+      </form>
     </div>
 
   );
