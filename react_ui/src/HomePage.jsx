@@ -1,10 +1,11 @@
 //placeholder homepage
 
 import { Link } from "react-router-dom";
+import LogoutComponent from "./Login/LogoutComponent";
 
 function HomePage() {
   return (
-    <div>
+    <div style={{ margin: "10vh" }}>
       <p>You have logged in successfully</p>
       <Link
         to="/login"
@@ -12,6 +13,7 @@ function HomePage() {
           type="button"
         > Go back
         </button></Link>
+      <LogoutComponent />
 
     </div>
   )

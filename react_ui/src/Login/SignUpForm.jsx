@@ -83,36 +83,32 @@ function SignUpForm() {
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      flexDirection: 'column'
-    }}>
+    <div className='login-container'>
       {errors.firstName && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.firstName}</div>}
       {errors.email && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.email}</div>}
       {errors.password && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.password}</div>}
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>First Name:</label>
-          <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} />
-        </div>
-        <div>
-          <label>Last Name:</label>
-          <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
-        </div>
-        <div>
-          <label>Email:</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input type="password" name="password" value={formData.password} onChange={handleChange} />
-        </div>
-        <div>
-          <button type="submit">Sign Up</button>
-          <button type="button" onClick={handleSignInRedirect} style={{ marginLeft: '10px' }}>Go back</button>
+        <div className="inputs-container">
+          <div className="login-inputs-container">
+            <label>First Name:</label>
+            <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} />
+          </div>
+          <div className="login-inputs-container">
+            <label>Last Name:</label>
+            <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
+          </div>
+          <div className="login-inputs-container">
+            <label>Email:</label>
+            <input type="email" name="email" value={formData.email} onChange={handleChange} />
+          </div>
+          <div className="login-inputs-container">
+            <label>Password:</label>
+            <input type="password" name="password" value={formData.password} onChange={handleChange} />
+          </div>
+          <div>
+            <button type="submit">Sign Up</button>
+            <button type="button" onClick={handleSignInRedirect} style={{ marginLeft: '10px' }}>Go back</button>
+          </div>
         </div>
       </form>
     </div>

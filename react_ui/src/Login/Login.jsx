@@ -42,34 +42,40 @@ function SignInForm() {
   };
 
   return (
-    <div>
-      <h1 className="login-form-header">Log In</h1>
-      {error == "" ? <></> : <p className='login-form-text' style={{ color: "red" }}>{error}</p>}
+    <div className="login-container">
+      <h1>Log In</h1>
+      {error == "" ? <></> : <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
-        <label>Email:</label>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={(e) => {
-            handleChange(e);
-            setError("");
-          }}
-          required
-        // className={`shadow appearance-none border ${inputError ? "bg-red-100" : "bg-white"
-        //   } rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
-        />
-        <label>Password:</label>
-        <input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={(e) => {
-            handleChange(e);
-            setError("");
-          }}
-          required
-        />
+        <div className="inputs-container">
+          <div className="login-inputs-container">
+            <label>Email:</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={(e) => {
+                handleChange(e);
+                setError("");
+              }}
+              required
+            // className={`shadow appearance-none border ${inputError ? "bg-red-100" : "bg-white"
+            //   } rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
+            />
+          </div>
+          <div className="login-inputs-container">
+            <label>Password:</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={(e) => {
+                handleChange(e);
+                setError("");
+              }}
+              required
+            />
+          </div>
+        </div>
         <div>
           <button type="submit">Sign In</button>
           <button
