@@ -37,26 +37,12 @@ public class CollegeController {
     public ResponseEntity<Void> deleteCollege(
             @PathVariable Integer id) {
         collegeService.deleteCollege(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/admin/getAll")
     public ResponseEntity<List<DtoCollegeRequest>> getAllColleges() {
         return ResponseEntity.ok(collegeService.getAllColleges());
     }
-
-    @PatchMapping("/admin/{id}/addRector/{rectorId}")
-    public ResponseEntity<DtoCollegeRequest> addRector(
-            @PathVariable Integer id,
-            @PathVariable Integer rectorId) {
-        return ResponseEntity.ok(collegeService.addRectorToCollege(id, rectorId));
-    }
-
-    @PatchMapping("/admin/{id}/removeRector")
-    public ResponseEntity<DtoCollegeRequest> removeRector(
-            @PathVariable Integer id) {
-        return ResponseEntity.ok(collegeService.removeRectorFromCollege(id));
-    }
-
 
 }

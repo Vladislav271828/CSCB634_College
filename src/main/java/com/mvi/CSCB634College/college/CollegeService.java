@@ -174,30 +174,6 @@ public class CollegeService {
                 .toList();
     }
 
-    public DtoCollegeRequest addRectorToCollege(Integer collegeId, Integer rectorId) {
-        College college = collegeRepository.findById(collegeId)
-                .orElseThrow(() -> new BadRequestException("College with id " + collegeId + " not found"));
-
-        User user = userRepository.findById(rectorId)
-                .orElseThrow(() -> new BadRequestException("User with id " + rectorId + " not found"));
-
-        college.setRector(user);
-
-        return saveAndRetrieveDtoCollege(college);
-    }
-
-    public DtoCollegeRequest removeRectorFromCollege(Integer collegeId) {
-        College college = collegeRepository.findById(collegeId)
-                .orElseThrow(() -> new BadRequestException("College with id " + collegeId + " not found"));
-
-        if (college.getRector() == null) {
-            throw new BadRequestException("College with id " + collegeId + " does not have a rector");
-        }
-
-        college.setRector(null);
-
-        return saveAndRetrieveDtoCollege(college);
-    }
 
     private boolean isRectorAlreadyRectoring(User rector) {
         return !collegeRepository.findByRector_EmailAllIgnoreCase(rector.getEmail()).isEmpty();
