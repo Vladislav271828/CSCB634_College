@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DtoCollegeRequest {
+    private Long id;
     @NotEmpty(message = "College name is required.")
     private String name;
     @NotEmpty(message = "College address is required.")

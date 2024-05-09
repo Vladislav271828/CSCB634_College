@@ -15,12 +15,16 @@ import lombok.NoArgsConstructor;
 @Table(name = "faculty")
 public class Faculty {
     @Id
-    private Long faculty_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "faculty_id")
+    private Long id;
 
     private String name;
 
     @ManyToOne
     @JoinColumn(name = "college_college_id")
     private College college;
+
+
 
 }
