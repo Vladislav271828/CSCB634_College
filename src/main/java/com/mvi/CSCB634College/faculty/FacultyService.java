@@ -3,26 +3,22 @@ package com.mvi.CSCB634College.faculty;
 import com.mvi.CSCB634College.college.College;
 import com.mvi.CSCB634College.college.CollegeRepository;
 import com.mvi.CSCB634College.exception.BadRequestException;
-import com.mvi.CSCB634College.security.auth.AuthenticationService;
-import com.mvi.CSCB634College.security.config.JwtAuthenticationFilter;
-import com.mvi.CSCB634College.user.UserRepository;
-import jdk.swing.interop.SwingInterOpUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FacultyService {
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private final FacultyRepository facultyRepository;
     private final ModelMapper modelMapper;
     private final CollegeRepository collegeRepository;
 
     @Autowired
-    public FacultyService(FacultyRepository facultyRepository, AuthenticationService authenticationService, UserRepository userRepository, ModelMapper modelMapper, CollegeRepository collegeRepository) {
+    public FacultyService(FacultyRepository facultyRepository, ModelMapper modelMapper, CollegeRepository collegeRepository) {
         this.facultyRepository = facultyRepository;
         this.modelMapper = modelMapper;
         this.collegeRepository = collegeRepository;
@@ -46,6 +42,19 @@ public class FacultyService {
                 .orElseThrow(() -> new BadRequestException("Faculty with id " + id + " not found."));
 
         return modelMapper.map(faculty, DtoFaculty.class);
+    }
+
+    public List<DtoFaculty> getAllByCollege(Integer collegeId) {
+
+        College college = collegeRepository.findById(collegeId)
+                .orElseThrow(() -> new BadRequestException("College with id " + collegeId + " not found"));
+            
+            List<Faculty> faculties = facultyRepository.findAllByCollege(college);
+
+            return faculties.stream()
+                    .map(faculty -> modelMapper.map(faculty, DtoFaculty.class))
+                    .collect(Collectors.toList());
+        
     }
 
     public DtoFaculty updateFaculty(Integer id, DtoFaculty dtoFaculty) throws BadRequestException {

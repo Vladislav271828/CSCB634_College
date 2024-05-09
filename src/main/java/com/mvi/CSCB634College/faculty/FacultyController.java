@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/faculty")
 @RequiredArgsConstructor
@@ -23,6 +25,12 @@ public class FacultyController {
     public ResponseEntity<DtoFaculty> getFacultyById(
             @PathVariable Integer id) {
         return ResponseEntity.ok(facultyService.getFacultyById(id));
+    }
+
+    @GetMapping("/getAllByCollege/{collegeId}")
+    public ResponseEntity<List<DtoFaculty>> getAllByCollege(
+            @PathVariable Integer collegeId) {
+        return ResponseEntity.ok(facultyService.getAllByCollege(collegeId));
     }
 
     @PutMapping("/admin/{id}/update")
