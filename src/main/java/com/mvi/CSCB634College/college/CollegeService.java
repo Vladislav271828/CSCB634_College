@@ -37,14 +37,11 @@ public class CollegeService {
 
     public DtoCollegeRequest createCollege(DtoCollegeRequest dtoCollegeRequest) throws BadRequestException {
 
+        dtoCollegeRequest.setId(null);
+
         User rector;
 
-        try {
-            rector = userRepository.findByEmail(dtoCollegeRequest.getRectorEmail()).orElseThrow();//Email should always be valid format here due to the regex in the dto class
-
-        } catch (Exception e) {
-            throw new BadRequestException("User " + dtoCollegeRequest.getRectorEmail() + " is not found.");
-        }
+            rector = userRepository.findByEmail(dtoCollegeRequest.getRectorEmail()).orElseThrow(() -> new BadRequestException("User " + dtoCollegeRequest.getRectorEmail() + " is not found."));//Email should always be valid format here due to the regex in the dto class
 
         if (isRectorAlreadyRectoring(rector)) {//Check if the user is already a rector in the database
             throw new BadRequestException("User " + rector.getEmail() + " is already a rector.");
@@ -77,6 +74,7 @@ public class CollegeService {
     }
 
     public DtoCollegeRequest updateCollege(Integer id, DtoCollegeRequest dtoCollegeRequest) {
+        dtoCollegeRequest.setId(null);
         User currentUser = authenticationService.getCurrentlyLoggedUser();
 
         // Find college by id
