@@ -21,10 +21,19 @@ public class AuthenticationController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody RegisterRequest request) throws IOException {
-        return ResponseEntity.ok(authenticationService.register(request));
+    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody RegisterRequest request) throws BadRequestException{
+        return ResponseEntity.ok(authenticationService.registerAdmin(request));
     }
 
+    @PostMapping("/admin/register-user")
+    public ResponseEntity<AuthenticationResponse> registerUser(@Valid @RequestBody RegisterRequest request){
+        return ResponseEntity.ok(authenticationService.registerUser(request));
+    }
+
+    @PostMapping("/admin/register-professor")
+    public ResponseEntity<AuthenticationResponse> registerProfessor(@Valid @RequestBody RegisterRequest request){
+        return ResponseEntity.ok(authenticationService.registerProfessor(request));
+    }
 
     @GetMapping("/getUserDetails")
     public ResponseEntity<User> getUserDetails() {
