@@ -1,5 +1,6 @@
 package com.mvi.CSCB634College.student;
 
+import com.mvi.CSCB634College.faculty.Faculty;
 import com.mvi.CSCB634College.major.Major;
 import com.mvi.CSCB634College.user.User;
 import jakarta.persistence.*;
@@ -24,5 +25,9 @@ public class Student {
     @ManyToOne
     @JoinColumn(name = "major_id")
     private Major major;
+
+    @ManyToOne
+    @JoinColumn(name = "faculty_faculty_id")
+    private Faculty faculty;
 
 }
