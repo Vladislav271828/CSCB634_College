@@ -1,6 +1,7 @@
 package com.mvi.CSCB634College.security.auth;
 
 
+import com.mvi.CSCB634College.exception.BadRequestException;
 import com.mvi.CSCB634College.exception.UserAlreadyExist;
 import com.mvi.CSCB634College.security.Role;
 import com.mvi.CSCB634College.security.config.JwtService;
@@ -10,7 +11,6 @@ import com.mvi.CSCB634College.security.token.TokenType;
 import com.mvi.CSCB634College.user.User;
 import com.mvi.CSCB634College.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -46,44 +46,46 @@ public class AuthenticationService {
      * @return An authentication response containing the JWT access token.
      * @throws RuntimeException if a user with the given email already exists.
      */
-    public AuthenticationResponse register(RegisterRequest request) {
-
+    public AuthenticationResponse registerAdmin(RegisterRequest request) throws BadRequestException {
         //Check if incoming data is valid
+        List<User> usersPage = userRepository.findAll();
 
-
-        //Check if new user is unique
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new UserAlreadyExist("User already exists.");
+        if (!usersPage.isEmpty()){
+            throw new BadRequestException("Please contact an admin.");
         }
 
-        //create user with request data
-        var user = User.builder()
-                .firstname(request.getFirstName())
-                .lastname(request.getLastName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
-                .tokens(new ArrayList<>())
-                .build();
-
-        var savedUser = userRepository.save(user); //save user in the db
-
-        var jwtToken = jwtService.generateToken(user); //generate a JWT Token for the user's session (If the user logs out the token will be marked as invalid, if the user authenticates again a new token will be created and the old one will be updated to be invalid)
-
-        saveUserToken(savedUser, jwtToken, TokenType.ACCESS_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 1000 * 60 * 30));//half an hours
-
-
-        // In AuthenticationService's register and authenticate methods
-
-        var refreshToken = jwtService.generateRefreshToken(user);
-
-        saveUserToken(user, refreshToken, TokenType.REFRESH_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24));//save the token for 1 day
+        String jwtToken = buildAndSaveUserWithJWT(request, Role.ADMIN);
 
 
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .build();
     }
+
+
+    public AuthenticationResponse registerUser(RegisterRequest request) throws BadRequestException {
+
+
+        String jwtToken = buildAndSaveUserWithJWT(request, Role.STUDENT);
+
+
+        return AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .build();
+    }
+
+
+    public AuthenticationResponse registerProfessor(RegisterRequest request) throws BadRequestException {
+
+
+        String jwtToken = buildAndSaveUserWithJWT(request, Role.PROFESSOR);
+
+
+        return AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .build();
+    }
+
 
 
     /**
@@ -345,5 +347,37 @@ public class AuthenticationService {
 
 
         return getCurrentlyLoggedUser();
+    }
+
+    private String buildAndSaveUserWithJWT(RegisterRequest request, Role role){
+        //create user with request data
+        //Check if new user is unique
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new UserAlreadyExist("User already exists.");
+        }
+
+        var user = User.builder()
+                .firstname(request.getFirstName())
+                .lastname(request.getLastName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(role)
+                .tokens(new ArrayList<>())
+                .build();
+
+        var savedUser = userRepository.save(user); //save user in the db
+
+        var jwtToken = jwtService.generateToken(user); //generate a JWT Token for the user's session (If the user logs out the token will be marked as invalid, if the user authenticates again a new token will be created and the old one will be updated to be invalid)
+
+        saveUserToken(savedUser, jwtToken, TokenType.ACCESS_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 1000 * 60 * 30));//half an hours
+
+
+        // In AuthenticationService's register and authenticate methods
+
+        var refreshToken = jwtService.generateRefreshToken(user);
+
+        saveUserToken(user, refreshToken, TokenType.REFRESH_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24));//save the token for 1 day
+
+        return jwtToken;
     }
 }
