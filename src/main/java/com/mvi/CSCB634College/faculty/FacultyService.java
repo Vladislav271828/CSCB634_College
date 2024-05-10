@@ -25,7 +25,7 @@ public class FacultyService {
     }
 
     public DtoFaculty createFaculty(DtoFaculty dtoFaculty, int collegeId) throws BadRequestException {
-
+        dtoFaculty.setCollegeId(null);
 
         College college = collegeRepository.findById(collegeId)
                 .orElseThrow(() -> new BadRequestException("College with id " + collegeId + " not found"));
@@ -58,7 +58,6 @@ public class FacultyService {
     }
 
     public DtoFaculty updateFaculty(Integer id, DtoFaculty dtoFaculty) throws BadRequestException {
-
         Faculty faculty = facultyRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Faculty with id " + id + " not found."));
         //trqbwat proverki!!!!
