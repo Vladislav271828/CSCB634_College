@@ -1,6 +1,6 @@
 package com.mvi.CSCB634College.department;
 
-import com.mvi.CSCB634College.faculty.Faculty;
+import com.mvi.CSCB634College.college.College;
 import com.mvi.CSCB634College.professor.Professor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,11 +20,11 @@ public class Department {
     @Column(name = "department_id")
     private Long id;
 
-    private String department_name;
+    private String name;
 
     @ManyToOne
-    @JoinColumn(name = "faculty_id")
-    private Faculty faculty;
+    @JoinColumn(name = "college_college_id")
+    private College college;
 
     @ManyToOne
     @JoinColumn(name = "department_head_user_id")

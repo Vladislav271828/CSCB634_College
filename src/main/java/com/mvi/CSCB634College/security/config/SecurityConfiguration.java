@@ -52,6 +52,8 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/api/v1/auth/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/v1/user/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/ws-message/**", "/ws/**", "/ws-endpoint/**").permitAll()  // Allow the WebSocket endpoints
                         .requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
