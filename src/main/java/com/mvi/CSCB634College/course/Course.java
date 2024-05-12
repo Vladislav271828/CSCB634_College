@@ -24,8 +24,9 @@ public class Course {
 
     private String signature;
 
-    @Column(name = "in_program")
-    private boolean inProgram;
+    private String description;
+
+    private Integer credits;
 
     @ManyToOne
     @JoinColumn(name = "major_id")
