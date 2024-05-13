@@ -127,7 +127,17 @@ public class UserService {
              throw  new UserNotFound("No user with email \"" + email + "\" found.");
          }
 
-        //TODO: check if there is a user different from the one we are trying to delete with role admin or else don't delete it!!!
-         user.ifPresent(userRepository::delete);
+
+        //check if there are other users with admin roles
+        boolean areThereAdmins = userRepository.existsByRoleEquals(Role.ADMIN, email);
+
+        //if there are none don;t delete and throw message
+        if (!areThereAdmins){
+             throw new BadRequestException("Action can't be performed because the user is the only ADMIN in the system.");
+         }else{
+
+            //else delete
+            user.ifPresent(userRepository::delete);
+        }
     }
 }

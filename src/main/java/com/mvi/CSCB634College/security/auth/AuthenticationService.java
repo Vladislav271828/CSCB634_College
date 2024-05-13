@@ -47,7 +47,7 @@ public class AuthenticationService {
      * @throws RuntimeException if a user with the given email already exists.
      */
     public AuthenticationResponse registerAdmin(RegisterRequest request) throws BadRequestException {
-        //Check if incoming data is valid
+
         List<User> usersPage = userRepository.findAll();
 
         if (!usersPage.isEmpty()){
@@ -64,21 +64,11 @@ public class AuthenticationService {
 
 
     public AuthenticationResponse registerUser(RegisterRequest request) throws BadRequestException {
+        if (request.getRole() == null || request.getRole().describeConstable().isEmpty() ){
+            throw new BadRequestException("Missing Role required.");
+        }
 
-
-        String jwtToken = buildAndSaveUserWithJWT(request, Role.STUDENT);
-
-
-        return AuthenticationResponse.builder()
-                .accessToken(jwtToken)
-                .build();
-    }
-
-
-    public AuthenticationResponse registerProfessor(RegisterRequest request) throws BadRequestException {
-
-
-        String jwtToken = buildAndSaveUserWithJWT(request, Role.PROFESSOR);
+        String jwtToken = buildAndSaveUserWithJWT(request, request.getRole());
 
 
         return AuthenticationResponse.builder()
@@ -355,7 +345,6 @@ public class AuthenticationService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new UserAlreadyExist("User already exists.");
         }
-
         var user = User.builder()
                 .firstname(request.getFirstName())
                 .lastname(request.getLastName())

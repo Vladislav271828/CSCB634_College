@@ -1,5 +1,6 @@
 package com.mvi.CSCB634College.security.auth;
 
+import com.mvi.CSCB634College.security.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
@@ -30,4 +31,6 @@ public class RegisterRequest {
     @Pattern(regexp = ".*[A-Z].*", message = "Password must contain an uppercase letter.")
     @Pattern(regexp = ".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*", message = "Password must contain a special character.")
     private String password;
+
+    private Role role;
 }
