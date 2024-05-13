@@ -1,7 +1,6 @@
 package com.mvi.CSCB634College.course;
 
 import com.mvi.CSCB634College.major.Major;
-import com.mvi.CSCB634College.professor.Professor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,12 +22,11 @@ public class Course {
     @Column(name = "course_name")
     private String name;
 
-    @Column(name = "in_program")
-    private boolean inProgram;
+    private String signature;
 
-    @ManyToOne
-    @JoinColumn(name = "professors_user_id")
-    private Professor professor;
+    private String description;
+
+    private Integer credits;
 
     @ManyToOne
     @JoinColumn(name = "major_id")
