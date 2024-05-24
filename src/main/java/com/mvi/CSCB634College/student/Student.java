@@ -18,7 +18,10 @@ import lombok.NoArgsConstructor;
 public class Student {
 
     @Id
+    private Integer id;
+
     @OneToOne
+    @MapsId
     @JoinColumn(name = "user_id")
     private User user;
 

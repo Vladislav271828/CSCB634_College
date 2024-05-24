@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CollegeRepository extends JpaRepository<College, Integer> {
+public interface CollegeRepository extends JpaRepository<College, Long> {
     List<College> findByNameIgnoreCase(String name);
     List<College> findByRector_EmailAllIgnoreCase(String email);
 

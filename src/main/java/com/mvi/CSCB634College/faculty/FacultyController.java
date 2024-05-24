@@ -14,35 +14,34 @@ public class FacultyController {
 
     private final FacultyService facultyService;
 
-    @PostMapping("/admin/create/{collegeId}")
+    @PostMapping("/admin/create")
     public ResponseEntity<DtoFaculty> createFaculty(
-            @Valid @RequestBody DtoFaculty dtoFaculty
-            , @PathVariable Integer collegeId) {
-        return ResponseEntity.ok(facultyService.createFaculty(dtoFaculty, collegeId));
+            @Valid @RequestBody DtoFaculty dtoFaculty) {
+        return ResponseEntity.ok(facultyService.createFaculty(dtoFaculty));
     }
 
     @GetMapping("/getById/{id}")
     public ResponseEntity<DtoFaculty> getFacultyById(
-            @PathVariable Integer id) {
+            @PathVariable Long id) {
         return ResponseEntity.ok(facultyService.getFacultyById(id));
     }
 
     @GetMapping("/getAllByCollege/{collegeId}")
     public ResponseEntity<List<DtoFaculty>> getAllByCollege(
-            @PathVariable Integer collegeId) {
+            @PathVariable Long collegeId) {
         return ResponseEntity.ok(facultyService.getAllByCollege(collegeId));
     }
 
     @PutMapping("/admin/{id}/update")
     public ResponseEntity<DtoFaculty> updateFaculty(
-            @PathVariable("id") Integer id,
+            @PathVariable("id") Long id,
             @RequestBody DtoFaculty dtoFaculty) {
         return ResponseEntity.ok(facultyService.updateFaculty(id, dtoFaculty));
     }
 
     @DeleteMapping("/admin/{id}/delete")
     public ResponseEntity<Void> deleteFaculty(
-            @PathVariable Integer id) {
+            @PathVariable Long id) {
         facultyService.deleteFaculty(id);
         return ResponseEntity.noContent().build();
     }  

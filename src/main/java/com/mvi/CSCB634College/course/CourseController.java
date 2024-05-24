@@ -12,35 +12,34 @@ public class CourseController {
 
     private final CourseService courseService;
 
-    @PostMapping("/admin/create/{majorId}")
+    @PostMapping("/admin/create/")
     public ResponseEntity<DtoCourse> createCourse(
-            @Valid @RequestBody DtoCourse dtoCourse
-            , @PathVariable Integer majorId) {
-        return ResponseEntity.ok(courseService.createCourse(dtoCourse, majorId));
+            @Valid @RequestBody DtoCourse dtoCourse) {
+        return ResponseEntity.ok(courseService.createCourse(dtoCourse));
     }
 
     @GetMapping("/getById/{id}")
     public ResponseEntity<DtoCourse> getCourseById(
-            @PathVariable Integer id) {
+            @PathVariable Long id) {
         return ResponseEntity.ok(courseService.getCourseById(id));
     }
 
     @GetMapping("/getAllByMajor/{majorId}")
     public ResponseEntity<List<DtoCourse>> getAllByMajor(
-            @PathVariable Integer majorId) {
+            @PathVariable Long majorId) {
         return ResponseEntity.ok(courseService.getAllByMajor(majorId));
     }
 
     @PutMapping("/admin/{id}/update")
     public ResponseEntity<DtoCourse> updateCourse(
-            @PathVariable("id") Integer id,
+            @PathVariable("id") Long id,
             @RequestBody DtoCourse dtoCourse) {
         return ResponseEntity.ok(courseService.updateCourse(id, dtoCourse));
     }
 
     @DeleteMapping("/admin/{id}/delete")
     public ResponseEntity<Void> deleteCourse(
-            @PathVariable Integer id) {
+            @PathVariable Long id) {
         courseService.deleteCourse(id);
         return ResponseEntity.noContent().build();
     }

@@ -30,11 +30,6 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.registerUser(request));
     }
 
-    @PostMapping("/admin/register-professor")
-    public ResponseEntity<AuthenticationResponse> registerProfessor(@Valid @RequestBody RegisterRequest request){
-        return ResponseEntity.ok(authenticationService.registerProfessor(request));
-    }
-
     @GetMapping("/getUserDetails")
     public ResponseEntity<User> getUserDetails() {
         return ResponseEntity.ok(authenticationService.responseUserDetails());

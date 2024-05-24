@@ -39,7 +39,7 @@ public class Enrollment {
     private Date date;
     private Integer absences; //posle she go naprawim otdelna tablica da ima mnogo otsustwiq
     private String room;
-
+    private Boolean autumn;
 
 
 

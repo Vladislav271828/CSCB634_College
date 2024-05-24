@@ -22,19 +22,21 @@ public class MajorService {
         this.modelMapper = modelMapper;
     }
 
-    public DtoMajor createMajor(DtoMajor dtoMajor, int departmentId) {
-        dtoMajor.setDepartmentId(null);
-
-        Department department = departmentRepository.findById(departmentId)
-                .orElseThrow(() -> new BadRequestException("Department with id " + departmentId + " not found"));
+    public DtoMajor createMajor(DtoMajor dtoMajor) {
 
         Major major = modelMapper.map(dtoMajor, Major.class);
-        major.setDepartment(department);
+
+        if (dtoMajor.getDepartmentId() != null) {
+            Department department = departmentRepository.findById(dtoMajor.getDepartmentId())
+                    .orElseThrow(() -> new BadRequestException("Department with id " + dtoMajor.getDepartmentId() + " not found"));
+            major.setDepartment(department);
+        }
+        else throw new BadRequestException("Major must have Department");
 
         return modelMapper.map(majorRepository.save(major), DtoMajor.class);
     }
 
-    public DtoMajor getMajorById(Integer id) {
+    public DtoMajor getMajorById(Long id) {
 
         Major major = majorRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Major with id " + id + " not found."));
@@ -42,7 +44,7 @@ public class MajorService {
         return modelMapper.map(major, DtoMajor.class);
     }
 
-    public List<DtoMajor> getAllByDepartment(Integer departmentId) {
+    public List<DtoMajor> getAllByDepartment(Long departmentId) {
 
         Department department = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new BadRequestException("Department with id " + departmentId + " not found"));
@@ -54,18 +56,25 @@ public class MajorService {
                 .collect(Collectors.toList());
     }
 
-    public DtoMajor updateMajor(Integer id, DtoMajor dtoMajor) {
+    public DtoMajor updateMajor(Long id, DtoMajor dtoMajor) {
 
         Major major = majorRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Major with id " + id + " not found."));
-
         modelMapper.map(dtoMajor, major);
+
+        if (dtoMajor.getDepartmentId() != null && !dtoMajor.getDepartmentId().equals(major.getDepartment().getId())) {
+            Department department = departmentRepository.findById(dtoMajor.getDepartmentId())
+                    .orElseThrow(() -> new BadRequestException("Department with id " + dtoMajor.getDepartmentId() + " not found"));
+            major.setDepartment(department);
+        }
+
+
 
         return modelMapper.map(majorRepository.save(major), DtoMajor.class);
     }
 
 
-    public void deleteMajor(Integer id) {
+    public void deleteMajor(Long id) {
 
         Major major = majorRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Major with id " + id + " not found."));

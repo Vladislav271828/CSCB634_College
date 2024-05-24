@@ -66,14 +66,14 @@ public class CollegeService {
     }
 
 
-    public DtoCollegeRequest getCollegeById(Integer id) {
+    public DtoCollegeRequest getCollegeById(Long id) {
         College college = collegeRepository.findById(id)
                 .orElseThrow(() -> new CollegeNotFound("College with id " + id + " not found"));
 
         return modelMapper.map(college, DtoCollegeRequest.class);
     }
 
-    public DtoCollegeRequest updateCollege(Integer id, DtoCollegeRequest dtoCollegeRequest) {
+    public DtoCollegeRequest updateCollege(Long id, DtoCollegeRequest dtoCollegeRequest) {
         dtoCollegeRequest.setId(null);
         User currentUser = authenticationService.getCurrentlyLoggedUser();
 
@@ -130,7 +130,7 @@ public class CollegeService {
         return saveAndRetrieveDtoCollege(college);
     }
 
-    private boolean isNameUnique(String name, Integer collegeId) {
+    private boolean isNameUnique(String name, Long collegeId) {
         return collegeRepository.findByNameIgnoreCase(name)
                 .stream()
                 .noneMatch(c -> !c.getId().equals(collegeId));
@@ -151,7 +151,7 @@ public class CollegeService {
         }
     }
 
-    public void deleteCollege(Integer id) {
+    public void deleteCollege(Long id) {
         if (!authenticationService.getCurrentlyLoggedUser().getRole().equals(Role.ADMIN)) {
             throw new BadRequestException("User needs to be admin to create colleges");
         }

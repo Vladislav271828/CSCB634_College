@@ -16,7 +16,10 @@ import lombok.NoArgsConstructor;
 @Table(name = "professors")
 public class Professor {
     @Id
+    private Integer id;
+
     @OneToOne
+    @MapsId
     @JoinColumn(name = "user_id")
     private User user;
 

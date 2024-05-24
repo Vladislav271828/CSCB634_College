@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DtoCourse {
 
-    private Integer id;
+    private Long id;
 
     @NotEmpty(message = "Course name is required.")
     private String name;
@@ -20,7 +20,7 @@ public class DtoCourse {
     private String signature;
     private Integer credits;
 
-    private Integer majorId;
+    private Long majorId;
 
     
 }

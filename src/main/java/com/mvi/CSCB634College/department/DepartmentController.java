@@ -13,35 +13,34 @@ public class DepartmentController {
 
     private final DepartmentService DepartmentService;
 
-    @PostMapping("/admin/create/{collegeId}")
+    @PostMapping("/admin/create")
     public ResponseEntity<DtoDepartment> createDepartment(
-            @Valid @RequestBody DtoDepartment dtoDepartment
-            , @PathVariable Integer collegeId) {
-        return ResponseEntity.ok(DepartmentService.createDepartment(dtoDepartment, collegeId));
+            @Valid @RequestBody DtoDepartment dtoDepartment) {
+        return ResponseEntity.ok(DepartmentService.createDepartment(dtoDepartment));
     }
 
     @GetMapping("/getById/{id}")
     public ResponseEntity<DtoDepartment> getDepartmentById(
-            @PathVariable Integer id) {
+            @PathVariable Long id) {
         return ResponseEntity.ok(DepartmentService.getDepartmentById(id));
     }
 
     @GetMapping("/getAllByCollege/{collegeId}")
     public ResponseEntity<List<DtoDepartment>> getAllByCollege(
-            @PathVariable Integer collegeId) {
+            @PathVariable Long collegeId) {
         return ResponseEntity.ok(DepartmentService.getAllByCollege(collegeId));
     }
 
     @PutMapping("/admin/{id}/update")
     public ResponseEntity<DtoDepartment> updateDepartment(
-            @PathVariable("id") Integer id,
+            @PathVariable("id") Long id,
             @RequestBody DtoDepartment dtoDepartment) {
         return ResponseEntity.ok(DepartmentService.updateDepartment(id, dtoDepartment));
     }
 
     @DeleteMapping("/admin/{id}/delete")
     public ResponseEntity<Void> deleteDepartment(
-            @PathVariable Integer id) {
+            @PathVariable Long id) {
         DepartmentService.deleteDepartment(id);
         return ResponseEntity.noContent().build();
     }
