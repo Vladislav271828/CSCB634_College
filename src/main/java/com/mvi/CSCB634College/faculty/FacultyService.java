@@ -24,19 +24,21 @@ public class FacultyService {
         this.collegeRepository = collegeRepository;
     }
 
-    public DtoFaculty createFaculty(DtoFaculty dtoFaculty, int collegeId) throws BadRequestException {
-        dtoFaculty.setCollegeId(null);
+    public DtoFaculty createFaculty(DtoFaculty dtoFaculty) throws BadRequestException {
 
-        College college = collegeRepository.findById(collegeId)
-                .orElseThrow(() -> new BadRequestException("College with id " + collegeId + " not found"));
-//trqbwat proverki!!!!
         Faculty faculty = modelMapper.map(dtoFaculty, Faculty.class);
-        faculty.setCollege(college);
+
+        if (dtoFaculty.getCollegeId() != null) {
+        College college = collegeRepository.findById(dtoFaculty.getCollegeId())
+                .orElseThrow(() -> new BadRequestException("College with id " + dtoFaculty.getCollegeId() + " not found"));
+            faculty.setCollege(college);
+        }
+        else throw new BadRequestException("Faculty must have College");
 
         return modelMapper.map(facultyRepository.save(faculty), DtoFaculty.class);
     }
 
-    public DtoFaculty getFacultyById(Integer id) throws BadRequestException {
+    public DtoFaculty getFacultyById(Long id) throws BadRequestException {
 
         Faculty faculty = facultyRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Faculty with id " + id + " not found."));
@@ -44,7 +46,7 @@ public class FacultyService {
         return modelMapper.map(faculty, DtoFaculty.class);
     }
 
-    public List<DtoFaculty> getAllByCollege(Integer collegeId) {
+    public List<DtoFaculty> getAllByCollege(Long collegeId) {
 
         College college = collegeRepository.findById(collegeId)
                 .orElseThrow(() -> new BadRequestException("College with id " + collegeId + " not found"));
@@ -57,16 +59,24 @@ public class FacultyService {
         
     }
 
-    public DtoFaculty updateFaculty(Integer id, DtoFaculty dtoFaculty) throws BadRequestException {
+    public DtoFaculty updateFaculty(Long id, DtoFaculty dtoFaculty) throws BadRequestException {
+
         Faculty faculty = facultyRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Faculty with id " + id + " not found."));
-        //trqbwat proverki!!!!
         modelMapper.map(dtoFaculty, faculty);
+        //dali ima smisul da e pozvoleno da se smenq?
+        if (dtoFaculty.getCollegeId() != null && !dtoFaculty.getCollegeId().equals(faculty.getCollege().getId())) {
+            College college = collegeRepository.findById(dtoFaculty.getCollegeId())
+                    .orElseThrow(() -> new BadRequestException("College with id " + dtoFaculty.getCollegeId() + " not found"));
+            faculty.setCollege(college);
+        }
+        
+
 
         return modelMapper.map(facultyRepository.save(faculty), DtoFaculty.class);
     }
 
-    public void deleteFaculty(Integer id) throws BadRequestException {
+    public void deleteFaculty(Long id) throws BadRequestException {
 
         Faculty faculty = facultyRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Faculty with id " + id + " not found."));

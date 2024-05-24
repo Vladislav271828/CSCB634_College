@@ -22,19 +22,19 @@ public class CourseService {
         this.majorRepository = majorRepository;
     }
 
-    public DtoCourse createCourse(DtoCourse dtoCourse, int majorId) {
-        dtoCourse.setMajorId(null);
-
-        Major major = majorRepository.findById(majorId)
-                .orElseThrow(() -> new BadRequestException("Major with id " + majorId + " not found"));
+    public DtoCourse createCourse(DtoCourse dtoCourse) {
 
         Course course = modelMapper.map(dtoCourse, Course.class);
+        if(dtoCourse.getMajorId() != null){
+        Major major = majorRepository.findById(dtoCourse.getMajorId())
+                .orElseThrow(() -> new BadRequestException("Major with id " + dtoCourse.getMajorId() + " not found"));
         course.setMajor(major);
+        }
 
         return modelMapper.map(courseRepository.save(course), DtoCourse.class);
     }
 
-    public DtoCourse getCourseById(Integer id) {
+    public DtoCourse getCourseById(Long id) {
 
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Course with id " + id + " not found."));
@@ -42,7 +42,7 @@ public class CourseService {
         return modelMapper.map(course, DtoCourse.class);
     }
 
-    public List<DtoCourse> getAllByMajor(Integer majorId) {
+    public List<DtoCourse> getAllByMajor(Long majorId) {
 
         Major major = majorRepository.findById(majorId)
                 .orElseThrow(() -> new BadRequestException("Major with id " + majorId + " not found"));
@@ -55,17 +55,26 @@ public class CourseService {
 
     }
 
-    public DtoCourse updateCourse(Integer id, DtoCourse dtoCourse) {
+    public DtoCourse updateCourse(Long id, DtoCourse dtoCourse) {
 
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Course with id " + id + " not found."));
-        //trqbwat proverki
         modelMapper.map(dtoCourse, course);
+
+        if(dtoCourse.getMajorId() != null && !dtoCourse.getMajorId().equals(course.getMajor().getId())){
+            Major major = majorRepository.findById(dtoCourse.getMajorId())
+                    .orElseThrow(() -> new BadRequestException("Major with id " + dtoCourse.getMajorId() + " not found"));
+            course.setMajor(major);
+        }
+
 
         return modelMapper.map(courseRepository.save(course), DtoCourse.class);
     }
 
-    public void deleteCourse(Integer id) {
-        courseRepository.deleteById(id);
+    public void deleteCourse(Long id) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Course with id " + id + " not found."));
+
+        courseRepository.delete(course);
     }
 }

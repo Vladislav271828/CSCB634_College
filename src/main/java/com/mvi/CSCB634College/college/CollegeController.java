@@ -22,20 +22,20 @@ public class CollegeController {
 
     @GetMapping("/getById/{id}")
     public ResponseEntity<DtoCollegeRequest> getCollegeById(
-            @PathVariable Integer id) {
+            @PathVariable Long id) {
         return ResponseEntity.ok(collegeService.getCollegeById(id));
     }
 
     @PutMapping("/admin/update/{id}")
     public ResponseEntity<DtoCollegeRequest> updateCollege(
-            @PathVariable("id") Integer id,
+            @PathVariable("id") Long id,
             @RequestBody DtoCollegeRequest dtoCollegeRequest) {
         return ResponseEntity.ok(collegeService.updateCollege(id, dtoCollegeRequest));
     }
 
     @DeleteMapping("/admin/{id}/delete")
     public ResponseEntity<Void> deleteCollege(
-            @PathVariable Integer id) {
+            @PathVariable Long id) {
         collegeService.deleteCollege(id);
         return ResponseEntity.noContent().build();
     }

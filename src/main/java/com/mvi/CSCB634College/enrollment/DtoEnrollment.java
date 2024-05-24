@@ -21,6 +21,6 @@ public class DtoEnrollment {
     private Boolean autumn;
     private Integer studentId;
     private Integer professorId;
-    private Integer courseId;
+    private Long courseId;
 
 }

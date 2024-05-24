@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DtoMajor {
 
-    private Integer id;
+    private Long id;
     private String name;
-    private Integer departmentId;
+    private Long departmentId;
 
     
 }

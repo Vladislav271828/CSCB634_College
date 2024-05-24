@@ -14,35 +14,34 @@ public class MajorController {
 
     private final MajorService majorService;
 
-    @PostMapping("/admin/create/{departmentId}")
+    @PostMapping("/admin/create")
     public ResponseEntity<DtoMajor> createMajor(
-            @Valid @RequestBody DtoMajor dtoMajor
-            , @PathVariable Integer departmentId) {
-        return ResponseEntity.ok(majorService.createMajor(dtoMajor, departmentId));
+            @Valid @RequestBody DtoMajor dtoMajor) {
+        return ResponseEntity.ok(majorService.createMajor(dtoMajor));
     }
 
     @GetMapping("/getById/{id}")
     public ResponseEntity<DtoMajor> getMajorById(
-            @PathVariable Integer id) {
+            @PathVariable Long id) {
         return ResponseEntity.ok(majorService.getMajorById(id));
     }
 
     @GetMapping("/getAllByDepartment/{departmentId}")
     public ResponseEntity<List<DtoMajor>> getAllByDepartment(
-            @PathVariable Integer departmentId) {
+            @PathVariable Long departmentId) {
         return ResponseEntity.ok(majorService.getAllByDepartment(departmentId));
     }
 
     @PutMapping("/admin/{id}/update")
     public ResponseEntity<DtoMajor> updateMajor(
-            @PathVariable("id") Integer id,
+            @PathVariable("id") Long id,
             @RequestBody DtoMajor dtoMajor) {
         return ResponseEntity.ok(majorService.updateMajor(id, dtoMajor));
     }
 
     @DeleteMapping("/admin/{id}/delete")
     public ResponseEntity<Void> deleteMajor(
-            @PathVariable Integer id) {
+            @PathVariable Long id) {
         majorService.deleteMajor(id);
         return ResponseEntity.noContent().build();
     }

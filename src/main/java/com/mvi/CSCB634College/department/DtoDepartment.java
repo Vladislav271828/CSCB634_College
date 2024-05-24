@@ -14,6 +14,6 @@ public class DtoDepartment {
     @NotEmpty(message = "Department name is required.")
     private String name;
     private Long collegeId;
-    private Long departmentHeadId;
+    private Integer departmentHeadId;
 
 }

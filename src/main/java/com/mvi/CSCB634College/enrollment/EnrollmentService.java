@@ -77,6 +77,7 @@ public class EnrollmentService {
 
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new BadRequestException("Enrollment with id " + enrollmentId + " not found"));
+        modelMapper.map(dtoEnrollment, enrollment);
 
         if (!Objects.equals(enrollment.getStudent().getId(), dtoEnrollment.getStudentId())) {
             Student student = studentRepository.findById(dtoEnrollment.getStudentId())
@@ -96,8 +97,6 @@ public class EnrollmentService {
 
             enrollment.setCourse(course);
         }
-
-        modelMapper.map(dtoEnrollment, enrollment);
 
         return modelMapper.map(enrollmentRepository.save(enrollment), DtoEnrollment.class);
     }
