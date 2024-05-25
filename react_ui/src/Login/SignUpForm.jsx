@@ -1,4 +1,6 @@
 //page to help with debugging, will be discarded later
+//i am leaving the useless comments in just so you can admire them
+//🦐 chatgpt
 
 import React, { useState } from 'react';
 import axios from "../API/axios.jsx";
@@ -68,12 +70,11 @@ function SignUpForm() {
       const response = await axios.post(
         '/auth/register',
         formData);
-      localStorage.setItem('jwtToken', response.data.token); // Assuming the token is in response.data.token
-      navigate('/home'); // Redirect to home page
+      navigate('/login');
       // Handle success here
-    } catch (error) {
-      console.error(error);
-      // Handle error here
+    } catch (err) {
+      const message = { other: err.response?.data.message }
+      setErrors(message)
     }
   };
 
@@ -84,9 +85,11 @@ function SignUpForm() {
 
   return (
     <div className='login-container'>
+      <div>This page is meant for registering the first admin. It will not work if there is already at least one user. I can't be bothered to fix any bugs in this page as it is only temporary and will be removed. I hate React.</div>
       {errors.firstName && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.firstName}</div>}
       {errors.email && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.email}</div>}
       {errors.password && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.password}</div>}
+      {errors.other && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.other}</div>}
       <form onSubmit={handleSubmit}>
         <div className="inputs-container">
           <div className="login-inputs-container">

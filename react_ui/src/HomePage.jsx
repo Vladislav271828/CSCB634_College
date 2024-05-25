@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import LogoutComponent from "./Login/LogoutComponent";
 
 function HomePage() {
+
   return (
     <div style={{ margin: "10vh" }}>
       <p>You have logged in successfully</p>

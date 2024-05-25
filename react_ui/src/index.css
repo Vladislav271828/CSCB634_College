@@ -73,7 +73,8 @@ button {
 }
 
 .app-header {
-    height: 100px;
+    height: 110px;
+    padding: 10px;
     position: relative;
 }
 
@@ -126,6 +127,14 @@ button {
     flex-wrap: wrap;
     display: flex;
     justify-content: space-between;
+}
+
+.login-check-container {
+    display: flex;
+}
+
+input[type='checkbox'] {
+    margin-right: .5rem;
 }
 
 .login-inputs-container input {
