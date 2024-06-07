@@ -45,13 +45,22 @@ body {
     }
 }
 
-input {
+input,
+select {
     font-family: 'Noto Serif', serif;
     border: 1px solid #222;
     border-radius: 5px;
     height: 1.5rem;
     padding: 0px 2%;
     color: #222;
+    background-color: white;
+}
+
+input:hover,
+select:hover,
+input:focus,
+select:focus {
+    outline: 1px solid #132240;
 }
 
 button {
@@ -61,6 +70,16 @@ button {
     height: 1.5rem;
     padding: 0px 2%;
     color: #222;
+    cursor: pointer;
+}
+
+input[type='checkbox'] {
+    margin-right: .5rem;
+}
+
+input[type='checkbox']:hover,
+input[type='checkbox']:focus {
+    outline: 0px;
 }
 
 .prevent-select {
@@ -71,6 +90,17 @@ button {
     /* Standard syntax */
     user-select: none;
 }
+
+.err-msg {
+    padding: 10px 0px 0px 0px;
+}
+
+/* 
+---------------------------
+Header.jsx
+Footer.jsx
+---------------------------
+*/
 
 .app-header {
     height: 110px;
@@ -110,6 +140,12 @@ button {
     flex: 1 1 auto;
 }
 
+/* 
+---------------------------
+LOGIN
+---------------------------
+*/
+
 .login-container {
     text-align: left;
     display: flex;
@@ -120,8 +156,6 @@ button {
     margin: 10vh auto;
 }
 
-
-
 .login-inputs-container {
     flex-grow: 1;
     flex-wrap: wrap;
@@ -131,10 +165,6 @@ button {
 
 .login-check-container {
     display: flex;
-}
-
-input[type='checkbox'] {
-    margin-right: .5rem;
 }
 
 .login-inputs-container input {
@@ -151,4 +181,108 @@ input[type='checkbox'] {
 .login-container div,
 .login-container button {
     margin-top: 5px;
+}
+
+/*
+--------------------------
+Dashboard.jsx
+-------------------------- 
+*/
+
+.dash-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.dash-container>div {
+    max-width: 100%;
+    height: 140px;
+    padding: 1.5rem 1rem 1.5rem 30px;
+    text-align: left;
+    flex: 0 1 33%;
+}
+
+.dash-container>div button {
+    width: 100%;
+    height: 100%;
+    font-size: 1.25rem;
+}
+
+.logout-btn {
+    background-color: #ffdddd;
+}
+
+.logout-btn:hover {
+    background-color: #ffbbbb;
+}
+
+/* 
+---------------------------
+Form.jsx
+---------------------------
+*/
+
+.component-container {
+    margin: 20px;
+}
+
+.form-component-container label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-structure-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+}
+
+.form-structure-container>div {
+    max-width: 100%;
+    height: 120px;
+    padding: 1.5rem 1.5rem 1.5rem 30px;
+    text-align: left;
+    flex: 0 1 33%;
+}
+
+.form-structure-container input,
+.form-structure-container select {
+    width: 100%;
+    margin-bottom: 0;
+    height: 40px;
+}
+
+.form-structure-container div.btn {
+    flex: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-structure-container div.btn button {
+    max-width: 250px;
+    width: 100%;
+    height: 40px;
+}
+
+.form-structure-container div.btn button:first-child {
+    margin-right: 10px;
+}
+
+@media ((max-width: 900px) and (min-width:600px)) {
+
+    .form-structure-container>div,
+    .dash-container>div {
+        flex: 0 1 50%;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .form-structure-container>div,
+    .dash-container>div {
+        flex: 0 1 100%;
+    }
 }

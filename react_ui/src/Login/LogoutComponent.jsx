@@ -20,7 +20,7 @@ function LogoutComponent() {
 
   return (
     <div>
-      <button onClick={handleLogout}>Log out</button>
+      <button className='logout-btn' onClick={handleLogout}>Log out</button>
     </div>
   );
 }
