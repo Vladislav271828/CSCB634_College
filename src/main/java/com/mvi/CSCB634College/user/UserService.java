@@ -2,10 +2,14 @@ package com.mvi.CSCB634College.user;
 
 import com.mvi.CSCB634College.exception.BadRequestException;
 import com.mvi.CSCB634College.exception.UserNotFound;
+import com.mvi.CSCB634College.professor.Professor;
+import com.mvi.CSCB634College.professor.ProfessorRepository;
 import com.mvi.CSCB634College.security.Role;
 import com.mvi.CSCB634College.security.auth.AuthenticationService;
 import com.mvi.CSCB634College.security.config.JwtService;
 import com.mvi.CSCB634College.security.token.TokenRepository;
+import com.mvi.CSCB634College.student.Student;
+import com.mvi.CSCB634College.student.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +27,8 @@ public class UserService {
     private final TokenRepository tokenRepository;
     private final UserRepository userRepository;
     private final AuthenticationService authenticationService;
+    private final StudentRepository studentRepository;
+    private final ProfessorRepository professorRepository;
 
 
     public User updateUser(String email, UserDto dtoUser) {
@@ -95,13 +101,88 @@ public class UserService {
                         throw new BadRequestException("User is already with role \"" + user.getRole() + "\".");
                     }
 
-                    //check if the user is the only admin and is trying to change his role - shouldn't be able to do that because then nobody would be able to change it it has to be done either manually in the db or restart the program.
-                    if (userRepository.findAll().toArray().length == 1){
+                    //check if the user is the only admin and is trying to change his role - shouldn't be able to do that because then nobody would be able to change it, it has to be done either manually in the db or restart the program.
+                    if (userRepository.findAll().toArray().length == 1) {
                         throw new BadRequestException("User is the only one with role ADMIN. Change denied.");
                     }
 
-                    user.setRole(dtoUser.getRole());
-                    atLeastOneChange = true;
+
+                    // Check if we are changing the role to ADMIN or USER from STUDENT or PROFESSOR
+                    if ((dtoUser.getRole().equals(Role.ADMIN) || dtoUser.getRole().equals(Role.USER)) &&
+                            (user.getRole().equals(Role.STUDENT) || user.getRole().equals(Role.PROFESSOR))) {
+
+                        // Handle transition from STUDENT to ADMIN or USER
+                        if (user.getRole().equals(Role.STUDENT)) {
+                            Student student = studentRepository.findStudentByUserId(user.getId()).orElseThrow();
+                            studentRepository.deleteById(student.getId());
+                            user.setRole(dtoUser.getRole());
+                            atLeastOneChange = true;
+                        }
+
+                        // Handle transition from PROFESSOR to ADMIN or USER
+                        if (user.getRole().equals(Role.PROFESSOR)) {
+                            Professor professor = professorRepository.findProfessorByUserId(user.getId()).orElseThrow();
+                            professorRepository.deleteById(professor.getId());
+                            user.setRole(dtoUser.getRole());
+                            atLeastOneChange = true;
+                        }
+                    }
+
+                    // Check if we are changing the role to PROFESSOR
+                    if (dtoUser.getRole().equals(Role.PROFESSOR)) {
+
+                        // Handle transition from ADMIN or USER to PROFESSOR
+                        if (user.getRole().equals(Role.ADMIN) || user.getRole().equals(Role.USER)) {
+                            Professor newProfessor = new Professor();
+                            newProfessor.setUser(user);
+                            professorRepository.save(newProfessor);
+                            user.setRole(dtoUser.getRole());
+                            atLeastOneChange = true;
+                        }
+
+                        // Handle transition from STUDENT to PROFESSOR
+                        if (user.getRole().equals(Role.STUDENT)) {
+                            Student student = studentRepository.findStudentByUserId(user.getId()).orElseThrow();
+                            studentRepository.deleteById(student.getId());
+                            Professor newProfessor = new Professor();
+                            newProfessor.setUser(user);
+                            professorRepository.save(newProfessor);
+                            user.setRole(dtoUser.getRole());
+                            atLeastOneChange = true;
+                        }
+                    }
+
+                    // Check if we are changing the role to STUDENT
+                    if (dtoUser.getRole().equals(Role.STUDENT)) {
+
+                        // Handle transition from ADMIN or USER to STUDENT
+                        if (user.getRole().equals(Role.ADMIN) || user.getRole().equals(Role.USER)) {
+                            Student newStudent = new Student();
+                            newStudent.setUser(user);
+                            studentRepository.save(newStudent);
+                            user.setRole(dtoUser.getRole());
+                            atLeastOneChange = true;
+                        }
+
+                        // Handle transition from PROFESSOR to STUDENT
+                        if (user.getRole().equals(Role.PROFESSOR)) {
+                            Professor professor = professorRepository.findProfessorByUserId(user.getId()).orElseThrow();
+                            professorRepository.deleteById(professor.getId());
+                            Student newStudent = new Student();
+                            newStudent.setUser(user);
+                            studentRepository.save(newStudent);
+                            user.setRole(dtoUser.getRole());
+                            atLeastOneChange = true;
+                        }
+                    }
+
+                    // Check if we are changing the role to ADMIN or USER from a non-STUDENT and non-PROFESSOR role
+                    if ((dtoUser.getRole().equals(Role.ADMIN) || dtoUser.getRole().equals(Role.USER)) &&
+                            (!user.getRole().equals(Role.STUDENT) && !user.getRole().equals(Role.PROFESSOR))) {
+                        user.setRole(dtoUser.getRole());
+                        atLeastOneChange = true;
+                    }
+
 
                 } else {
                     throw new BadRequestException("No such role \"" + dtoUser.getRole().toString() + "\" found.");
@@ -122,19 +203,19 @@ public class UserService {
 
 
     public void deleteUser(String email) {
-         Optional<User> user = userRepository.findByEmail(email);
-         if (user.isEmpty()){
-             throw  new UserNotFound("No user with email \"" + email + "\" found.");
-         }
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new UserNotFound("No user with email \"" + email + "\" found.");
+        }
 
 
         //check if there are other users with admin roles
         boolean areThereAdmins = userRepository.existsByRoleEquals(Role.ADMIN, email);
 
         //if there are none don;t delete and throw message
-        if (!areThereAdmins){
-             throw new BadRequestException("Action can't be performed because the user is the only ADMIN in the system.");
-         }else{
+        if (!areThereAdmins) {
+            throw new BadRequestException("Action can't be performed because the user is the only ADMIN in the system.");
+        } else {
 
             //else delete
             user.ifPresent(userRepository::delete);

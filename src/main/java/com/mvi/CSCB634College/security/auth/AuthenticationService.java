@@ -3,14 +3,20 @@ package com.mvi.CSCB634College.security.auth;
 
 import com.mvi.CSCB634College.exception.BadRequestException;
 import com.mvi.CSCB634College.exception.UserAlreadyExist;
+import com.mvi.CSCB634College.professor.Professor;
+import com.mvi.CSCB634College.professor.ProfessorRepository;
 import com.mvi.CSCB634College.security.Role;
 import com.mvi.CSCB634College.security.config.JwtService;
 import com.mvi.CSCB634College.security.token.Token;
 import com.mvi.CSCB634College.security.token.TokenRepository;
 import com.mvi.CSCB634College.security.token.TokenType;
+import com.mvi.CSCB634College.student.Student;
+import com.mvi.CSCB634College.student.StudentRepository;
+import com.mvi.CSCB634College.user.ResponseUser;
 import com.mvi.CSCB634College.user.User;
 import com.mvi.CSCB634College.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,6 +42,8 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final TokenRepository tokenRepository;
     private final UserRepository userRepository;
+    private final StudentRepository studentRepository;
+    private final ProfessorRepository professorRepository;
 
 
     /**
@@ -333,10 +341,11 @@ public class AuthenticationService {
      *
      * @return The details of the currently authenticated user.
      */
-    public User responseUserDetails() {
+    public ResponseUser responseUserDetails() {
 
+        User user = getCurrentlyLoggedUser();
 
-        return getCurrentlyLoggedUser();
+        return new ResponseUser(user.getId(), user.getFirstname(), user.getLastname(), user.getEmail(), user.getRole());
     }
 
     private String buildAndSaveUserWithJWT(RegisterRequest request, Role role){
@@ -366,6 +375,23 @@ public class AuthenticationService {
         var refreshToken = jwtService.generateRefreshToken(user);
 
         saveUserToken(user, refreshToken, TokenType.REFRESH_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24));//save the token for 1 day
+
+
+        //Now create entities for Professor or Student depending on the role
+        if (user.getRole().equals(Role.STUDENT)){
+            Student student = new Student();
+            student.setUser(user);
+
+            studentRepository.save(student);
+        }
+
+
+        if (user.getRole().equals(Role.PROFESSOR)){
+            Professor professor = new Professor();
+            professor.setUser(user);
+
+            professorRepository.save(professor);
+        }
 
         return jwtToken;
     }
