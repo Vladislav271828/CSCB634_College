@@ -38,7 +38,6 @@ public class GradeController {
           @RequestBody DtoGrade dtoGrade) {
       return ResponseEntity.ok(gradeService.updateGrade(id, dtoGrade));
   }
-//TODO: make check so only professors can do actions with /professor/ in the uri, similar to admins
   @DeleteMapping("/professor/{id}/delete")
   public ResponseEntity<Void> deleteGrade(
           @PathVariable Long id) {

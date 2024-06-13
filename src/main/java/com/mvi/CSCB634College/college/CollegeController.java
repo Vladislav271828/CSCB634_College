@@ -1,5 +1,6 @@
 package com.mvi.CSCB634College.college;
 
+import com.mvi.CSCB634College.user.ResponseUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,12 @@ public class CollegeController {
     public ResponseEntity<DtoCollegeRequest> getCollegeById(
             @PathVariable Long id) {
         return ResponseEntity.ok(collegeService.getCollegeById(id));
+    }
+
+    @GetMapping("/getAllUsersByCollageId/{id}")
+    public ResponseEntity<List<ResponseUser>> getAllUsersByCollageId(
+            @PathVariable Long id) {
+        return ResponseEntity.ok(collegeService.getAllUserByCollegeId(id));
     }
 
     @PutMapping("/admin/update/{id}")

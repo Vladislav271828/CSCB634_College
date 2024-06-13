@@ -29,8 +29,6 @@ public class Student {
     @JoinColumn(name = "major_id")
     private Major major;
 
-    @ManyToOne
-    @JoinColumn(name = "faculty_faculty_id")
-    private Faculty faculty;
+
 
 }

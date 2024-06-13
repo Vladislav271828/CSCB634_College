@@ -19,6 +19,7 @@ public class College {
     @Column(name = "college_id")
     private Long id;
 
+    @Column(name = "name", unique = true, nullable = false)
     private String name;
     private String address;
 

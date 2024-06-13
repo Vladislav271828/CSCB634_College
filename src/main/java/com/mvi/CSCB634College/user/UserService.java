@@ -84,6 +84,8 @@ public class UserService {
         }
 
 
+        ////TODO: Check if collage dep and major exist if trying to change to student
+        ////TODO: Check if collage dep and major exist if trying to change to professor
         // Update role if it's provided and unique
         if (dtoUser.getRole() != null && !dtoUser.getRole().toString().isBlank()) {
 

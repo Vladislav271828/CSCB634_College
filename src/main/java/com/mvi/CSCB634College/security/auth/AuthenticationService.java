@@ -377,6 +377,9 @@ public class AuthenticationService {
         saveUserToken(user, refreshToken, TokenType.REFRESH_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24));//save the token for 1 day
 
 
+        //TODO: Check if collage dep and major exist
+        //check if there are
+
         //Now create entities for Professor or Student depending on the role
         if (user.getRole().equals(Role.STUDENT)){
             Student student = new Student();
@@ -385,7 +388,7 @@ public class AuthenticationService {
             studentRepository.save(student);
         }
 
-
+        //TODO: Check if collage and dep exist
         if (user.getRole().equals(Role.PROFESSOR)){
             Professor professor = new Professor();
             professor.setUser(user);
