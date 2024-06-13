@@ -1,6 +1,7 @@
 package com.mvi.CSCB634College.security.auth;
 
 
+import com.mvi.CSCB634College.user.ResponseUser;
 import com.mvi.CSCB634College.user.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/getUserDetails")
-    public ResponseEntity<User> getUserDetails() {
+    public ResponseEntity<ResponseUser> getUserDetails() {
         return ResponseEntity.ok(authenticationService.responseUserDetails());
     }
 
