@@ -217,6 +217,14 @@ Dashboard.jsx
     background-color: #ffbbbb;
 }
 
+.change-user-details {
+    background-color: #ddffdd;
+}
+
+.change-user-details:hover {
+    background-color: #bbffbb;
+}
+
 /* 
 ---------------------------
 Form.jsx

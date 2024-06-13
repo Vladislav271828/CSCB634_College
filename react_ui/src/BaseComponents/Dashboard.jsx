@@ -20,6 +20,10 @@ const HomePage = ({ title, dashStructure }) => {
             </button>
           </div>
         })}
+        <div>
+          <button className='change-user-details' type="button"
+            onClick={() => navigate("../" + "change-user-details", { relative: "path" })}>Change my user details.</button>
+        </div>
         <LogoutComponent />
       </div>
     </div>

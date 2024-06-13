@@ -6,9 +6,9 @@ const UserContext = createContext({});
 const FETCH_USER_URL = '/auth/getUserDetails'
 
 export const UserProvider = ({ children }) => {
-    // const [firstName, setFirstName] = useState("");
-    // const [lastName, setLastName] = useState("");
-    // const [email, setEmail] = useState("");
+    // const [firstname, setFirstName] = useState("");
+    // const [lastname, setLastName] = useState("");
+    const [email, setEmail] = useState("");
     const [role, setRole] = useState("");
 
     const [errMsg, setErrMsg] = useState('');
@@ -21,9 +21,9 @@ export const UserProvider = ({ children }) => {
             const response = await axios.get(FETCH_USER_URL, {
                 headers: { "Authorization": `Bearer ${overwrite}` }
             });
-            // setFirstName(response.data.firstName);
-            // setLastName(response.data.lastName);
-            // setEmail(response.data.email);
+            // setFirstName(response.data.firstname);
+            // setLastName(response.data.lastname);
+            setEmail(response.data.email);
             setRole(response.data.role);
             return response.data;
         } catch (err) {
@@ -41,7 +41,7 @@ export const UserProvider = ({ children }) => {
     }
 
     return (
-        <UserContext.Provider value={{ fetchUser, setErrMsg, errMsg, role }}>
+        <UserContext.Provider value={{ fetchUser, setErrMsg, errMsg, role, email }}>
             {children}
         </UserContext.Provider>
     )

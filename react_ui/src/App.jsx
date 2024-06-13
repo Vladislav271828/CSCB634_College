@@ -16,7 +16,7 @@ import structures from "./API/structures"
 
 function App() {
 
-  const { role } = useContext(UserContext);
+  const { role, email } = useContext(UserContext);
 
   return (
     <>
@@ -36,9 +36,71 @@ function App() {
                 title="Register a new user."
                 requestURL="/auth/admin/register-user"
                 successMsg="User registered successfully."
+                buttonMsg="Register User"
                 formStructure={structures.registerUser} />} />
 
+              <Route path="/admin/create-college" element={<Form
+                title="Create a college."
+                requestURL="/college/admin/create"
+                successMsg="College created successfully."
+                buttonMsg="Create College"
+                formStructure={structures.createCollege} />} />
+
+              <Route path="/admin/create-faculty" element={<Form
+                title="Create a faculty."
+                requestURL="/faculty/admin/create"
+                successMsg="Faculty created successfully."
+                buttonMsg="Create Faculty"
+                formStructure={structures.createFaculty} />} />
+
+              <Route path={`/admin/change-user-details`} element={<Form
+                title="Change my user details."
+                requestURL={"/user/update/" + email}
+                successMsg="User details changed successfully."
+                buttonMsg="Save Changes"
+                formStructure={structures.registerUser}
+                fetchUrl="/auth/getUserDetails" />} />
+
               <Route path="/admin/" element={<Navigate to="/admin/dashboard" replace />} />
+            </Route>
+
+            <Route element={<PrivateRoute allowedRoles={["STUDENT"]} />}>
+              <Route path="/student/dashboard" element={<HomePage title="Student" dashStructure={[]} />} />
+
+              <Route path={"/student/change-user-details"} element={<Form
+                title="Change my user details."
+                requestURL={"/user/update/" + email}
+                successMsg="User details changed successfully."
+                buttonMsg="Save Changes"
+                formStructure={structures.changeUserDetails}
+                fetchUrl="/auth/getUserDetails" />} />
+              <Route path="/student/" element={<Navigate to="/student/dashboard" replace />} />
+            </Route>
+
+            <Route element={<PrivateRoute allowedRoles={["PROFESSOR"]} />}>
+              <Route path="/professor/dashboard" element={<HomePage title="Professor" dashStructure={[]} />} />
+
+              <Route path={"/professor/change-user-details"} element={<Form
+                title="Change my user details."
+                requestURL={"/user/update/" + email}
+                successMsg="User details changed successfully."
+                buttonMsg="Save Changes"
+                formStructure={structures.changeUserDetails}
+                fetchUrl="/auth/getUserDetails" />} />
+              <Route path="/professor/" element={<Navigate to="/professor/dashboard" replace />} />
+            </Route>
+
+            <Route element={<PrivateRoute allowedRoles={["USER"]} />}>
+              <Route path="/user/dashboard" element={<HomePage title="User" dashStructure={[]} />} />
+
+              <Route path={"/user/change-user-details"} element={<Form
+                title="Change my user details."
+                requestURL={"/user/update/" + email}
+                successMsg="User details changed successfully."
+                buttonMsg="Save Changes"
+                formStructure={structures.changeUserDetails}
+                fetchUrl="/auth/getUserDetails" />} />
+              <Route path="/user/" element={<Navigate to="/user/dashboard" replace />} />
             </Route>
 
             <Route path="/" element={<Navigate to={role ? `/${role.toLowerCase()}/dashboard` : "/login"} replace />} />
@@ -48,7 +110,7 @@ function App() {
           <Route path="*" element={<FourOhFour />} />
         </Routes>
 
-      </div>
+      </div >
       <Footer />
     </>
   );

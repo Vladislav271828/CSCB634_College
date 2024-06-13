@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import useAxiosPrivate from '../Login/useAxiosPrivate';
 import { useNavigate } from 'react-router-dom';
 
-const Form = ({ title, requestURL, successMsg, formStructure }) => {
+const Form = ({ title, requestURL, successMsg, buttonMsg, formStructure, fetchUrl }) => {
 
     const [formData, setFormData] = useState({});
+    const [fetchedEditValues, setFetchedEditValues] = useState({});
+    const [fetchedSelections, setFetchedSelections] = useState({});
     const [errMsg, setErrMsg] = useState("");
     const [success, setSuccess] = useState(true);
 
@@ -20,8 +22,11 @@ const Form = ({ title, requestURL, successMsg, formStructure }) => {
         e.preventDefault();
         setSuccess(true)
         try {
-            const res = await axiosPrivate.post(requestURL, formData);
-            console.log(res);
+            var res
+            fetchUrl ?
+                res = await axiosPrivate.put(requestURL, formData)
+                : res = await axiosPrivate.post(requestURL, formData)
+            console.log(res.data);
             setErrMsg(successMsg);
         } catch (err) {
             setSuccess(false)
@@ -35,41 +40,96 @@ const Form = ({ title, requestURL, successMsg, formStructure }) => {
         }
     }
 
+    const fetchEditValues = async () => {
+        try {
+            const res = await axiosPrivate.get(fetchUrl);
+            console.log(res.data);
+            setFetchedEditValues(res.data);
+        } catch (err) {
+            setSuccess(false)
+            if (!err?.response) {
+                setErrMsg('Unable to connect to server.');
+                console.log(err)
+            }
+            else {
+                setErrMsg(err.response.data.message);
+            }
+        }
+    }
+
+    useEffect(() => {
+        formStructure.map((input) => {
+            if (input.type == "select" && input.fetchUrl && (formData[input.require] || !input.require)) {
+                fetchOptions(input)
+            }
+        });
+        if (fetchUrl) fetchEditValues();
+    }, [])
+
+    const fetchOptions = async (input) => {
+        setSuccess(true)
+        const url = input.fetchUrl.replace("{id}", formData[input.require]);
+        try {
+            const res = await axiosPrivate.get(url);
+            console.log(res.data);
+            setFetchedSelections({ ...fetchedSelections, [input.id]: res.data })
+        } catch (err) {
+            setSuccess(false)
+            if (!err?.response) {
+                setErrMsg('Unable to connect to server.');
+                console.log(err)
+            }
+            else {
+                setErrMsg(err.response.data.message);
+            }
+        }
+        return null
+    }
+
     return (
         <div className='component-container'>
             <h1>{title}</h1>
             {!errMsg ? <></> : <p className="err-msg" style={success ? {} : { color: "red" }}>{errMsg}</p>}
             <form className='form-structure-container' onSubmit={handleSubmit}>
                 {formStructure.map((input) => {
-                    if (input.type == "select") {
-                        return <div key={input.id}>
-                            <label>{input.label}</label>
-                            <select
-                                name={input.id}
-                                // value={form?.colorRGB}
-                                onChange={handleChange}
-                            >
-                                <option value={""}></option>
-                                {Object.entries(input.options).map(([value, text]) => {
-                                    return <option key={value} value={value}>{text}</option>
-                                })}
-                            </select>
-                        </div>
-                    }
-                    else {
-                        return <div key={input.id}>
-                            <label>{input.label}</label>
-                            <input type={input.type}
-                                name={input.id}
-                                // defaultValue={name}
-                                onChange={handleChange}
-                            />
-                        </div>
+                    if (formData[input.require] || !input.require) {
+                        if (input.type == "select") {
+                            return <div key={input.id}>
+                                <label>{input.label}</label>
+                                <select
+                                    name={input.id}
+                                    onChange={handleChange}
+                                >
+                                    <option value={""} selected disabled hidden></option>
+                                    {input.fetchUrl ?
+                                        fetchedSelections[input.id]?.map((selection) => {
+                                            return <option key={selection.id}
+                                                value={selection.id}
+                                                selected={selection.id == fetchedEditValues[input.id]}>{selection[input.fetchLabel]}</option>
+                                        })
+                                        : Object.entries(input.options).map(([value, text]) => {
+                                            return <option key={value}
+                                                value={value}
+                                                selected={value == fetchedEditValues[input.id]}>{text}</option>
+                                        })}
+                                </select>
+                            </div>
+                        }
+                        else {
+                            return <div key={input.id}>
+                                <label>{input.label}</label>
+                                <input type={input.type}
+                                    name={input.id}
+                                    defaultValue={fetchedEditValues[input.id]}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        }
                     }
                 })}
                 <div className="btn">
                     <button type='submit'>
-                        Save Changes
+                        {buttonMsg}
                     </button>
                     <button type='button' onClick={() => navigate("../dashboard", { relative: "path" })}>
                         Go Back
