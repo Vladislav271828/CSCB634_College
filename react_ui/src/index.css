@@ -1,0 +1,154 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-weight: 400;
+    line-height: 1.5;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 20px;
+    min-height: 100vh;
+    background-color: #d0d0d0;
+    color: #222;
+
+}
+
+#root {
+    font-family: 'Noto Serif', serif;
+    display: flex;
+    flex-direction: column;
+    margin: 15px;
+    border-radius: 10px;
+    background-color: #eee;
+    width: 1200px;
+    overflow: hidden;
+    justify-content: space-between;
+    max-width: 100vw;
+    min-height: calc(100vh - 30px);
+    border: 2px solid #132240;
+    position: relative;
+}
+
+@media (max-width: 1200px) {
+    #root {
+        margin: 0;
+        min-height: 100vh;
+        border-radius: 0px;
+        border: none;
+    }
+}
+
+input {
+    font-family: 'Noto Serif', serif;
+    border: 1px solid #222;
+    border-radius: 5px;
+    height: 1.5rem;
+    padding: 0px 2%;
+    color: #222;
+}
+
+button {
+    font-family: 'Noto Serif', serif;
+    border: 1px solid #222;
+    border-radius: 5px;
+    height: 1.5rem;
+    padding: 0px 2%;
+    color: #222;
+}
+
+.prevent-select {
+    /* Safari */
+    -webkit-user-select: none;
+    /* IE 10 and IE 11 */
+    -ms-user-select: none;
+    /* Standard syntax */
+    user-select: none;
+}
+
+.app-header {
+    height: 110px;
+    padding: 10px;
+    position: relative;
+}
+
+.app-header img {
+    height: 100px;
+    width: auto;
+}
+
+.app-header h2 {
+    display: block;
+    letter-spacing: .2rem;
+    font-weight: 800;
+    width: 100%;
+    background-color: #1c325e;
+    position: absolute;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.app-footer {
+    padding: 5px 0;
+}
+
+.app-footer a,
+.app-footer,
+.app-header {
+    color: #eee;
+    background-color: #1c325e;
+}
+
+.app-content {
+    flex: 1 1 auto;
+}
+
+.login-container {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    max-width: 350px;
+    width: 85%;
+    height: 100%;
+    margin: 10vh auto;
+}
+
+
+
+.login-inputs-container {
+    flex-grow: 1;
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+}
+
+.login-check-container {
+    display: flex;
+}
+
+input[type='checkbox'] {
+    margin-right: .5rem;
+}
+
+.login-inputs-container input {
+    flex-grow: 2;
+}
+
+
+.login-inputs-container label,
+.login-container form button {
+    margin-right: 10px;
+    min-width: 100px;
+}
+
+.login-container div,
+.login-container button {
+    margin-top: 5px;
+}
