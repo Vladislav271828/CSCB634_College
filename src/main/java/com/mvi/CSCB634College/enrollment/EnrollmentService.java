@@ -62,11 +62,11 @@ public class EnrollmentService {
         return modelMapper.map(enrollment, DtoEnrollmentResponse.class);
     }
 
-    public List<DtoEnrollmentResponse> getAllEnrollmentByStudentId(Integer studentId) {
+    public List<DtoEnrollmentResponse> getAllEnrollmentByStudentIdAndYear(Integer studentId, Integer year) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new BadRequestException("Student with id " + studentId + " not found"));
 
-        List<Enrollment> enrollments = enrollmentRepository.findAllByStudent(student);
+        List<Enrollment> enrollments = enrollmentRepository.findAllByStudentAndYear(student, year);
 
         return enrollments.stream()
                 .map(Enrollment -> modelMapper.map(Enrollment, DtoEnrollmentResponse.class))

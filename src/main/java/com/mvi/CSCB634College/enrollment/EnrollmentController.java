@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/enrollment")
 @RequiredArgsConstructor
@@ -23,6 +25,13 @@ public class EnrollmentController {
     public ResponseEntity<DtoEnrollmentResponse> getEnrollmentById(
             @PathVariable Long enrollmentId) {
         return ResponseEntity.ok(enrollmentService.getEnrollmentById(enrollmentId));
+    }
+
+    @GetMapping("/getByStudentAndYear/{studentId}/{year}")
+    public ResponseEntity<List<DtoEnrollmentResponse>> getEnrollmentsByStudentAndYear(
+            @PathVariable Integer studentId,
+            @PathVariable Integer year) {
+        return ResponseEntity.ok(enrollmentService.getAllEnrollmentByStudentIdAndYear(studentId, year));
     }
 
     @PutMapping("/admin/{id}/update")
