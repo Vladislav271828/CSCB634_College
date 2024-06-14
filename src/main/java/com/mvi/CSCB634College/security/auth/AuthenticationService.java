@@ -1,22 +1,33 @@
 package com.mvi.CSCB634College.security.auth;
 
 
+import com.mvi.CSCB634College.department.Department;
+import com.mvi.CSCB634College.department.DepartmentRepository;
+import com.mvi.CSCB634College.department.DtoDepartment;
 import com.mvi.CSCB634College.exception.BadRequestException;
+import com.mvi.CSCB634College.exception.DepartmentNotFoundException;
+import com.mvi.CSCB634College.exception.MajorNotFoundException;
 import com.mvi.CSCB634College.exception.UserAlreadyExist;
+import com.mvi.CSCB634College.major.DtoMajor;
+import com.mvi.CSCB634College.major.Major;
+import com.mvi.CSCB634College.major.MajorRepository;
 import com.mvi.CSCB634College.professor.Professor;
+import com.mvi.CSCB634College.professor.ProfessorDto;
 import com.mvi.CSCB634College.professor.ProfessorRepository;
+import com.mvi.CSCB634College.professor.RegisterRequestProfessorDto;
 import com.mvi.CSCB634College.security.Role;
 import com.mvi.CSCB634College.security.config.JwtService;
 import com.mvi.CSCB634College.security.token.Token;
 import com.mvi.CSCB634College.security.token.TokenRepository;
 import com.mvi.CSCB634College.security.token.TokenType;
+import com.mvi.CSCB634College.student.RegisterRequestDtoStudent;
 import com.mvi.CSCB634College.student.Student;
+import com.mvi.CSCB634College.student.StudentDto;
 import com.mvi.CSCB634College.student.StudentRepository;
 import com.mvi.CSCB634College.user.ResponseUser;
 import com.mvi.CSCB634College.user.User;
 import com.mvi.CSCB634College.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,6 +55,8 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
     private final ProfessorRepository professorRepository;
+    private final DepartmentRepository departmentRepository;
+    private final MajorRepository majorRepository;
 
 
     /**
@@ -58,7 +71,7 @@ public class AuthenticationService {
 
         List<User> usersPage = userRepository.findAll();
 
-        if (!usersPage.isEmpty()){
+        if (!usersPage.isEmpty()) {
             throw new BadRequestException("Please contact an admin.");
         }
 
@@ -72,7 +85,7 @@ public class AuthenticationService {
 
 
     public AuthenticationResponse registerUser(RegisterRequest request) throws BadRequestException {
-        if (request.getRole() == null || request.getRole().describeConstable().isEmpty() ){
+        if (request.getRole() == null || request.getRole().describeConstable().isEmpty()) {
             throw new BadRequestException("Missing Role required.");
         }
 
@@ -84,6 +97,24 @@ public class AuthenticationService {
                 .build();
     }
 
+    public AuthenticationResponse registerProfessor(RegisterRequestProfessorDto request) throws BadRequestException {
+
+        String jwtToken = buildAndSaveUserWithJWTProfessor(request);
+
+
+        return AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .build();
+    }
+
+    public AuthenticationResponse registerStudent(RegisterRequestDtoStudent request) throws BadRequestException {
+        String jwtToken = buildAndSaveUserWithJWTStudent(request);
+
+
+        return AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .build();
+    }
 
 
     /**
@@ -345,7 +376,51 @@ public class AuthenticationService {
 
         User user = getCurrentlyLoggedUser();
 
-        return new ResponseUser(user.getId(), user.getFirstname(), user.getLastname(), user.getEmail(), user.getRole());
+        ResponseUser responseUser = new ResponseUser();
+        responseUser.setId(user.getId());
+        responseUser.setEmail(user.getEmail());
+        responseUser.setFirstname(user.getFirstname());
+        responseUser.setLastname(user.getLastname());
+        responseUser.setRole(user.getRole());
+
+        if (user.getRole().equals(Role.PROFESSOR)) {
+            Professor professor = professorRepository.findProfessorByUserId(user.getId()).orElseThrow();
+            Department department = departmentRepository.findDepartmentByProfessorId(professor.getId(), professor.getId()).orElseThrow();
+
+            DtoDepartment departmentResponse = new DtoDepartment();
+
+            Integer departmentHeadId = null;
+            if (department.getDepartmentHead() != null) {
+                departmentHeadId = department.getDepartmentHead().getId();
+            }
+            departmentResponse.setDepartmentHeadId(departmentHeadId);
+            departmentResponse.setCollegeId(department.getCollege().getId());
+            departmentResponse.setName(department.getName());
+
+            ProfessorDto professorResponse = new ProfessorDto();
+            professorResponse.setId(professor.getId());
+            professorResponse.setDepartment(departmentResponse);
+        } else {
+            responseUser.setProfessor(new ProfessorDto());
+        }
+
+        if (user.getRole().equals(Role.STUDENT)) {
+            Student student = studentRepository.findStudentByUserId(user.getId()).orElseThrow();
+            Major major = majorRepository.findMajorById(student.getMajor().getId()).orElseThrow();
+
+            DtoMajor majorResponse = new DtoMajor();
+            major.setId(major.getId());
+            majorResponse.setName(major.getName());
+            majorResponse.setDepartmentId(major.getDepartment().getId());
+
+            StudentDto studentResponse = new StudentDto();
+            studentResponse.setId(student.getId());
+            studentResponse.setMajor(majorResponse);
+        } else {
+            responseUser.setStudent(null);
+        }
+
+        return responseUser;
     }
 
     private String buildAndSaveUserWithJWT(RegisterRequest request, Role role){
@@ -376,26 +451,98 @@ public class AuthenticationService {
 
         saveUserToken(user, refreshToken, TokenType.REFRESH_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24));//save the token for 1 day
 
+        return jwtToken;
+    }
 
-        //TODO: Check if collage dep and major exist
-        //check if there are
 
-        //Now create entities for Professor or Student depending on the role
-        if (user.getRole().equals(Role.STUDENT)){
-            Student student = new Student();
-            student.setUser(user);
+    private String buildAndSaveUserWithJWTProfessor(RegisterRequestProfessorDto request) {
+        //create user with request data
+        //Check if new user is unique
 
-            studentRepository.save(student);
+        if (!departmentRepository.doesDepartmentExist(request.getDepartmentId())) {
+            throw new DepartmentNotFoundException("No department was found with id " + request.getDepartmentId() + ".");
         }
 
-        //TODO: Check if collage and dep exist
-        if (user.getRole().equals(Role.PROFESSOR)){
-            Professor professor = new Professor();
-            professor.setUser(user);
-
-            professorRepository.save(professor);
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new UserAlreadyExist("User already exists.");
         }
+        var user = User.builder()
+                .firstname(request.getFirstName())
+                .lastname(request.getLastName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.PROFESSOR)
+                .tokens(new ArrayList<>())
+                .build();
+
+        var savedUser = userRepository.save(user); //save user in the db
+
+        var jwtToken = jwtService.generateToken(user); //generate a JWT Token for the user's session (If the user logs out the token will be marked as invalid, if the user authenticates again a new token will be created and the old one will be updated to be invalid)
+
+        saveUserToken(savedUser, jwtToken, TokenType.ACCESS_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 1000 * 60 * 30));//half an hours
+
+
+        // In AuthenticationService's register and authenticate methods
+
+        var refreshToken = jwtService.generateRefreshToken(user);
+
+        saveUserToken(user, refreshToken, TokenType.REFRESH_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24));//save the token for 1 day
+
+
+        //create professor in db
+        Professor professor = new Professor();
+        professor.setUser(user);
+        professor.setDepartment(departmentRepository.findById(request.getDepartmentId()).orElseThrow());
+        professorRepository.save(professor);
+
 
         return jwtToken;
     }
+
+
+    private String buildAndSaveUserWithJWTStudent(RegisterRequestDtoStudent request) {
+        //create user with request data
+        //Check if new user is unique
+
+        if (!majorRepository.existsById(request.getMajorId())) {
+            throw new MajorNotFoundException("No department was found with id " + request.getMajorId() + ".");
+        }
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new UserAlreadyExist("User already exists.");
+        }
+        var user = User.builder()
+                .firstname(request.getFirstName())
+                .lastname(request.getLastName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.STUDENT)
+                .tokens(new ArrayList<>())
+                .build();
+
+        var savedUser = userRepository.save(user); //save user in the db
+
+        var jwtToken = jwtService.generateToken(user); //generate a JWT Token for the user's session (If the user logs out the token will be marked as invalid, if the user authenticates again a new token will be created and the old one will be updated to be invalid)
+
+        saveUserToken(savedUser, jwtToken, TokenType.ACCESS_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 1000 * 60 * 30));//half an hours
+
+
+        // In AuthenticationService's register and authenticate methods
+
+        var refreshToken = jwtService.generateRefreshToken(user);
+
+        saveUserToken(user, refreshToken, TokenType.REFRESH_TOKEN, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24));//save the token for 1 day
+
+
+        //create student in db
+        Student student = new Student();
+        student.setUser(user);
+        student.setMajor(majorRepository.findMajorById(request.getMajorId()).orElseThrow());
+        studentRepository.save(student);
+
+
+        return jwtToken;
+    }
+
+
 }

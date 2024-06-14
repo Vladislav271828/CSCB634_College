@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.UniqueElements;
 
+import java.util.Set;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -27,6 +29,9 @@ public class Department {
     @ManyToOne
     @JoinColumn(name = "college_college_id", nullable = false)
     private College college;
+
+    @OneToMany(mappedBy = "department")
+    private Set<Professor> professors;
 
     @ManyToOne
     @JoinColumn(name = "department_head_user_id")

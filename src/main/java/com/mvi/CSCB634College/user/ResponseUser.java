@@ -1,7 +1,9 @@
 package com.mvi.CSCB634College.user;
 
 import com.mvi.CSCB634College.professor.Professor;
+import com.mvi.CSCB634College.professor.ProfessorDto;
 import com.mvi.CSCB634College.security.Role;
+import com.mvi.CSCB634College.student.StudentDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,8 +20,7 @@ public class ResponseUser {
     private String lastname;
     private String email;
     private Role role;
-    //TODO return data for professor and student/ returns null if not
-//    private ProfessorDto professor;
-//    private StudentDto student;
+    private ProfessorDto professor;
+    private StudentDto student;
 
 }

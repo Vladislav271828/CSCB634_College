@@ -1,6 +1,8 @@
 package com.mvi.CSCB634College.security.auth;
 
 
+import com.mvi.CSCB634College.professor.RegisterRequestProfessorDto;
+import com.mvi.CSCB634College.student.RegisterRequestDtoStudent;
 import com.mvi.CSCB634College.user.ResponseUser;
 import com.mvi.CSCB634College.user.User;
 import jakarta.validation.Valid;
@@ -29,6 +31,16 @@ public class AuthenticationController {
     @PostMapping("/admin/register-user")
     public ResponseEntity<AuthenticationResponse> registerUser(@Valid @RequestBody RegisterRequest request){
         return ResponseEntity.ok(authenticationService.registerUser(request));
+    }
+
+    @PostMapping("/admin/register-professor")
+    public ResponseEntity<AuthenticationResponse> registerProfessor(@Valid @RequestBody RegisterRequestProfessorDto request){
+        return ResponseEntity.ok(authenticationService.registerProfessor(request));
+    }
+
+    @PostMapping("/admin/register-student")
+    public ResponseEntity<AuthenticationResponse> registerStudent(@Valid @RequestBody RegisterRequestDtoStudent request){
+        return ResponseEntity.ok(authenticationService.registerStudent(request));
     }
 
     @GetMapping("/getUserDetails")

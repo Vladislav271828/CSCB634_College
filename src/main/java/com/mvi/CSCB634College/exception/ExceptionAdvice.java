@@ -45,6 +45,16 @@ public class ExceptionAdvice {
         return buildErrorResponse(exc, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(DepartmentNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleDepartmentNotFoundException(DepartmentNotFoundException exc) {
+        return buildErrorResponse(exc, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MajorNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleMajorNotFoundException(MajorNotFoundException exc) {
+        return buildErrorResponse(exc, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException exc) {
         List<String> errorMessages = exc.getBindingResult().getAllErrors().stream()

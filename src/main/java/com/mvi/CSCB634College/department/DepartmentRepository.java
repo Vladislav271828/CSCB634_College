@@ -11,6 +11,12 @@ import java.util.Optional;
 
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
+    @Query("select (count(d) > 0) from Department d where d.id = ?1")
+    boolean doesDepartmentExist(Long id);
+    @Query("""
+            select d from Department d left join d.professors professors
+            where professors.id = ?1 or d.departmentHead.id = ?2""")
+    Optional<Department> findDepartmentByProfessorId(Integer id, Integer id1);
     @Query("select d from Department d where d.departmentHead.id = ?1")
     Optional<Department> findByDepartmentHead_Id(Integer id);
     @Query("select (count(d) > 0) from Department d where d.departmentHead.id = ?1")
@@ -19,4 +25,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     boolean isDepartmentHeadNull(@Param("id") Long id);
 
     List<Department> findAllByCollege(College college);
+
+    @Override
+    Optional<Department> findById(Long aLong);
 }
