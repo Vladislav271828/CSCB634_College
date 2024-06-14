@@ -89,6 +89,17 @@ public class AuthenticationService {
             throw new BadRequestException("Missing Role required.");
         }
 
+        if (request.getRole().equals(Role.STUDENT) || request.getRole().equals(Role.PROFESSOR)){
+            String customErrorMessage = null;
+            if (request.getRole().equals(Role.STUDENT)){
+                customErrorMessage = "endpoint for the Student creation";
+            }
+            if (request.getRole().equals(Role.PROFESSOR)){
+                customErrorMessage = "endpoint for the Professor creation";
+            }
+            throw new BadRequestException("Admin can't create user with role " + request.getRole() + " from this endpoint. Use the " + customErrorMessage + " instead.");
+        }
+
         String jwtToken = buildAndSaveUserWithJWT(request, request.getRole());
 
 

@@ -30,6 +30,14 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getAllByMajor(majorId));
     }
 
+    @GetMapping("/getAllByProfessorAndYear/{professorId}/{year}")
+    public ResponseEntity<List<DtoCourse>> getAllByProfessorAndYear(
+            @PathVariable Integer professorId,
+            @PathVariable Integer year) {
+        return ResponseEntity.ok(courseService.getAllByProfessorAndYear(professorId, year));
+    }
+
+
     @PutMapping("/admin/{id}/update")
     public ResponseEntity<DtoCourse> updateCourse(
             @PathVariable("id") Long id,
