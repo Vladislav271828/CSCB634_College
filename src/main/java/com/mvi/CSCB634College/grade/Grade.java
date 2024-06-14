@@ -1,5 +1,6 @@
 package com.mvi.CSCB634College.grade;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mvi.CSCB634College.enrollment.Enrollment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ public class Grade {
 
     @ManyToOne
     @JoinColumn(name = "enrollment_id")
+    @JsonIgnore
     private Enrollment enrollment;
 
     private String name;

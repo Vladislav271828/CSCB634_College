@@ -37,7 +37,7 @@ public class EnrollmentService {
         this.modelMapper = modelMapper;
     }
 
-    public DtoEnrollment createEnrollment(DtoEnrollment dtoEnrollment){
+    public DtoEnrollmentResponse createEnrollment(DtoEnrollment dtoEnrollment){
 
         Student student = studentRepository.findById(dtoEnrollment.getStudentId())
                 .orElseThrow(() -> new BadRequestException("Student with id " + dtoEnrollment.getProfessorId() + " not found"));
@@ -52,28 +52,28 @@ public class EnrollmentService {
         enrollment.setStudent(student);
         enrollment.setProfessor(professor);
         enrollment.setCourse(course);
-        return modelMapper.map(enrollmentRepository.save(enrollment), DtoEnrollment.class);
+        return modelMapper.map(enrollmentRepository.save(enrollment), DtoEnrollmentResponse.class);
     }
 
-    public DtoEnrollment getEnrollmentById(Long enrollmentId){
+    public DtoEnrollmentResponse getEnrollmentById(Long enrollmentId){
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new BadRequestException("Enrollment with id " + enrollmentId + " not found"));
 
-        return modelMapper.map(enrollment, DtoEnrollment.class);
+        return modelMapper.map(enrollment, DtoEnrollmentResponse.class);
     }
 
-    public List<DtoEnrollment> getAllEnrollmentByStudentId(Integer studentId) {
+    public List<DtoEnrollmentResponse> getAllEnrollmentByStudentId(Integer studentId) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new BadRequestException("Student with id " + studentId + " not found"));
 
         List<Enrollment> enrollments = enrollmentRepository.findAllByStudent(student);
 
         return enrollments.stream()
-                .map(Enrollment -> modelMapper.map(Enrollment, DtoEnrollment.class))
+                .map(Enrollment -> modelMapper.map(Enrollment, DtoEnrollmentResponse.class))
                 .collect(Collectors.toList());
     }
 
-    public DtoEnrollment updateEnrollment(Long enrollmentId, DtoEnrollment dtoEnrollment){
+    public DtoEnrollmentResponse updateEnrollment(Long enrollmentId, DtoEnrollment dtoEnrollment){
 
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new BadRequestException("Enrollment with id " + enrollmentId + " not found"));
@@ -98,7 +98,7 @@ public class EnrollmentService {
             enrollment.setCourse(course);
         }
 
-        return modelMapper.map(enrollmentRepository.save(enrollment), DtoEnrollment.class);
+        return modelMapper.map(enrollmentRepository.save(enrollment), DtoEnrollmentResponse.class);
     }
 
     public void deleteEnrollment(Long enrollmentId){

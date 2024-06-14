@@ -14,19 +14,19 @@ public class EnrollmentController {
 
 
     @PostMapping("/admin/create")
-    public ResponseEntity<DtoEnrollment> createEnrollment(
+    public ResponseEntity<DtoEnrollmentResponse> createEnrollment(
             @Valid @RequestBody DtoEnrollment dtoEnrollment) {
         return ResponseEntity.ok(enrollmentService.createEnrollment(dtoEnrollment));
     }
 
     @GetMapping("/getById/{enrollmentId}")
-    public ResponseEntity<DtoEnrollment> getEnrollmentById(
+    public ResponseEntity<DtoEnrollmentResponse> getEnrollmentById(
             @PathVariable Long enrollmentId) {
         return ResponseEntity.ok(enrollmentService.getEnrollmentById(enrollmentId));
     }
 
     @PutMapping("/admin/{id}/update")
-    public ResponseEntity<DtoEnrollment> updateEnrollment(
+    public ResponseEntity<DtoEnrollmentResponse> updateEnrollment(
             @PathVariable Long id,
             @Valid @RequestBody DtoEnrollment dtoEnrollment) {
         return ResponseEntity.ok(enrollmentService.updateEnrollment(id, dtoEnrollment));

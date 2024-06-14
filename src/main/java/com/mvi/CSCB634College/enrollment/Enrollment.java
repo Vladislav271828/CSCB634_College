@@ -1,6 +1,8 @@
 package com.mvi.CSCB634College.enrollment;
 
+import com.mvi.CSCB634College.absence.Absence;
 import com.mvi.CSCB634College.course.Course;
+import com.mvi.CSCB634College.grade.Grade;
 import com.mvi.CSCB634College.professor.Professor;
 import com.mvi.CSCB634College.student.Student;
 import jakarta.persistence.*;
@@ -10,6 +12,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -34,14 +38,13 @@ public class Enrollment {
     @JoinColumn(name = "professors_user_id")
     private Professor professor;
 
-
-    private Integer grade; //posle she go naprawim otdelna tablica da ima mnogo ocenki
     private Date date;
-    private Integer absences; //posle she go naprawim otdelna tablica da ima mnogo otsustwiq
     private String room;
     private Boolean autumn;
 
+    @OneToMany(mappedBy = "enrollment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Absence> absences = new ArrayList<>();
 
-
-    //tuka shte trqbwa custom zaqwki, demek edna da pokazwa wsichkite grupi naprimer
+    @OneToMany(mappedBy = "enrollment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Grade> grade = new ArrayList<>();
 }
