@@ -106,6 +106,10 @@ const structures = {
             link: "create-faculty",
             name: "Create a faculty."
         },
+        {
+            link: "edit-all-user-details",
+            name: "Edit all user details."
+        },
     ],
 }
 

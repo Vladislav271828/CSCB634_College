@@ -249,10 +249,36 @@ Form.jsx
 
 .form-structure-container>div {
     max-width: 100%;
-    height: 120px;
+    height: 110px;
     padding: 1.5rem 1.5rem 1.5rem 30px;
     text-align: left;
     flex: 0 1 33%;
+}
+
+.form-structure-container .input-with-button {
+    flex: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.input-with-button div {
+    display: flex;
+    width: 100%;
+    max-width: 400px;
+}
+
+.input-with-button button {
+    max-width: 100px;
+    width: 100%;
+    height: 40px;
+    margin-left: 10px;
+}
+
+.input-with-button label {
+    width: 100%;
+    max-width: 400px;
 }
 
 .form-structure-container input,

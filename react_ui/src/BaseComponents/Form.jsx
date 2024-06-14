@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 import useAxiosPrivate from '../Login/useAxiosPrivate';
 import { useNavigate } from 'react-router-dom';
 
-const Form = ({ title, requestURL, successMsg, buttonMsg, formStructure, fetchUrl }) => {
+const Form = ({ title, requestURL, requestEditId, successMsg, buttonMsg, formStructure, fetchUrl, editValues }) => {
 
     const [formData, setFormData] = useState({});
-    const [fetchedEditValues, setFetchedEditValues] = useState({});
+    const [fetchedEditValues, setFetchedEditValues] = useState(editValues ? editValues : {});
     const [fetchedSelections, setFetchedSelections] = useState({});
     const [errMsg, setErrMsg] = useState("");
     const [success, setSuccess] = useState(true);
@@ -21,11 +21,12 @@ const Form = ({ title, requestURL, successMsg, buttonMsg, formStructure, fetchUr
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSuccess(true)
+        const url = requestURL.replace("{id}", requestEditId);
         try {
             var res
-            fetchUrl ?
-                res = await axiosPrivate.put(requestURL, formData)
-                : res = await axiosPrivate.post(requestURL, formData)
+            fetchUrl || editValues ?
+                res = await axiosPrivate.put(url, formData)
+                : res = await axiosPrivate.post(url, formData)
             console.log(res.data);
             setErrMsg(successMsg);
         } catch (err) {
@@ -88,7 +89,7 @@ const Form = ({ title, requestURL, successMsg, buttonMsg, formStructure, fetchUr
 
     return (
         <div className='component-container'>
-            <h1>{title}</h1>
+            {title ? <h1>{title}</h1> : <></>}
             {!errMsg ? <></> : <p className="err-msg" style={success ? {} : { color: "red" }}>{errMsg}</p>}
             <form className='form-structure-container' onSubmit={handleSubmit}>
                 {formStructure.map((input) => {

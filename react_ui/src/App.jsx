@@ -13,6 +13,7 @@ import UserContext from './Context/UserProvider';
 import Form from './BaseComponents/Form';
 
 import structures from "./API/structures"
+import SearchEditForm from './BaseComponents/SearchEditForm';
 
 function App() {
 
@@ -53,9 +54,19 @@ function App() {
                 buttonMsg="Create Faculty"
                 formStructure={structures.createFaculty} />} />
 
+              <Route path="/admin/edit-all-user-details" element={<SearchEditForm
+                title="Edit all user details."
+                requestURL="/user/update/{id}"
+                successMsg="User details changed successfully."
+                buttonMsg="Save Changes"
+                formStructure={structures.registerUser}
+                searchLabel="Search User"
+              />} />
+
               <Route path={`/admin/change-user-details`} element={<Form
                 title="Change my user details."
-                requestURL={"/user/update/" + email}
+                requestURL="/user/update/{id}"
+                requestEditId={email}
                 successMsg="User details changed successfully."
                 buttonMsg="Save Changes"
                 formStructure={structures.registerUser}
@@ -69,7 +80,8 @@ function App() {
 
               <Route path={"/student/change-user-details"} element={<Form
                 title="Change my user details."
-                requestURL={"/user/update/" + email}
+                requestURL="/user/update/{id}"
+                requestEditId={email}
                 successMsg="User details changed successfully."
                 buttonMsg="Save Changes"
                 formStructure={structures.changeUserDetails}
@@ -82,7 +94,8 @@ function App() {
 
               <Route path={"/professor/change-user-details"} element={<Form
                 title="Change my user details."
-                requestURL={"/user/update/" + email}
+                requestURL="/user/update/{id}"
+                requestEditId={email}
                 successMsg="User details changed successfully."
                 buttonMsg="Save Changes"
                 formStructure={structures.changeUserDetails}
@@ -95,7 +108,8 @@ function App() {
 
               <Route path={"/user/change-user-details"} element={<Form
                 title="Change my user details."
-                requestURL={"/user/update/" + email}
+                requestURL="/user/update/{id}"
+                requestEditId={email}
                 successMsg="User details changed successfully."
                 buttonMsg="Save Changes"
                 formStructure={structures.changeUserDetails}
