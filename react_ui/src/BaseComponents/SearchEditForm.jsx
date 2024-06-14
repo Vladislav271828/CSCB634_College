@@ -3,11 +3,18 @@ import useAxiosPrivate from '../Login/useAxiosPrivate';
 import { useNavigate } from 'react-router-dom';
 import Form from './Form';
 
-const SearchEditForm = ({ title, requestURL, successMsg, buttonMsg, formStructure, fetchUrl, searchLabel }) => {
+const SearchEditForm = ({ title,
+    requestURL,
+    successMsg,
+    buttonMsg,
+    formStructure,
+    fetchUrl,
+    searchLabel,
+    deleteWarningMsg,
+    deleteUrl }) => {
 
     const [formData, setFormData] = useState("");
     const [fetchedEditValues, setFetchedEditValues] = useState(null);
-    const [newFetchUrl, setNewFetchUrl] = useState(fetchUrl);
     const [errMsg, setErrMsg] = useState("");
     const [success, setSuccess] = useState(true);
 
@@ -78,7 +85,10 @@ const SearchEditForm = ({ title, requestURL, successMsg, buttonMsg, formStructur
                 successMsg={successMsg}
                 buttonMsg={buttonMsg}
                 formStructure={formStructure}
-                editValues={fetchedEditValues} /> : <></>}
+                editValues={fetchedEditValues}
+                deleteWarningMsg={deleteWarningMsg}
+                deleteUrl={deleteUrl} />
+                : <></>}
         </div>
 
     )

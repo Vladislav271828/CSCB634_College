@@ -2,7 +2,16 @@ import { useEffect, useState } from 'react'
 import useAxiosPrivate from '../Login/useAxiosPrivate';
 import { useNavigate } from 'react-router-dom';
 
-const Form = ({ title, requestURL, requestEditId, successMsg, buttonMsg, formStructure, fetchUrl, editValues }) => {
+const Form = ({ title,
+    requestURL,
+    requestEditId,
+    successMsg,
+    buttonMsg,
+    formStructure,
+    fetchUrl,
+    editValues,
+    deleteWarningMsg,
+    deleteUrl }) => {
 
     const [formData, setFormData] = useState({});
     const [fetchedEditValues, setFetchedEditValues] = useState(editValues ? editValues : {});
@@ -54,6 +63,26 @@ const Form = ({ title, requestURL, requestEditId, successMsg, buttonMsg, formStr
             }
             else {
                 setErrMsg(err.response.data.message);
+            }
+        }
+    }
+
+    const handleDelete = async () => {
+        if (confirm("Are you sure you want to " + deleteWarningMsg + "?\nThis action is irreversible.") == true) {
+            try {
+                const url = deleteUrl.replace("{id}", requestEditId);
+                await axiosPrivate.delete(url);
+                alert("Operation successful.");
+                navigate("../dashboard", { relative: "path" })
+            } catch (err) {
+                setSuccess(false)
+                if (!err?.response) {
+                    setErrMsg('Unable to connect to server.');
+                    console.log(err)
+                }
+                else {
+                    setErrMsg(err.response.data.message);
+                }
             }
         }
     }
@@ -137,6 +166,13 @@ const Form = ({ title, requestURL, requestEditId, successMsg, buttonMsg, formStr
                     </button>
                 </div>
             </form>
+            {deleteUrl ? <div className='form-structure-container'>
+                <div className="btn big-delete-btn">
+                    <button type='button' onClick={() => handleDelete()}>
+                        Delete
+                    </button>
+                </div>
+            </div> : <></>}
         </div>
 
     )

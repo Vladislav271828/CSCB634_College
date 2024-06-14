@@ -61,6 +61,8 @@ function App() {
                 buttonMsg="Save Changes"
                 formStructure={structures.registerUser}
                 searchLabel="Search User"
+                deleteUrl="user/admin/delete/{id}"
+                deleteWarningMsg="delete this user"
               />} />
 
               <Route path={`/admin/change-user-details`} element={<Form

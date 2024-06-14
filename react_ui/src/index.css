@@ -209,11 +209,13 @@ Dashboard.jsx
     font-size: 1.25rem;
 }
 
-.logout-btn {
+.logout-btn,
+.big-delete-btn button {
     background-color: #ffdddd;
 }
 
-.logout-btn:hover {
+.logout-btn:hover,
+.big-delete-btn button:hover {
     background-color: #ffbbbb;
 }
 
@@ -231,8 +233,17 @@ Form.jsx
 ---------------------------
 */
 
-.component-container {
+.component-container>.component-container {
+    margin: 0px;
+}
+
+.component-container:first-child {
     margin: 20px;
+}
+
+.big-delete-btn {
+    padding-top: 0px !important;
+    height: 90px !important;
 }
 
 .form-component-container label {
