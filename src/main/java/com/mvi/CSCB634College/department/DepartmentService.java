@@ -3,8 +3,10 @@ package com.mvi.CSCB634College.department;
 import com.mvi.CSCB634College.college.College;
 import com.mvi.CSCB634College.college.CollegeRepository;
 import com.mvi.CSCB634College.exception.BadRequestException;
+import com.mvi.CSCB634College.exception.UserNotFound;
 import com.mvi.CSCB634College.professor.Professor;
 import com.mvi.CSCB634College.professor.ProfessorRepository;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,14 +17,14 @@ import java.util.stream.Collectors;
 @Service
 public class DepartmentService {
 
-    private final DepartmentRepository DepartmentRepository;
+    private final DepartmentRepository departmentRepository;
     private final ModelMapper modelMapper;
     private final CollegeRepository collegeRepository;
     private final ProfessorRepository professorRepository;
 
     @Autowired
-    public DepartmentService(DepartmentRepository DepartmentRepository, ModelMapper modelMapper, CollegeRepository collegeRepository, ProfessorRepository professorRepository) {
-        this.DepartmentRepository = DepartmentRepository;
+    public DepartmentService(DepartmentRepository departmentRepository, ModelMapper modelMapper, CollegeRepository collegeRepository, ProfessorRepository professorRepository) {
+        this.departmentRepository = departmentRepository;
         this.modelMapper = modelMapper;
         this.collegeRepository = collegeRepository;
         this.professorRepository = professorRepository;
@@ -30,27 +32,42 @@ public class DepartmentService {
 
     public DtoDepartment createDepartment(DtoDepartment dtoDepartment) throws BadRequestException {
 
-        Department Department = modelMapper.map(dtoDepartment, Department.class);
-
+        Department department = modelMapper.map(dtoDepartment, Department.class);
+        department.setId(null);
+        //Department department = new Department();
         if (dtoDepartment.getCollegeId() != null) {
             College college = collegeRepository.findById(dtoDepartment.getCollegeId())
                     .orElseThrow(() -> new BadRequestException("College with id " + dtoDepartment.getCollegeId() + " not found"));
-            Department.setCollege(college);
-        }
-        else throw new BadRequestException("Department must have College");
+            department.setCollege(college);
+        } else throw new BadRequestException("Department must have College");
 
-        if (dtoDepartment.getDepartmentHeadId() != null){
+        //If there is no professor provided we will not set one and leave the value as null for the professor to be set later
+        if (dtoDepartment.getDepartmentHeadId() != null) {
             Professor departmentHead = professorRepository.findById(dtoDepartment.getDepartmentHeadId())
-                    .orElseThrow(() -> new BadRequestException("User with id " + dtoDepartment.getDepartmentHeadId() + " not found"));
-            Department.setDepartmentHead(departmentHead);
+                    .orElseThrow(() -> new BadRequestException("Professor with id " + dtoDepartment.getDepartmentHeadId() + " not found"));
+
+            //This allows for the user to set a professor whom is a department head already - removes the professor from their old position and sets them here
+            if (departmentRepository.isUserAlreadyDepartmentHead(departmentHead.getId())){
+                Department otherDepartment = departmentRepository.findByDepartmentHead_Id(departmentHead.getId()).orElseThrow();
+                otherDepartment.setDepartmentHead(null);
+                departmentRepository.save(otherDepartment);
+            }
+            departmentHead.setDepartment(department);
+            department = departmentRepository.save(department);
+            departmentHead = professorRepository.save(departmentHead);
+
+            department.setDepartmentHead(departmentHead);
         }
 
-        return modelMapper.map(DepartmentRepository.save(Department), DtoDepartment.class);
+        department = departmentRepository.save(department);
+
+
+        return modelMapper.map(department, DtoDepartment.class);
     }
 
     public DtoDepartment getDepartmentById(Long id) throws BadRequestException {
 
-        Department Department = DepartmentRepository.findById(id)
+        Department Department = departmentRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Department with id " + id + " not found."));
 
         return modelMapper.map(Department, DtoDepartment.class);
@@ -61,41 +78,59 @@ public class DepartmentService {
         College college = collegeRepository.findById(collegeId)
                 .orElseThrow(() -> new BadRequestException("College with id " + collegeId + " not found"));
 
-        List<Department> departments = DepartmentRepository.findAllByCollege(college);
+        List<Department> departments = departmentRepository.findAllByCollege(college);
 
         return departments.stream()
                 .map(Department -> modelMapper.map(Department, DtoDepartment.class))
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public DtoDepartment updateDepartment(Long id, DtoDepartment dtoDepartment) throws BadRequestException {
 
-        Department Department = DepartmentRepository.findById(id)
+        Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Department with id " + id + " not found."));
-        modelMapper.map(dtoDepartment, Department);
 
-        if (dtoDepartment.getCollegeId() != null && !dtoDepartment.getCollegeId().equals(Department.getCollege().getId())) {
+        if (dtoDepartment.getCollegeId() != null && !dtoDepartment.getCollegeId().equals(department.getCollege().getId())) {
             College college = collegeRepository.findById(dtoDepartment.getCollegeId())
                     .orElseThrow(() -> new BadRequestException("College with id " + dtoDepartment.getCollegeId() + " not found"));
 
-            Department.setCollege(college);
-        }
-        if (dtoDepartment.getDepartmentHeadId() != null && !dtoDepartment.getDepartmentHeadId().equals(Department.getDepartmentHead().getId())){
-            Professor departmentHead = professorRepository.findById(dtoDepartment.getDepartmentHeadId())
-                    .orElseThrow(() -> new BadRequestException("User with id " + dtoDepartment.getDepartmentHeadId() + " not found"));
-            Department.setDepartmentHead(departmentHead);
+            department.setCollege(college);
+            department = departmentRepository.save(department);
         }
 
+        if (dtoDepartment.getDepartmentHeadId() != null) {
+            assignDepartmentHead(department, dtoDepartment.getDepartmentHeadId());
+        }
 
-
-        return modelMapper.map(DepartmentRepository.save(Department), DtoDepartment.class);
+        return modelMapper.map(department, DtoDepartment.class);
     }
+
+    @Transactional
+    public void assignDepartmentHead(Department department, Integer departmentHeadId) throws BadRequestException {
+        Professor departmentHead = professorRepository.findById(departmentHeadId)
+                .orElseThrow(() -> new BadRequestException("Professor with id " + departmentHeadId + " not found"));
+
+        if (departmentRepository.isUserAlreadyDepartmentHead(departmentHead.getId())) {
+            Department otherDepartment = departmentRepository.findByDepartmentHead_Id(departmentHead.getId())
+                    .orElseThrow(() -> new BadRequestException("Department not found for existing department head"));
+            otherDepartment.setDepartmentHead(null);
+            departmentRepository.save(otherDepartment);
+        }
+
+        department.setDepartmentHead(departmentHead);
+        departmentRepository.save(department);
+
+        departmentHead.setDepartment(department);
+        professorRepository.save(departmentHead);
+    }
+
 
     public void deleteDepartment(Long id) throws BadRequestException {
 
-        Department Department = DepartmentRepository.findById(id)
+        Department Department = departmentRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Department with id " + id + " not found."));
 
-        DepartmentRepository.delete(Department);
+        departmentRepository.delete(Department);
     }
 }

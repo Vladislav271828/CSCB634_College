@@ -7,6 +7,7 @@ import com.mvi.CSCB634College.exception.UserNotFound;
 import com.mvi.CSCB634College.security.Role;
 import com.mvi.CSCB634College.security.auth.AuthenticationService;
 import com.mvi.CSCB634College.security.config.JwtAuthenticationFilter;
+import com.mvi.CSCB634College.user.ResponseUser;
 import com.mvi.CSCB634College.user.User;
 import com.mvi.CSCB634College.user.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -39,26 +40,28 @@ public class CollegeService {
 
         dtoCollegeRequest.setId(null);
 
-        User rector;
+        User rector = null;
 
-            rector = userRepository.findByEmail(dtoCollegeRequest.getRectorEmail()).orElseThrow(() -> new BadRequestException("User " + dtoCollegeRequest.getRectorEmail() + " is not found."));//Email should always be valid format here due to the regex in the dto class
+        if (dtoCollegeRequest.getRectorEmail() != null) {
+            rector = userRepository.findByEmail(dtoCollegeRequest.getRectorEmail()).orElseThrow(() -> new UserNotFound("User " + dtoCollegeRequest.getRectorEmail() + " is not found."));//Email should always be valid format here due to the regex in the dto class
 
-        if (isRectorAlreadyRectoring(rector)) {//Check if the user is already a rector in the database
-            throw new BadRequestException("User " + rector.getEmail() + " is already a rector.");
+            if (isRectorAlreadyRectoring(rector)) {//Check if the user is already a rector in the database
+                throw new BadRequestException("User " + rector.getEmail() + " is already a rector.");
+            }
+
+            User currentlyLoggedUser = authenticationService.getCurrentlyLoggedUser();
+
+            if (rector.getEmail().equals(currentlyLoggedUser.getEmail())) {//check if the ADMIN user is trying to become a rector all by himself
+                throw new BadRequestException("User " + currentlyLoggedUser.getEmail() + " can't become rector of college by themselves. Another ADMIN must authorize the request.");
+            }
+
         }
 
-        User currentlyLoggedUser = authenticationService.getCurrentlyLoggedUser();
-
-        if (rector.getEmail().equals(currentlyLoggedUser.getEmail())) {//check if the ADMIN user is trying to become a rector all by himself
-            throw new BadRequestException("User " + currentlyLoggedUser.getEmail() + " can't become rector of college by themselves. Another ADMIN must authorize the request.");
-        }
-
+//
+//        if (!isCollegeUnique(college)) {//Check if the college already exists in the database
+//            throw new BadRequestException("College with name " + college.getName() + " or address " + college.getAddress() + " already exists.");
+//        }
         College college = modelMapper.map(dtoCollegeRequest, College.class);
-
-        if (!isCollegeUnique(college)) {//Check if the college already exists in the database
-            throw new BadRequestException("College with name " + college.getName() + " or address " + college.getAddress() + " already exists.");
-        }
-
         college.setRector(rector);
 
 
@@ -109,18 +112,34 @@ public class CollegeService {
             User rector = userRepository.findByEmail(dtoCollegeRequest.getRectorEmail())
                     .orElseThrow(() -> new UserNotFound("User with email " + dtoCollegeRequest.getRectorEmail() + " not found"));
 
-            if  (college.getRector().getEmail().equals(rector.getEmail())) {
-                throw new BadRequestException("User " + rector.getEmail() + " is already a rector of this college.");
+            if (college.getRector() != null) {
+                if (college.getRector().getEmail().equals(rector.getEmail())) {
+                    throw new BadRequestException("User " + rector.getEmail() + " is already a rector of this college.");
 
 
-            } else if (dtoCollegeRequest.getRectorEmail().equals(currentUser.getEmail())){
-                throw new BadRequestException("User " + currentUser.getEmail() + " can't become college rector by themselves.");
+                } else if (dtoCollegeRequest.getRectorEmail().equals(currentUser.getEmail())) {
+                    throw new BadRequestException("User " + currentUser.getEmail() + " can't become college rector by themselves.");
 
 
-            } else if(isRectorAlreadyRectoring(rector)) {
-                throw new BadRequestException("User " + rector.getEmail() + " is already a rector of another college.");
+                } else if (isRectorAlreadyRectoring(rector)) {//if rector is already rectoring we remove them as the rector from the other college and set them here
+                    College otherCollege = collegeRepository.findByRector_Email(rector.getEmail()).orElseThrow();
+                    otherCollege.setRector(null);
+                    collegeRepository.save(otherCollege);
 
-            } else {
+                    college.setRector(rector);
+
+                } else {
+                    college.setRector(rector);
+                }
+            } else {//in case the rector is not decided but the candidate is already rectoring
+                if (isRectorAlreadyRectoring(rector)) {//if rector is already rectoring we remove them as the rector from the other college and set them here
+                    College otherCollege = collegeRepository.findByRector_Email(rector.getEmail()).orElseThrow();
+                    otherCollege.setRector(null);
+                    collegeRepository.save(otherCollege);
+
+                    college.setRector(rector);
+
+                }
                 college.setRector(rector);
             }
 
@@ -182,4 +201,15 @@ public class CollegeService {
         return collegeRepository.findByNameIgnoreCaseOrAddressIgnoreCase(college.getName(), college.getAddress()).isEmpty();
     }
 
+    public List<ResponseUser> getAllUserByCollegeId(Long id) {
+    List<College> colleges =  collegeRepository.findAll();
+
+    if (colleges.isEmpty()){
+        throw new CollegeNotFound("No colleges found");
+    }
+
+    //TODO: ??????????? HOW get all users under one collage?
+
+     return null;
+    }
 }

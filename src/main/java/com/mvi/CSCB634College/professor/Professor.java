@@ -23,9 +23,18 @@ public class Professor {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
 
     // Getters and setters
+
+    @Override
+    public String toString() {
+        return "Professor{" +
+                "id=" + id +
+                ", user=" + user +
+                ", department=" + department.getId() +
+                '}';
+    }
 }

@@ -7,24 +7,31 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UniqueElements;
+
+import java.util.Set;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "departments")
+@Table(name = "departments", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "college_college_id"})})
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "department_id")
     private Long id;
 
+    @Column(name = "name", nullable = false)
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "college_college_id")
+    @JoinColumn(name = "college_college_id", nullable = false)
     private College college;
+
+    @OneToMany(mappedBy = "department")
+    private Set<Professor> professors;
 
     @ManyToOne
     @JoinColumn(name = "department_head_user_id")

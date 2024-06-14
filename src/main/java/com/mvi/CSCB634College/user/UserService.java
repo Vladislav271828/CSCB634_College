@@ -1,14 +1,24 @@
 package com.mvi.CSCB634College.user;
 
+import com.mvi.CSCB634College.department.Department;
+import com.mvi.CSCB634College.department.DepartmentRepository;
+import com.mvi.CSCB634College.department.DtoDepartment;
 import com.mvi.CSCB634College.exception.BadRequestException;
+import com.mvi.CSCB634College.exception.DepartmentNotFoundException;
+import com.mvi.CSCB634College.exception.MajorNotFoundException;
 import com.mvi.CSCB634College.exception.UserNotFound;
+import com.mvi.CSCB634College.major.DtoMajor;
+import com.mvi.CSCB634College.major.Major;
+import com.mvi.CSCB634College.major.MajorRepository;
 import com.mvi.CSCB634College.professor.Professor;
+import com.mvi.CSCB634College.professor.ProfessorDto;
 import com.mvi.CSCB634College.professor.ProfessorRepository;
 import com.mvi.CSCB634College.security.Role;
 import com.mvi.CSCB634College.security.auth.AuthenticationService;
 import com.mvi.CSCB634College.security.config.JwtService;
 import com.mvi.CSCB634College.security.token.TokenRepository;
 import com.mvi.CSCB634College.student.Student;
+import com.mvi.CSCB634College.student.StudentDto;
 import com.mvi.CSCB634College.student.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +39,8 @@ public class UserService {
     private final AuthenticationService authenticationService;
     private final StudentRepository studentRepository;
     private final ProfessorRepository professorRepository;
+    private final DepartmentRepository departmentRepository;
+    private final MajorRepository majorRepository;
 
 
     public User updateUser(String email, UserDto dtoUser) {
@@ -84,6 +96,8 @@ public class UserService {
         }
 
 
+        ////TODO: Check if collage dep and major exist if trying to change to student
+        ////TODO: Check if collage dep and major exist if trying to change to professor
         // Update role if it's provided and unique
         if (dtoUser.getRole() != null && !dtoUser.getRole().toString().isBlank()) {
 
@@ -220,5 +234,120 @@ public class UserService {
             //else delete
             user.ifPresent(userRepository::delete);
         }
+    }
+
+    public ProfessorDto updateProfessorDepartment(String email, Long departmentId) {
+        User currentUser = authenticationService.getCurrentlyLoggedUser();
+
+        // Find user by email
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFound("User with email " + email + " not found"));
+
+
+        //If the user is already a professor
+        if (!user.getRole().equals(Role.PROFESSOR)) {
+            throw new BadRequestException("User is not a professor");
+        }
+        //check if the user is admin to perform the role change
+        if (!currentUser.getRole().equals(Role.ADMIN)) {
+            throw new BadRequestException("User doesn't have ADMIN authorization to perform a role change.");
+        }
+
+        //check if the user is in a department
+        if (professorRepository.findProfessorByUserId(user.getId()).orElseThrow().getDepartment() == null){
+            //check if the department is real
+            if (!departmentRepository.doesDepartmentExist(departmentId)) {
+                throw new DepartmentNotFoundException("Department with id " + departmentId + " doesn't exist.");
+            }
+
+        }else{
+            //check if the department they are in is the one we are trying to change it to
+            if (departmentId.equals(departmentRepository.findById(professorRepository.findProfessorByUserId(user.getId()).orElseThrow().getDepartment().getId()).orElseThrow().getId())){
+                throw new BadRequestException("Professor is already in this department.");
+            }
+        }
+
+
+        if (!departmentRepository.doesDepartmentExist(departmentId)) {
+            throw new DepartmentNotFoundException("Department with id " + departmentId + " doesn't exist.");
+        }
+
+        Professor professor = professorRepository.findProfessorByUserId(user.getId()).orElseThrow();
+        Department department = departmentRepository.findById(departmentId).orElseThrow();
+
+        professor.setDepartment(department);
+        professorRepository.save(professor);
+
+        DtoDepartment departmentDto = new DtoDepartment();
+        departmentDto.setName(department.getName());
+        departmentDto.setCollegeId(department.getCollege().getId());
+        Integer departmentHeadId = null;
+        if (department.getDepartmentHead() != null){
+            departmentHeadId = department.getDepartmentHead().getId();
+        }
+        departmentDto.setDepartmentHeadId(departmentHeadId);
+
+        ProfessorDto professorDto = new ProfessorDto();
+        professorDto.setDepartment(departmentDto);
+        professorDto.setId(professor.getId());
+        return professorDto;
+    }
+
+
+
+
+
+    public StudentDto updateStudentMajor(String email, Long majorId) {
+
+        User currentUser = authenticationService.getCurrentlyLoggedUser();
+
+        // Find user by email
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFound("User with email " + email + " not found"));
+
+
+        //If the user is already a student
+        if (!user.getRole().equals(Role.STUDENT)) {
+            throw new BadRequestException("User is not a student.");
+        }
+        //check if the user is admin to perform the role change
+        if (!currentUser.getRole().equals(Role.ADMIN)) {
+            throw new BadRequestException("User doesn't have ADMIN authorization to perform a role change.");
+        }
+
+        //check if the user is in a Major
+        if (studentRepository.findStudentByUserId(user.getId()).orElseThrow().getMajor() == null){
+            //check if the major is real
+            if (!majorRepository.doesMajorExist(majorId)) {
+                throw new MajorNotFoundException("Major with id " + majorId + " doesn't exist.");
+            }
+
+        }else{
+            //check if the department they are in is the one we are trying to change it to
+            if (majorId.equals(majorRepository.findMajorById(studentRepository.findStudentByUserId(user.getId()).orElseThrow().getMajor().getId()).orElseThrow().getId())){
+                throw new BadRequestException("Student is already in this Major.");
+            }
+        }
+
+
+        if (!majorRepository.doesMajorExist(majorId)) {
+            throw new MajorNotFoundException("Major with id " + majorId + " doesn't exist.");
+        }
+
+        Student student = studentRepository.findStudentByUserId(user.getId()).orElseThrow();
+        Major major = majorRepository.findById(majorId).orElseThrow();
+
+        student.setMajor(major);
+        studentRepository.save(student);
+
+        DtoMajor majorDto = new DtoMajor();
+        majorDto.setName(major.getName());
+        majorDto.setId(major.getId());
+        majorDto.setDepartmentId(major.getDepartment().getId());
+
+        StudentDto studentDto = new StudentDto();
+        studentDto.setId(user.getId());
+        studentDto.setMajor(majorDto);
+        return studentDto;
     }
 }

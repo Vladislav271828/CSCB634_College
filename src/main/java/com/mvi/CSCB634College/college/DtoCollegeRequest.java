@@ -17,7 +17,6 @@ public class DtoCollegeRequest {
     private String name;
     @NotEmpty(message = "College address is required.")
     private String address;
-    @NotEmpty(message = "Email is required.")
     @Email(message = "Invalid email format.")
     private String rectorEmail;
 }

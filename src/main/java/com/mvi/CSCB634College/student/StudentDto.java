@@ -1,6 +1,6 @@
 package com.mvi.CSCB634College.student;
 
-import com.mvi.CSCB634College.faculty.Faculty;
+import com.mvi.CSCB634College.major.DtoMajor;
 import com.mvi.CSCB634College.major.Major;
 import com.mvi.CSCB634College.user.User;
 import jakarta.persistence.*;
@@ -13,22 +13,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "students")
-public class Student {
+public class StudentDto {
 
-    @Id
     private Integer id;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "major_id")
-    private Major major;
-
+    private DtoMajor major;
 
 
 }
