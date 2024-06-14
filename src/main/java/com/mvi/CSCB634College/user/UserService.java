@@ -254,15 +254,15 @@ public class UserService {
         }
 
         //check if the user is in a department
-        if (professorRepository.findProfessorByUserId(user.getId()).orElseThrow().getDepartment() == null){
+        if (professorRepository.findProfessorByUserId(user.getId()).orElseThrow().getDepartment() == null) {
             //check if the department is real
             if (!departmentRepository.doesDepartmentExist(departmentId)) {
                 throw new DepartmentNotFoundException("Department with id " + departmentId + " doesn't exist.");
             }
 
-        }else{
+        } else {
             //check if the department they are in is the one we are trying to change it to
-            if (departmentId.equals(departmentRepository.findById(professorRepository.findProfessorByUserId(user.getId()).orElseThrow().getDepartment().getId()).orElseThrow().getId())){
+            if (departmentId.equals(departmentRepository.findById(professorRepository.findProfessorByUserId(user.getId()).orElseThrow().getDepartment().getId()).orElseThrow().getId())) {
                 throw new BadRequestException("Professor is already in this department.");
             }
         }
@@ -282,7 +282,7 @@ public class UserService {
         departmentDto.setName(department.getName());
         departmentDto.setCollegeId(department.getCollege().getId());
         Integer departmentHeadId = null;
-        if (department.getDepartmentHead() != null){
+        if (department.getDepartmentHead() != null) {
             departmentHeadId = department.getDepartmentHead().getId();
         }
         departmentDto.setDepartmentHeadId(departmentHeadId);
@@ -292,9 +292,6 @@ public class UserService {
         professorDto.setId(professor.getId());
         return professorDto;
     }
-
-
-
 
 
     public StudentDto updateStudentMajor(String email, Long majorId) {
@@ -316,15 +313,15 @@ public class UserService {
         }
 
         //check if the user is in a Major
-        if (studentRepository.findStudentByUserId(user.getId()).orElseThrow().getMajor() == null){
+        if (studentRepository.findStudentByUserId(user.getId()).orElseThrow().getMajor() == null) {
             //check if the major is real
             if (!majorRepository.doesMajorExist(majorId)) {
                 throw new MajorNotFoundException("Major with id " + majorId + " doesn't exist.");
             }
 
-        }else{
+        } else {
             //check if the department they are in is the one we are trying to change it to
-            if (majorId.equals(majorRepository.findMajorById(studentRepository.findStudentByUserId(user.getId()).orElseThrow().getMajor().getId()).orElseThrow().getId())){
+            if (majorId.equals(majorRepository.findMajorById(studentRepository.findStudentByUserId(user.getId()).orElseThrow().getMajor().getId()).orElseThrow().getId())) {
                 throw new BadRequestException("Student is already in this Major.");
             }
         }
@@ -349,5 +346,103 @@ public class UserService {
         studentDto.setId(user.getId());
         studentDto.setMajor(majorDto);
         return studentDto;
+    }
+
+    public ResponseUser getUserDetails() {
+        // we get a hold of the user
+        User user = authenticationService.getCurrentlyLoggedUser();
+        return mapUserToResponseUser(user);
+    }
+
+    public ResponseUser getUserDetailsWithEmail(String userEmail) {
+        // we get a hold of the user
+        User user;
+        try {
+            user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFound("User with email " + userEmail + " not found."));
+        } catch (Exception e) {
+            throw new UserNotFound("User with email " + userEmail + " not found.");
+        }
+        return mapUserToResponseUser(user);
+    }
+
+    private ResponseUser mapUserToResponseUser(User user) {
+        // create userResponseDto and map data from user alone
+        ResponseUser responseUser = new ResponseUser();
+        responseUser.setId(user.getId());
+        responseUser.setFirstname(user.getFirstname());
+        responseUser.setLastname(user.getLastname());
+        responseUser.setEmail(user.getEmail());
+        responseUser.setRole(user.getRole());
+
+        // we find out what role they are and handle different cases for Student and Professor
+        if (user.getRole().equals(Role.PROFESSOR)) {
+            // get the professor
+            Professor professor = professorRepository.findProfessorByUserId(user.getId()).orElseThrow();
+
+            // if it's professor we need ProfessorDto
+            ProfessorDto professorDto = new ProfessorDto();
+
+            // what if the professor is not in a department yet?
+            if (professor.getDepartment() != null) {
+                // if yes we get department and set the dep dto
+                Department department = departmentRepository.findByProfessors_Id(professor.getId()).orElseThrow();
+
+                // now construct department dto to set to professor dto
+                DtoDepartment dtoDepartment = getDtoDepartment(department);
+                professorDto.setId(professor.getId());
+                professorDto.setDepartment(dtoDepartment);
+            } else {
+                // if not we set the department in the dto to null and continue
+                professorDto.setDepartment(null);
+            }
+            responseUser.setProfessor(professorDto);
+
+        } else {
+            // if they are not professor we set professor dto to null
+            responseUser.setProfessor(null);
+        }
+
+        if (user.getRole().equals(Role.STUDENT)) {
+            // get a hold of the student object
+            Student student = studentRepository.findStudentByUserId(user.getId()).orElseThrow();
+
+            // create the student dto for the response user details
+            StudentDto studentDto = new StudentDto();
+
+            // get a hold of the major for the major dto for the student dto
+            Major major = majorRepository.findMajorById(student.getMajor().getId()).orElseThrow();
+
+            // create the major dto and map
+            DtoMajor dtoMajor = new DtoMajor();
+            dtoMajor.setDepartmentId(major.getDepartment().getId());
+            dtoMajor.setId(major.getId());
+            dtoMajor.setName(major.getName());
+
+            // now map the data to the student dto
+            studentDto.setId(student.getId());
+            studentDto.setMajor(dtoMajor);
+
+            // and add to user response
+            responseUser.setStudent(studentDto);
+
+        } else {
+            // if they are not student we set to null
+            responseUser.setStudent(null);
+        }
+
+        return responseUser;
+    }
+
+    private static DtoDepartment getDtoDepartment(Department department) {
+        DtoDepartment dtoDepartment = new DtoDepartment();
+        if (department.getDepartmentHead() != null){
+
+            dtoDepartment.setDepartmentHeadId(department.getDepartmentHead().getId());
+        }else{
+            dtoDepartment.setDepartmentHeadId(null);
+        }
+        dtoDepartment.setCollegeId(department.getCollege().getId());
+        dtoDepartment.setName(department.getName());
+        return dtoDepartment;
     }
 }

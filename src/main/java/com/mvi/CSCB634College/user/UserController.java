@@ -40,4 +40,13 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/admin/getUserDetails/{userEmail}")
+    public ResponseEntity<ResponseUser> getUserDetailsWithEmail(@PathVariable String userEmail) {
+        return ResponseEntity.ok(userService.getUserDetailsWithEmail(userEmail));
+    }
+
+    @GetMapping("/getUserDetails")
+    public ResponseEntity<ResponseUser> getUserDetails() {
+        return ResponseEntity.ok(userService.getUserDetails());
+    }
 }

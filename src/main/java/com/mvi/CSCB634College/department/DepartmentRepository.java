@@ -11,6 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
+    @Query("select d from Department d inner join d.professors professors where professors.id = ?1")
+    Optional<Department> findByProfessors_Id(Integer id);
     @Query("select (count(d) > 0) from Department d where d.id = ?1")
     boolean doesDepartmentExist(Long id);
     @Query("""
