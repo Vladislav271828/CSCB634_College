@@ -55,6 +55,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/auth/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/v1/user/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/v1/grade/professor/**").hasAuthority("PROFESSOR")
+                        .requestMatchers("/api/v1/absence/professor/**").hasAuthority("PROFESSOR")
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/ws-message/**", "/ws/**", "/ws-endpoint/**").permitAll()  // Allow the WebSocket endpoints
                         .requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
