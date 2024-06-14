@@ -27,11 +27,19 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getEnrollmentById(enrollmentId));
     }
 
-    @GetMapping("/getByStudentAndYear/{studentId}/{year}")
+    @GetMapping("/getAllByStudentAndYear/{studentId}/{year}")
     public ResponseEntity<List<DtoEnrollmentResponse>> getEnrollmentsByStudentAndYear(
             @PathVariable Integer studentId,
             @PathVariable Integer year) {
         return ResponseEntity.ok(enrollmentService.getAllEnrollmentByStudentIdAndYear(studentId, year));
+    }
+
+    @GetMapping("/getAllByProfessorIdAndYearAndCourse/{professorId}/{year}/{courseId}")
+    public ResponseEntity<List<DtoEnrollmentResponse>> getAllByProfessorIdAndYearAndCourse(
+            @PathVariable Integer professorId,
+            @PathVariable Integer year,
+            @PathVariable Long courseId) {
+        return ResponseEntity.ok(enrollmentService.getAllEnrollmentByProfessorIdAndYearAndCourse(professorId, year, courseId));
     }
 
     @PutMapping("/admin/{id}/update")

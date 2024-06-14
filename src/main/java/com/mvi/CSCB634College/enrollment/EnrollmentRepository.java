@@ -1,6 +1,7 @@
 package com.mvi.CSCB634College.enrollment;
 
 import com.mvi.CSCB634College.course.Course;
+import com.mvi.CSCB634College.professor.Professor;
 import com.mvi.CSCB634College.student.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,9 +16,14 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     List<Enrollment> findAllByCourse(Course course);
 
     @Query("SELECT e FROM Enrollment e WHERE e.student = :student AND FUNCTION('YEAR', e.date) = :year")
-    List<Enrollment> findAllByStudentAndYear(@Param("student") Student student, @Param("year") int year);
+    List<Enrollment> findAllByStudentAndYear(
+            @Param("student") Student student,
+            @Param("year") int year);
 
-
-
+    @Query("SELECT e FROM Enrollment e WHERE e.professor = :professor AND FUNCTION('YEAR', e.date) = :year AND e.course = :course")
+    List<Enrollment> findAllByProfessorAndYearAndCourse(
+            @Param("professor") Professor professor,
+            @Param("year") int year,
+            @Param("course") Course course);
 
 }

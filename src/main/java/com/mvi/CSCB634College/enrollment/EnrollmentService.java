@@ -73,6 +73,19 @@ public class EnrollmentService {
                 .collect(Collectors.toList());
     }
 
+    public List<DtoEnrollmentResponse> getAllEnrollmentByProfessorIdAndYearAndCourse(Integer professorId, Integer year, Long courseId) {
+        Professor professor = professorRepository.findById(professorId)
+                .orElseThrow(() -> new BadRequestException("Professor with id " + professorId + " not found"));
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new BadRequestException("Course with id " + courseId + " not found"));
+
+        List<Enrollment> enrollments = enrollmentRepository.findAllByProfessorAndYearAndCourse(professor, year, course);
+
+        return enrollments.stream()
+                .map(Enrollment -> modelMapper.map(Enrollment, DtoEnrollmentResponse.class))
+                .collect(Collectors.toList());
+    }
+
     public DtoEnrollmentResponse updateEnrollment(Long enrollmentId, DtoEnrollment dtoEnrollment){
 
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
