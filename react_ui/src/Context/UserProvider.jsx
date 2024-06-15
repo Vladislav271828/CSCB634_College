@@ -3,7 +3,7 @@ import AuthContext from "./AuthProvider";
 import axios from "../API/axios";
 
 const UserContext = createContext({});
-const FETCH_USER_URL = '/auth/getUserDetails'
+const FETCH_USER_URL = '/user/getUserDetails'
 
 export const UserProvider = ({ children }) => {
     // const [firstname, setFirstName] = useState("");

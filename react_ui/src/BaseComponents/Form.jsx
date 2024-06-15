@@ -4,17 +4,21 @@ import { useNavigate } from 'react-router-dom';
 
 const Form = ({ title,
     requestURL,
-    requestEditId,
+    requestIds,
     successMsg,
     buttonMsg,
     formStructure,
     fetchUrl,
     editValues,
     deleteWarningMsg,
-    deleteUrl }) => {
+    deleteUrl,
+    isPut,
+    backFunc,
+    selectListValues }) => {
 
-    const [formData, setFormData] = useState({});
-    const [fetchedEditValues, setFetchedEditValues] = useState(editValues ? editValues : {});
+    const [formData, setFormData] = useState(selectListValues ? selectListValues : {});
+    const [formDataNoSend, setFormDataNoSend] = useState(selectListValues ? { ...selectListValues } : {});
+    const [fetchedEditValues, setFetchedEditValues] = useState(editValues ? editValues : (selectListValues ? selectListValues : {}));
     const [fetchedSelections, setFetchedSelections] = useState({});
     const [errMsg, setErrMsg] = useState("");
     const [success, setSuccess] = useState(true);
@@ -22,18 +26,34 @@ const Form = ({ title,
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
 
+    function formatString(string, params) {
+        return string.replace(/{(\d+)}/g, (match, index) => {
+            return typeof params[index] !== 'undefined' ? params[index] : match;
+        });
+    }
+
+    function containsAllElements(arr1, arr2) {
+        return arr2.every(element => arr1.includes(element));
+    }
+
     const handleChange = (e) => {
         setErrMsg("");
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handleBack = () => {
+        if (backFunc) backFunc();
+        else
+            navigate("../dashboard", { relative: "path" });
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSuccess(true)
-        const url = requestURL.replace("{id}", requestEditId);
+        const url = formatString(requestURL, requestIds);
         try {
             var res
-            fetchUrl || editValues ?
+            isPut ?
                 res = await axiosPrivate.put(url, formData)
                 : res = await axiosPrivate.post(url, formData)
             console.log(res.data);
@@ -51,8 +71,9 @@ const Form = ({ title,
     }
 
     const fetchEditValues = async () => {
+        const url = formatString(fetchUrl, requestIds);
         try {
-            const res = await axiosPrivate.get(fetchUrl);
+            const res = await axiosPrivate.get(url);
             console.log(res.data);
             setFetchedEditValues(res.data);
         } catch (err) {
@@ -70,7 +91,7 @@ const Form = ({ title,
     const handleDelete = async () => {
         if (confirm("Are you sure you want to " + deleteWarningMsg + "?\nThis action is irreversible.") == true) {
             try {
-                const url = deleteUrl.replace("{id}", requestEditId);
+                const url = formatString(deleteUrl, requestIds);
                 await axiosPrivate.delete(url);
                 alert("Operation successful.");
                 navigate("../dashboard", { relative: "path" })
@@ -89,16 +110,22 @@ const Form = ({ title,
 
     useEffect(() => {
         formStructure.map((input) => {
-            if (input.type == "select" && input.fetchUrl && (formData[input.require] || !input.require)) {
+            if (input.type == "select" && input.fetchUrl && (containsAllElements(Object.keys(formData), input.require) || !input.require)) {
                 fetchOptions(input)
             }
         });
+        const ids = formStructure.map((item) => item.id);
+        const selectedValues = Object.keys(formData).reduce((acc, key) => {
+            if (ids.includes(key)) acc[key] = formData[key];
+            return acc
+        }, {})
+        setFormData(selectedValues)
         if (fetchUrl) fetchEditValues();
     }, [])
 
     const fetchOptions = async (input) => {
         setSuccess(true)
-        const url = input.fetchUrl.replace("{id}", formData[input.require]);
+        const url = input.fetchUrl.replace("{0}", formData[input.require]);
         try {
             const res = await axiosPrivate.get(url);
             console.log(res.data);
@@ -113,7 +140,6 @@ const Form = ({ title,
                 setErrMsg(err.response.data.message);
             }
         }
-        return null
     }
 
     return (
@@ -122,13 +148,14 @@ const Form = ({ title,
             {!errMsg ? <></> : <p className="err-msg" style={success ? {} : { color: "red" }}>{errMsg}</p>}
             <form className='form-structure-container' onSubmit={handleSubmit}>
                 {formStructure.map((input) => {
-                    if (formData[input.require] || !input.require) {
+                    if (formDataNoSend[input.require] || !input.require) {
                         if (input.type == "select") {
                             return <div key={input.id}>
-                                <label>{input.label}</label>
+                                <label style={input.disabled && { opacity: "0.5" }}>{input.label}</label>
                                 <select
                                     name={input.id}
                                     onChange={handleChange}
+                                    disabled={input.disabled}
                                 >
                                     <option value={""} selected disabled hidden></option>
                                     {input.fetchUrl ?
@@ -147,11 +174,12 @@ const Form = ({ title,
                         }
                         else {
                             return <div key={input.id}>
-                                <label>{input.label}</label>
+                                <label style={input.disabled && { opacity: "0.5" }}>{input.label}</label>
                                 <input type={input.type}
                                     name={input.id}
                                     defaultValue={fetchedEditValues[input.id]}
                                     onChange={handleChange}
+                                    disabled={input.disabled}
                                 />
                             </div>
                         }
@@ -161,7 +189,7 @@ const Form = ({ title,
                     <button type='submit'>
                         {buttonMsg}
                     </button>
-                    <button type='button' onClick={() => navigate("../dashboard", { relative: "path" })}>
+                    <button type='button' onClick={() => handleBack()}>
                         Go Back
                     </button>
                 </div>

@@ -56,11 +56,15 @@ select {
     background-color: white;
 }
 
-input:hover,
-select:hover,
-input:focus,
-select:focus {
+input:hover:enabled,
+select:hover:enabled,
+input:focus:enabled,
+select:focus:enabled {
     outline: 1px solid #132240;
+}
+
+input:disabled {
+    opacity: 0.5;
 }
 
 button {
@@ -299,20 +303,24 @@ Form.jsx
     height: 40px;
 }
 
-.form-structure-container div.btn {
+.form-structure-container div.btn,
+.select-list div.btn {
     flex: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
 }
 
-.form-structure-container div.btn button {
+.form-structure-container div.btn button,
+.select-list div.btn button {
     max-width: 250px;
     width: 100%;
     height: 40px;
 }
 
-.form-structure-container div.btn button:first-child {
+.form-structure-container div.btn button:first-child,
+.select-list div.btn button {
     margin-right: 10px;
 }
 
@@ -330,4 +338,57 @@ Form.jsx
     .dash-container>div {
         flex: 0 1 100%;
     }
+}
+
+/* 
+---------------------------
+SelectList.jsx
+---------------------------
+*/
+
+.search-form {
+    width: 100%;
+    padding: 10px 0px 20px 0px;
+}
+
+#search {
+    width: 100%;
+    max-width: 500px;
+    height: 40px;
+}
+
+.select-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.select-list>p {
+    margin: 5vh;
+}
+
+.select-list-selection {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 750px;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 25px 20px 35px;
+    border-right: 2px solid #132240;
+    border-left: 2px solid #132240;
+}
+
+.select-list-selection p {
+    margin-right: 1rem;
+}
+
+.select-list-selection:hover {
+    /* clever hack using currentcolor as a dynamic variable as it is not visible */
+    background-color: #dddddd;
+    cursor: pointer;
+}
+
+.select-list div.btn {
+    margin-top: 20px;
 }

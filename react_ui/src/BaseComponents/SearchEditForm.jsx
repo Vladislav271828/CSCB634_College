@@ -30,19 +30,10 @@ const SearchEditForm = ({ title,
         e.preventDefault();
         setSuccess(true)
         try {
-            // TODO: remove debug and make functional
-            // const res = await axiosPrivate.get(fetchUrl);
-            // console.log(res.data);
-            // setFetchedEditValues(res);
-
-
-            setFetchedEditValues({
-                id: 0,
-                firstname: "suck",
-                lastname: "much",
-                email: "ida@abv.bg",
-                role: "STUDENT"
-            });
+            const url = fetchUrl.replace("{0}", formData)
+            const res = await axiosPrivate.get(url);
+            console.log(res.data);
+            setFetchedEditValues(res.data);
         } catch (err) {
             setSuccess(false)
             if (!err?.response) {
@@ -81,13 +72,14 @@ const SearchEditForm = ({ title,
             </form>
             {fetchedEditValues ? <Form
                 requestURL={requestURL}
-                requestEditId={formData}
+                requestIds={[formData]}
                 successMsg={successMsg}
                 buttonMsg={buttonMsg}
                 formStructure={formStructure}
                 editValues={fetchedEditValues}
                 deleteWarningMsg={deleteWarningMsg}
-                deleteUrl={deleteUrl} />
+                deleteUrl={deleteUrl}
+                isPut={true} />
                 : <></>}
         </div>
 

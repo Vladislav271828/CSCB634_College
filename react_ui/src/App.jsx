@@ -14,6 +14,7 @@ import Form from './BaseComponents/Form';
 
 import structures from "./API/structures"
 import SearchEditForm from './BaseComponents/SearchEditForm';
+import SelectList from './BaseComponents/SelectList';
 
 function App() {
 
@@ -54,25 +55,46 @@ function App() {
                 buttonMsg="Create Faculty"
                 formStructure={structures.createFaculty} />} />
 
+              <Route path="/admin/create-department" element={<SelectList
+                title="Create a department."
+                requestURL="/department/admin/create"
+                successMsg="Department created successfully."
+                buttonMsg="Create Department"
+                formStructure={structures.createDepartment} />} />
+
+              <Route path="/admin/update-college" element={<SelectList
+                title="Update college details."
+                requestURL="/college/admin/update/{0}"
+                requestIds={["collegeId"]}
+                fetchUrl="/college/getById/{0}"
+                successMsg="College details changed successfully."
+                buttonMsg="Save Changes"
+                formStructure={structures.updateCollege}
+                deleteUrl="/college/admin/{0}/delete"
+                deleteWarningMsg="delete this college"
+                isPut={true} />} />
+
               <Route path="/admin/edit-all-user-details" element={<SearchEditForm
                 title="Edit all user details."
-                requestURL="/user/update/{id}"
+                requestURL="/user/update/{0}"
+                fetchUrl="/user/admin/getUserDetails/{0}"
                 successMsg="User details changed successfully."
                 buttonMsg="Save Changes"
-                formStructure={structures.registerUser}
-                searchLabel="Search User"
-                deleteUrl="user/admin/delete/{id}"
+                formStructure={structures.changeAllUserDetails}
+                searchLabel="Enter user's email"
+                deleteUrl="user/admin/delete/{0}"
                 deleteWarningMsg="delete this user"
               />} />
 
               <Route path={`/admin/change-user-details`} element={<Form
                 title="Change my user details."
-                requestURL="/user/update/{id}"
-                requestEditId={email}
+                requestURL="/user/update/{0}"
+                requestIds={[email]}
                 successMsg="User details changed successfully."
                 buttonMsg="Save Changes"
                 formStructure={structures.registerUser}
-                fetchUrl="/auth/getUserDetails" />} />
+                fetchUrl="/user/getUserDetails"
+                isPut={true} />} />
 
               <Route path="/admin/" element={<Navigate to="/admin/dashboard" replace />} />
             </Route>
@@ -82,26 +104,28 @@ function App() {
 
               <Route path={"/student/change-user-details"} element={<Form
                 title="Change my user details."
-                requestURL="/user/update/{id}"
-                requestEditId={email}
+                requestURL="/user/update/{0}"
+                requestIds={[email]}
                 successMsg="User details changed successfully."
                 buttonMsg="Save Changes"
                 formStructure={structures.changeUserDetails}
-                fetchUrl="/auth/getUserDetails" />} />
+                fetchUrl="/user/getUserDetails"
+                isPut={true} />} />
               <Route path="/student/" element={<Navigate to="/student/dashboard" replace />} />
             </Route>
 
             <Route element={<PrivateRoute allowedRoles={["PROFESSOR"]} />}>
-              <Route path="/professor/dashboard" element={<HomePage title="Professor" dashStructure={[]} />} />
+              <Route path="/professor/dashboard" element={<HomePage title="Teacher" dashStructure={structures.profesorDash} />} />
 
               <Route path={"/professor/change-user-details"} element={<Form
                 title="Change my user details."
-                requestURL="/user/update/{id}"
-                requestEditId={email}
+                requestURL="/user/update/{0}"
+                requestIds={[email]}
                 successMsg="User details changed successfully."
                 buttonMsg="Save Changes"
                 formStructure={structures.changeUserDetails}
-                fetchUrl="/auth/getUserDetails" />} />
+                fetchUrl="/user/getUserDetails"
+                isPut={true} />} />
               <Route path="/professor/" element={<Navigate to="/professor/dashboard" replace />} />
             </Route>
 
@@ -110,12 +134,13 @@ function App() {
 
               <Route path={"/user/change-user-details"} element={<Form
                 title="Change my user details."
-                requestURL="/user/update/{id}"
-                requestEditId={email}
+                requestURL="/user/update/{0}"
+                requestIds={[email]}
                 successMsg="User details changed successfully."
                 buttonMsg="Save Changes"
                 formStructure={structures.changeUserDetails}
-                fetchUrl="/auth/getUserDetails" />} />
+                fetchUrl="/user/getUserDetails"
+                isPut={true} />} />
               <Route path="/user/" element={<Navigate to="/user/dashboard" replace />} />
             </Route>
 
