@@ -17,7 +17,7 @@ public class DtoDepartment {
     private String name;
     @NotNull(message = "College ID cannot be null")
     @Positive(message = "College ID must be a positive number")
-    private Long collegeId;
+    private Long facultyId;
 
     private Integer departmentHeadId;
 

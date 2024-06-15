@@ -57,7 +57,7 @@ public class ProfessorService {
         professorDto.setId(professor.getId());
 
         DtoDepartment dtoDepartment = new DtoDepartment();
-        dtoDepartment.setCollegeId(professor.getDepartment().getCollege().getId());
+        dtoDepartment.setFacultyId(professor.getDepartment().getFaculty().getId());
         dtoDepartment.setName(professor.getDepartment().getName());
 
         Integer departmentHadId;

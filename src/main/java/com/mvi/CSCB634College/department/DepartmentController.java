@@ -31,6 +31,12 @@ public class DepartmentController {
         return ResponseEntity.ok(DepartmentService.getAllByCollege(collegeId));
     }
 
+    @GetMapping("/getAllByFaculty/{facultyId}")
+    public ResponseEntity<List<DtoDepartment>> getAllByFaculty(
+            @PathVariable Long facultyId) {
+        return ResponseEntity.ok(DepartmentService.getAllByFaculty(facultyId));
+    }
+
     @PutMapping("/admin/{id}/update")
     public ResponseEntity<DtoDepartment> updateDepartment(
             @PathVariable("id") Long id,

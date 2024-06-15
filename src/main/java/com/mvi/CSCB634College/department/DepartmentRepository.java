@@ -1,6 +1,6 @@
 package com.mvi.CSCB634College.department;
 
-import com.mvi.CSCB634College.college.College;
+import com.mvi.CSCB634College.faculty.Faculty;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,8 +26,11 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     @Query("select (count(d) > 0) from Department d where d.id = :id and d.departmentHead is null")
     boolean isDepartmentHeadNull(@Param("id") Long id);
 
-    List<Department> findAllByCollege(College college);
+    @Query("select d from Department d where d.faculty.college.id = ?1")
+    List<Department> findAllByCollege(Long collegeId);
 
     @Override
     Optional<Department> findById(Long aLong);
+
+    List<Department> findAllByFaculty(Faculty faculty);
 }

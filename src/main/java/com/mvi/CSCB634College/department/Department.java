@@ -1,13 +1,12 @@
 package com.mvi.CSCB634College.department;
 
-import com.mvi.CSCB634College.college.College;
+import com.mvi.CSCB634College.faculty.Faculty;
 import com.mvi.CSCB634College.professor.Professor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.Set;
 
@@ -27,8 +26,8 @@ public class Department {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "college_college_id", nullable = false)
-    private College college;
+    @JoinColumn(name = "faculty_faculty_id", nullable = false)
+    private Faculty faculty;
 
     @OneToMany(mappedBy = "department")
     private Set<Professor> professors;
