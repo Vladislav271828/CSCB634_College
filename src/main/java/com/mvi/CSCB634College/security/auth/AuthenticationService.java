@@ -405,7 +405,7 @@ public class AuthenticationService {
                 departmentHeadId = department.getDepartmentHead().getId();
             }
             departmentResponse.setDepartmentHeadId(departmentHeadId);
-            departmentResponse.setCollegeId(department.getCollege().getId());
+            departmentResponse.setFacultyId(department.getFaculty().getId());
             departmentResponse.setName(department.getName());
 
             ProfessorDto professorResponse = new ProfessorDto();

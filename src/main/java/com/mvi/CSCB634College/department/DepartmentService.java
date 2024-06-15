@@ -3,7 +3,8 @@ package com.mvi.CSCB634College.department;
 import com.mvi.CSCB634College.college.College;
 import com.mvi.CSCB634College.college.CollegeRepository;
 import com.mvi.CSCB634College.exception.BadRequestException;
-import com.mvi.CSCB634College.exception.UserNotFound;
+import com.mvi.CSCB634College.faculty.Faculty;
+import com.mvi.CSCB634College.faculty.FacultyRepository;
 import com.mvi.CSCB634College.professor.Professor;
 import com.mvi.CSCB634College.professor.ProfessorRepository;
 import jakarta.transaction.Transactional;
@@ -20,13 +21,15 @@ public class DepartmentService {
     private final DepartmentRepository departmentRepository;
     private final ModelMapper modelMapper;
     private final CollegeRepository collegeRepository;
+    private final FacultyRepository facultyRepository;
     private final ProfessorRepository professorRepository;
 
     @Autowired
-    public DepartmentService(DepartmentRepository departmentRepository, ModelMapper modelMapper, CollegeRepository collegeRepository, ProfessorRepository professorRepository) {
+    public DepartmentService(DepartmentRepository departmentRepository, ModelMapper modelMapper, CollegeRepository collegeRepository, FacultyRepository facultyRepository, ProfessorRepository professorRepository) {
         this.departmentRepository = departmentRepository;
         this.modelMapper = modelMapper;
         this.collegeRepository = collegeRepository;
+        this.facultyRepository = facultyRepository;
         this.professorRepository = professorRepository;
     }
 
@@ -35,10 +38,10 @@ public class DepartmentService {
         Department department = modelMapper.map(dtoDepartment, Department.class);
         department.setId(null);
         //Department department = new Department();
-        if (dtoDepartment.getCollegeId() != null) {
-            College college = collegeRepository.findById(dtoDepartment.getCollegeId())
-                    .orElseThrow(() -> new BadRequestException("College with id " + dtoDepartment.getCollegeId() + " not found"));
-            department.setCollege(college);
+        if (dtoDepartment.getFacultyId() != null) {
+            Faculty faculty = facultyRepository.findById(dtoDepartment.getFacultyId())
+                    .orElseThrow(() -> new BadRequestException("Faculty with id " + dtoDepartment.getFacultyId() + " not found"));
+            department.setFaculty(faculty);
         } else throw new BadRequestException("Department must have College");
 
         //If there is no professor provided we will not set one and leave the value as null for the professor to be set later
@@ -78,7 +81,19 @@ public class DepartmentService {
         College college = collegeRepository.findById(collegeId)
                 .orElseThrow(() -> new BadRequestException("College with id " + collegeId + " not found"));
 
-        List<Department> departments = departmentRepository.findAllByCollege(college);
+        List<Department> departments = departmentRepository.findAllByCollege(collegeId);
+
+        return departments.stream()
+                .map(Department -> modelMapper.map(Department, DtoDepartment.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<DtoDepartment> getAllByFaculty(Long facultyId) {
+
+        Faculty faculty = facultyRepository.findById(facultyId)
+                .orElseThrow(() -> new BadRequestException("Faculty with id " + facultyId + " not found"));
+
+        List<Department> departments = departmentRepository.findAllByFaculty(faculty);
 
         return departments.stream()
                 .map(Department -> modelMapper.map(Department, DtoDepartment.class))
@@ -91,11 +106,11 @@ public class DepartmentService {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Department with id " + id + " not found."));
 
-        if (dtoDepartment.getCollegeId() != null && !dtoDepartment.getCollegeId().equals(department.getCollege().getId())) {
-            College college = collegeRepository.findById(dtoDepartment.getCollegeId())
-                    .orElseThrow(() -> new BadRequestException("College with id " + dtoDepartment.getCollegeId() + " not found"));
+        if (dtoDepartment.getFacultyId() != null && !dtoDepartment.getFacultyId().equals(department.getFaculty().getId())) {
+            Faculty faculty = facultyRepository.findById(dtoDepartment.getFacultyId())
+                    .orElseThrow(() -> new BadRequestException("Faculty with id " + dtoDepartment.getFacultyId() + " not found"));
 
-            department.setCollege(college);
+            department.setFaculty(faculty);
             department = departmentRepository.save(department);
         }
 

@@ -280,7 +280,7 @@ public class UserService {
 
         DtoDepartment departmentDto = new DtoDepartment();
         departmentDto.setName(department.getName());
-        departmentDto.setCollegeId(department.getCollege().getId());
+        departmentDto.setFacultyId(department.getFaculty().getId());
         Integer departmentHeadId = null;
         if (department.getDepartmentHead() != null) {
             departmentHeadId = department.getDepartmentHead().getId();
@@ -441,7 +441,7 @@ public class UserService {
         }else{
             dtoDepartment.setDepartmentHeadId(null);
         }
-        dtoDepartment.setCollegeId(department.getCollege().getId());
+        dtoDepartment.setFacultyId(department.getFaculty().getId());
         dtoDepartment.setName(department.getName());
         return dtoDepartment;
     }
