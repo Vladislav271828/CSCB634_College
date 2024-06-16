@@ -27,11 +27,6 @@ public class CollegeController {
         return ResponseEntity.ok(collegeService.getCollegeById(id));
     }
 
-    @GetMapping("/getAllUsersByCollageId/{id}")
-    public ResponseEntity<List<ResponseUser>> getAllUsersByCollageId(
-            @PathVariable Long id) {
-        return ResponseEntity.ok(collegeService.getAllUserByCollegeId(id));
-    }
 
     @PutMapping("/admin/update/{id}")
     public ResponseEntity<DtoCollegeRequest> updateCollege(

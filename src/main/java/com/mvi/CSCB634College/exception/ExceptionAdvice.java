@@ -45,6 +45,12 @@ public class ExceptionAdvice {
         return buildErrorResponse(exc, HttpStatus.NOT_FOUND);
     }
 
+
+    @ExceptionHandler(CourseNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCourseNotFoundException(CourseNotFoundException exc) {
+        return buildErrorResponse(exc, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(DepartmentNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleDepartmentNotFoundException(DepartmentNotFoundException exc) {
         return buildErrorResponse(exc, HttpStatus.NOT_FOUND);

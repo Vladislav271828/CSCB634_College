@@ -7,7 +7,6 @@ import com.mvi.CSCB634College.exception.UserNotFound;
 import com.mvi.CSCB634College.security.Role;
 import com.mvi.CSCB634College.security.auth.AuthenticationService;
 import com.mvi.CSCB634College.security.config.JwtAuthenticationFilter;
-import com.mvi.CSCB634College.user.ResponseUser;
 import com.mvi.CSCB634College.user.User;
 import com.mvi.CSCB634College.user.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -45,6 +44,10 @@ public class CollegeService {
         if (dtoCollegeRequest.getRectorEmail() != null) {
             rector = userRepository.findByEmail(dtoCollegeRequest.getRectorEmail()).orElseThrow(() -> new UserNotFound("User " + dtoCollegeRequest.getRectorEmail() + " is not found."));//Email should always be valid format here due to the regex in the dto class
 
+            if (!(rector.getRole().equals(Role.ADMIN) || rector.getRole().equals(Role.USER) || rector.getRole().equals(Role.RECTOR))){
+                throw new BadRequestException("User with email " + rector.getEmail() + " can't become rector because they are with an invalid role for that position -> " + rector.getRole() + ".");
+            }
+
             if (isRectorAlreadyRectoring(rector)) {//Check if the user is already a rector in the database
                 throw new BadRequestException("User " + rector.getEmail() + " is already a rector.");
             }
@@ -57,10 +60,6 @@ public class CollegeService {
 
         }
 
-//
-//        if (!isCollegeUnique(college)) {//Check if the college already exists in the database
-//            throw new BadRequestException("College with name " + college.getName() + " or address " + college.getAddress() + " already exists.");
-//        }
         College college = modelMapper.map(dtoCollegeRequest, College.class);
         college.setRector(rector);
 
@@ -112,6 +111,14 @@ public class CollegeService {
             User rector = userRepository.findByEmail(dtoCollegeRequest.getRectorEmail())
                     .orElseThrow(() -> new UserNotFound("User with email " + dtoCollegeRequest.getRectorEmail() + " not found"));
 
+            if (!(rector.getRole().equals(Role.ADMIN) || rector.getRole().equals(Role.USER) || rector.getRole().equals(Role.RECTOR))){
+                throw new BadRequestException("User with email " + rector.getEmail() + " can't become rector because they are with an invalid role for that position -> " + rector.getRole() + ".");
+            }
+
+            if(!rector.getRole().equals(Role.RECTOR)){
+                rector.setRole(Role.RECTOR);
+            }
+
             if (college.getRector() != null) {
                 if (college.getRector().getEmail().equals(rector.getEmail())) {
                     throw new BadRequestException("User " + rector.getEmail() + " is already a rector of this college.");
@@ -152,7 +159,7 @@ public class CollegeService {
     private boolean isNameUnique(String name, Long collegeId) {
         return collegeRepository.findByNameIgnoreCase(name)
                 .stream()
-                .noneMatch(c -> !c.getId().equals(collegeId));
+                .allMatch(c -> c.getId().equals(collegeId));
     }
 
 
@@ -201,15 +208,4 @@ public class CollegeService {
         return collegeRepository.findByNameIgnoreCaseOrAddressIgnoreCase(college.getName(), college.getAddress()).isEmpty();
     }
 
-    public List<ResponseUser> getAllUserByCollegeId(Long id) {
-    List<College> colleges =  collegeRepository.findAll();
-
-    if (colleges.isEmpty()){
-        throw new CollegeNotFound("No colleges found");
-    }
-
-    //TODO: ??????????? HOW get all users under one collage?
-
-     return null;
-    }
 }

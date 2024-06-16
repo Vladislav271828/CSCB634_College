@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "professor_qualification")
+@IdClass(ProfessorQualificationId.class)
 public class ProfessorQualification {
     @Id
     @ManyToOne
@@ -24,5 +25,4 @@ public class ProfessorQualification {
     @ManyToOne
     @JoinColumn(name = "professors_user_id")
     private Professor professor;
-
 }

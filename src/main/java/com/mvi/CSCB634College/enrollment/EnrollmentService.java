@@ -45,6 +45,8 @@ public class EnrollmentService {
         Professor professor = professorRepository.findById(dtoEnrollment.getProfessorId())
                 .orElseThrow(() -> new BadRequestException("Professor with id " + dtoEnrollment.getProfessorId() + " not found"));
 
+        //TODO restrict based on Professor Qualification
+
         Course course = courseRepository.findById(dtoEnrollment.getCourseId())
                 .orElseThrow(() -> new BadRequestException("Course with id " + dtoEnrollment.getCourseId() + " not found"));
 
@@ -101,6 +103,8 @@ public class EnrollmentService {
         if (!Objects.equals(enrollment.getProfessor().getId(), dtoEnrollment.getProfessorId())) {
             Professor professor = professorRepository.findById(dtoEnrollment.getProfessorId())
                     .orElseThrow(() -> new BadRequestException("Professor with id " + dtoEnrollment.getProfessorId() + " not found"));
+
+            //TODO restrict based on Professor Qualification
 
             enrollment.setProfessor(professor);
         }

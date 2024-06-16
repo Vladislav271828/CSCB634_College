@@ -4,5 +4,6 @@ public enum Role {
     USER,
     STUDENT,
     PROFESSOR,
-    ADMIN
+    ADMIN,
+    RECTOR
 }
