@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DtoDepartment {
+    private Long id;
     @NotEmpty(message = "Department name is required.")
     private String name;
     @NotNull(message = "College ID cannot be null")
