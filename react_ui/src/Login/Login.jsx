@@ -39,7 +39,7 @@ function SignInForm() {
 
       //spaghetti pesto alla genovese
       const fetchResponse = await fetchUser(response.data.accessToken);
-      navigate(`/${fetchResponse.role.toLowerCase()}/home`);
+      navigate(`/${fetchResponse.role.toLowerCase()}/dashboard`);
 
     } catch (err) {
       if (!err?.response) {

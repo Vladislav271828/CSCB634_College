@@ -20,8 +20,8 @@ public class RegisterRequest {
     @NotEmpty(message = "First name is required.")
     @Length(min = 3, message = "First name must be longer than 3 characters.")
     @Length(max = 18, message = "First name is too long, must be less than 18 characters.")
-    private String firstName;
-    private String lastName;
+    private String firstname;
+    private String lastname;
     @NotEmpty(message = "Email is required.")
     @Email(message = "Invalid email format.")
     private String email;

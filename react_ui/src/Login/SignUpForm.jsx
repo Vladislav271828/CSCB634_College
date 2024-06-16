@@ -10,8 +10,8 @@ function SignUpForm() {
   const navigate = useNavigate(); // Hook for navigation
 
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    firstname: '',
+    lastname: '',
     email: '',
     password: '',
   });
@@ -22,12 +22,12 @@ function SignUpForm() {
     let errors = {};
 
     // First Name validations
-    if (!formData.firstName) {
+    if (!formData.firstname) {
       formIsValid = false;
-      errors['firstName'] = 'First name is required.';
-    } else if (formData.firstName.length < 3 || formData.firstName.length > 18) {
+      errors['firstname'] = 'First name is required.';
+    } else if (formData.firstname.length < 3 || formData.firstname.length > 18) {
       formIsValid = false;
-      errors['firstName'] = 'First name must be between 3 and 18 characters.';
+      errors['firstname'] = 'First name must be between 3 and 18 characters.';
     }
 
     // Email validations
@@ -86,7 +86,7 @@ function SignUpForm() {
   return (
     <div className='login-container'>
       <div>This page is meant for registering the first admin. It will not work if there is already at least one user. I can't be bothered to fix any bugs in this page as it is only temporary and will be removed. I hate React.</div>
-      {errors.firstName && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.firstName}</div>}
+      {errors.firstname && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.firstname}</div>}
       {errors.email && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.email}</div>}
       {errors.password && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.password}</div>}
       {errors.other && <div style={{ color: 'red', fontStyle: 'italic' }}>{errors.other}</div>}
@@ -94,11 +94,11 @@ function SignUpForm() {
         <div className="inputs-container">
           <div className="login-inputs-container">
             <label>First Name:</label>
-            <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} />
+            <input type="text" name="firstname" value={formData.firstname} onChange={handleChange} />
           </div>
           <div className="login-inputs-container">
             <label>Last Name:</label>
-            <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
+            <input type="text" name="lastname" value={formData.lastname} onChange={handleChange} />
           </div>
           <div className="login-inputs-container">
             <label>Email:</label>

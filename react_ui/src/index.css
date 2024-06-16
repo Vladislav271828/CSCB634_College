@@ -45,13 +45,22 @@ body {
     }
 }
 
-input {
+input,
+select {
     font-family: 'Noto Serif', serif;
     border: 1px solid #222;
     border-radius: 5px;
     height: 1.5rem;
     padding: 0px 2%;
     color: #222;
+    background-color: white;
+}
+
+input:hover:enabled,
+select:hover:enabled,
+input:focus:enabled,
+select:focus:enabled {
+    outline: 1px solid #132240;
 }
 
 button {
@@ -61,6 +70,16 @@ button {
     height: 1.5rem;
     padding: 0px 2%;
     color: #222;
+    cursor: pointer;
+}
+
+input[type='checkbox'] {
+    margin-right: .5rem;
+}
+
+input[type='checkbox']:hover,
+input[type='checkbox']:focus {
+    outline: 0px;
 }
 
 .prevent-select {
@@ -71,6 +90,21 @@ button {
     /* Standard syntax */
     user-select: none;
 }
+
+.err-msg {
+    padding: 10px 0px 0px 0px;
+}
+
+h3 {
+    font-weight: 400;
+}
+
+/* 
+---------------------------
+Header.jsx
+Footer.jsx
+---------------------------
+*/
 
 .app-header {
     height: 110px;
@@ -110,6 +144,12 @@ button {
     flex: 1 1 auto;
 }
 
+/* 
+---------------------------
+LOGIN
+---------------------------
+*/
+
 .login-container {
     text-align: left;
     display: flex;
@@ -120,8 +160,6 @@ button {
     margin: 10vh auto;
 }
 
-
-
 .login-inputs-container {
     flex-grow: 1;
     flex-wrap: wrap;
@@ -131,10 +169,6 @@ button {
 
 .login-check-container {
     display: flex;
-}
-
-input[type='checkbox'] {
-    margin-right: .5rem;
 }
 
 .login-inputs-container input {
@@ -151,4 +185,210 @@ input[type='checkbox'] {
 .login-container div,
 .login-container button {
     margin-top: 5px;
+}
+
+/*
+--------------------------
+Dashboard.jsx
+-------------------------- 
+*/
+
+.dash-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.dash-container>div {
+    max-width: 100%;
+    height: 140px;
+    padding: 1.5rem 1rem 1.5rem 30px;
+    text-align: left;
+    flex: 0 1 33%;
+}
+
+.dash-container>div button {
+    width: 100%;
+    height: 100%;
+    font-size: 1.25rem;
+}
+
+.logout-btn,
+.big-delete-btn button {
+    background-color: #ffdddd;
+}
+
+.logout-btn:hover,
+.big-delete-btn button:hover {
+    background-color: #ffbbbb;
+}
+
+.change-user-details {
+    background-color: #ddffdd;
+}
+
+.change-user-details:hover {
+    background-color: #bbffbb;
+}
+
+/* 
+---------------------------
+Form.jsx
+---------------------------
+*/
+
+.component-container>.component-container {
+    margin: 0px;
+}
+
+.component-container:first-child {
+    margin: 20px;
+}
+
+.big-delete-btn {
+    padding-top: 0px !important;
+    height: 90px !important;
+}
+
+.form-component-container label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-structure-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+}
+
+.form-structure-container>div {
+    max-width: 100%;
+    height: 110px;
+    padding: 1.5rem 1.5rem 1.5rem 30px;
+    text-align: left;
+    flex: 0 1 33%;
+}
+
+.form-structure-container .input-with-button {
+    flex: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.input-with-button div {
+    display: flex;
+    width: 100%;
+    max-width: 400px;
+}
+
+.input-with-button button {
+    max-width: 100px;
+    width: 100%;
+    height: 40px;
+    margin-left: 10px;
+}
+
+.input-with-button label {
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-structure-container input,
+.form-structure-container select {
+    width: 100%;
+    margin-bottom: 0;
+    height: 40px;
+}
+
+.form-structure-container div.btn,
+.select-list div.btn {
+    flex: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.form-structure-container div.btn button,
+.select-list div.btn button {
+    max-width: 250px;
+    width: 100%;
+    height: 40px;
+}
+
+.form-structure-container div.btn button:first-child,
+.select-list div.btn button {
+    margin-right: 10px;
+}
+
+@media ((max-width: 900px) and (min-width:600px)) {
+
+    .form-structure-container>div,
+    .dash-container>div {
+        flex: 0 1 50%;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .form-structure-container>div,
+    .dash-container>div {
+        flex: 0 1 100%;
+    }
+}
+
+/* 
+---------------------------
+SelectList.jsx
+---------------------------
+*/
+
+.search-form {
+    width: 100%;
+    padding: 10px 0px 20px 0px;
+}
+
+#search {
+    width: 100%;
+    max-width: 500px;
+    height: 40px;
+}
+
+.select-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.select-list>p {
+    margin: 5vh;
+}
+
+.select-list-selection {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 750px;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 25px 20px 35px;
+    border-right: 2px solid #132240;
+    border-left: 2px solid #132240;
+}
+
+.select-list-selection p {
+    margin-right: 1rem;
+}
+
+.select-list-selection:hover {
+    /* clever hack using currentcolor as a dynamic variable as it is not visible */
+    background-color: #dddddd;
+    cursor: pointer;
+}
+
+.select-list div.btn {
+    margin-top: 20px;
 }
