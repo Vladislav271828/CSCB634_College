@@ -3,7 +3,7 @@ CSCB634_College
 
 A web information system and web app made with React and Spring that is meant for universities, colleges and other higher education institutions.
 
-![preview](preview.jpg)
+<!-- ![preview](preview.jpg) -->
 
 ## Developers
 
