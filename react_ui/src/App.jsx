@@ -41,6 +41,29 @@ function App() {
                 buttonMsg="Register User"
                 formStructure={structures.registerUser} />} />
 
+              <Route path="/admin/register-teacher" element={<SelectList
+                title="Register a new teacher."
+                requestURL="/auth/admin/register-professor"
+                successMsg="Teacher created successfully."
+                buttonMsg="Create Teacher"
+                formStructure={structures.registerTeacher} />} />
+
+              <Route path="/admin/register-student" element={<SelectList
+                title="Register a new student."
+                requestURL="/auth/admin/register-student"
+                successMsg="Student created successfully."
+                buttonMsg="Create Student"
+                formStructure={structures.registerStudent} />} />
+
+              <Route path="/admin/set-department-head" element={<SelectList
+                title="Set a department head."
+                requestURL="/department/admin/{0}/update"
+                requestIds={["collegeId"]}
+                successMsg="Department head set successfully."
+                buttonMsg="Set Department Head"
+                formStructure={structures.setDepartmentHead}
+                isPut={true} />} />
+
               <Route path="/admin/create-college" element={<Form
                 title="Create a college."
                 requestURL="/college/admin/create"
@@ -62,6 +85,27 @@ function App() {
                 buttonMsg="Create Department"
                 formStructure={structures.createDepartment} />} />
 
+              <Route path="/admin/create-major" element={<SelectList
+                title="Create a major."
+                requestURL="/major/admin/create"
+                successMsg="Major created successfully."
+                buttonMsg="Create Major"
+                formStructure={structures.createMajor} />} />
+
+              <Route path="/admin/create-course" element={<SelectList
+                title="Create a course."
+                requestURL="/course/admin/create/"
+                successMsg="Course created successfully."
+                buttonMsg="Create Course"
+                formStructure={structures.createCourse} />} />
+
+              <Route path="/admin/enroll-student" element={<SelectList
+                title="Enroll a student."
+                requestURL="/enrollment/admin/create"
+                successMsg="Student enrolled successfully."
+                buttonMsg="Enroll student"
+                formStructure={structures.enrollStudent} />} />
+
               <Route path="/admin/update-college" element={<SelectList
                 title="Update college details."
                 requestURL="/college/admin/update/{0}"
@@ -72,6 +116,72 @@ function App() {
                 formStructure={structures.updateCollege}
                 deleteUrl="/college/admin/{0}/delete"
                 deleteWarningMsg="delete this college"
+                isPut={true} />} />
+
+              <Route path="/admin/update-faculty" element={<SelectList
+                title="Update faculty details."
+                requestURL="/faculty/admin/{0}/update"
+                requestIds={["facultyId"]}
+                fetchUrl="/faculty/getById/{0}"
+                successMsg="Faculty details changed successfully."
+                buttonMsg="Save Changes"
+                formStructure={structures.updateFaculty}
+                deleteUrl="/faculty/admin/{0}/delete"
+                deleteWarningMsg="delete this faculty"
+                isPut={true} />} />
+
+              <Route path="/admin/update-department" element={<SelectList
+                title="Update department details."
+                requestURL="/department/admin/{0}/update"
+                requestIds={["departmentId"]}
+                fetchUrl="/department/getById/{0}"
+                successMsg="Department details changed successfully."
+                buttonMsg="Save Changes"
+                formStructure={structures.updateDepartment}
+                deleteUrl="/department/admin/{0}/delete"
+                deleteWarningMsg="delete this department"
+                isPut={true} />} />
+
+              <Route path="/admin/update-major" element={<SelectList
+                title="Update a major's details."
+                requestURL="/major/admin/{0}/update"
+                requestIds={["majorId"]}
+                fetchUrl="/major/getById/{0}"
+                successMsg="The major's details are changed successfully."
+                buttonMsg="Save Changes"
+                formStructure={structures.updateMajor}
+                deleteUrl="/major/admin/{0}/delete"
+                deleteWarningMsg="delete this major"
+                isPut={true} />} />
+
+              <Route path="/admin/update-course" element={<SelectList
+                title="Update course details."
+                requestURL="/course/admin/{0}/update"
+                requestIds={["courseId"]}
+                fetchUrl="/course/getById/{0}"
+                successMsg="Course details changed successfully."
+                buttonMsg="Save Changes"
+                formStructure={structures.updateCourse}
+                deleteUrl="/course/admin/{0}/delete"
+                deleteWarningMsg="delete this course"
+                isPut={true} />} />
+
+              <Route path="/admin/change-student-major" element={<SelectList
+                title="Change a student's major."
+                requestURL="/user/update-to-student/{1}/{0}"
+                requestIds={["email", "majorId"]}
+                successMsg="Student major changed successfully."
+                buttonMsg="Save Changes"
+                formStructure={structures.changeStudentMajor}
+                isPut={true} />} />
+
+              <Route path="/admin/change-teacher-department" element={<SelectList
+                title="Change a teacher's department."
+                requestURL="/user/update-professor-department/{1}/{0}"
+                requestIds={["email", "departmentId"]}
+                successMsg="Teacher department changed successfully."
+                buttonMsg="Save Changes"
+                formStructure={structures.changeTeacherDepartment}
                 isPut={true} />} />
 
               <Route path="/admin/edit-all-user-details" element={<SearchEditForm
@@ -100,7 +210,7 @@ function App() {
             </Route>
 
             <Route element={<PrivateRoute allowedRoles={["STUDENT"]} />}>
-              <Route path="/student/dashboard" element={<HomePage title="Student" dashStructure={[]} />} />
+              <Route path="/student/dashboard" element={<HomePage title="Student" dashStructure={structures.studentDash} />} />
 
               <Route path={"/student/change-user-details"} element={<Form
                 title="Change my user details."
@@ -130,7 +240,7 @@ function App() {
             </Route>
 
             <Route element={<PrivateRoute allowedRoles={["USER"]} />}>
-              <Route path="/user/dashboard" element={<HomePage title="User" dashStructure={[]} />} />
+              <Route path="/user/dashboard" element={<HomePage title="User" dashStructure={structures.userDash} />} />
 
               <Route path={"/user/change-user-details"} element={<Form
                 title="Change my user details."

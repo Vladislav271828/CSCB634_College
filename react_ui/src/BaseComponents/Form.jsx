@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+//sisyphus must be imagined happy the same way i must be imagined happy dealing with all this mess
+import React, { useEffect, useState } from 'react'
 import useAxiosPrivate from '../Login/useAxiosPrivate';
 import { useNavigate } from 'react-router-dom';
 
@@ -41,6 +42,22 @@ const Form = ({ title,
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handleYearChange = (e) => {
+        setErrMsg("");
+        if (e.target.value.includes('A'))
+            setFormData({ ...formData, date: e.target.value.match(/\d+/g)[0] + "-10-01", autumn: true });
+        else
+            setFormData({ ...formData, date: e.target.value.match(/\d+/g)[0] + "-10-01", autumn: false });
+    };
+
+    function generateYearsArray(startYear) {
+        const years = [];
+        for (let year = startYear; year >= 2023; year--) {
+            years.push(year);
+        }
+        return years;
+    }
+
     const handleBack = () => {
         if (backFunc) backFunc();
         else
@@ -56,7 +73,7 @@ const Form = ({ title,
             isPut ?
                 res = await axiosPrivate.put(url, formData)
                 : res = await axiosPrivate.post(url, formData)
-            console.log(res.data);
+            // console.log(res.data);
             setErrMsg(successMsg);
         } catch (err) {
             setSuccess(false)
@@ -74,7 +91,7 @@ const Form = ({ title,
         const url = formatString(fetchUrl, requestIds);
         try {
             const res = await axiosPrivate.get(url);
-            console.log(res.data);
+            // console.log(res.data);
             setFetchedEditValues(res.data);
         } catch (err) {
             setSuccess(false)
@@ -110,7 +127,7 @@ const Form = ({ title,
 
     useEffect(() => {
         formStructure.map((input) => {
-            if (input.type == "select" && input.fetchUrl && (containsAllElements(Object.keys(formData), input.require) || !input.require)) {
+            if (input.type == "select" && input.fetchUrl && (!input.require || containsAllElements(Object.keys(formData), input.require))) {
                 fetchOptions(input)
             }
         });
@@ -128,8 +145,8 @@ const Form = ({ title,
         const url = input.fetchUrl.replace("{0}", formData[input.require]);
         try {
             const res = await axiosPrivate.get(url);
-            console.log(res.data);
-            setFetchedSelections({ ...fetchedSelections, [input.id]: res.data })
+            //state updater saving lives
+            setFetchedSelections(fs => ({ ...fs, [input.id]: res.data }))
         } catch (err) {
             setSuccess(false)
             if (!err?.response) {
@@ -150,8 +167,8 @@ const Form = ({ title,
                 {formStructure.map((input) => {
                     if (formDataNoSend[input.require] || !input.require) {
                         if (input.type == "select") {
-                            return <div key={input.id}>
-                                <label style={input.disabled && { opacity: "0.5" }}>{input.label}</label>
+                            return <div key={input.id} style={input.disabled && { opacity: "0.5" }}>
+                                <label>{input.label}</label>
                                 <select
                                     name={input.id}
                                     onChange={handleChange}
@@ -162,13 +179,40 @@ const Form = ({ title,
                                         fetchedSelections[input.id]?.map((selection) => {
                                             return <option key={selection.id}
                                                 value={selection.id}
-                                                selected={selection.id == fetchedEditValues[input.id]}>{selection[input.fetchLabel]}</option>
+                                                selected={(selection.id == fetchedEditValues[input.id] && !formDataNoSend[input.id])
+                                                    || (selection.id == formDataNoSend[input.id])
+                                                }>{selection[input.fetchLabel]}</option>
                                         })
                                         : Object.entries(input.options).map(([value, text]) => {
                                             return <option key={value}
                                                 value={value}
-                                                selected={value == fetchedEditValues[input.id]}>{text}</option>
+                                                selected={(value == fetchedEditValues[input.id] && !formDataNoSend[input.id])
+                                                    || (!fetchedEditValues[input.id] && value == formDataNoSend[input.id])
+                                                }>{text}</option>
                                         })}
+                                </select>
+                            </div>
+                        }
+                        else if (input.type == "year") {
+                            return <div key={input.id}>
+                                <label style={input.disabled && { opacity: "0.5" }}>{input.label}</label>
+                                <select
+                                    name={input.id}
+                                    onChange={handleYearChange}
+                                    disabled={input.disabled}
+
+                                >
+                                    <option value={""} selected disabled hidden></option>
+                                    {generateYearsArray(new Date().getFullYear()).map((year) => {
+                                        return <React.Fragment key={year}>
+                                            <option
+                                                value={year + 'S'}
+                                                selected={year == new Date(fetchedEditValues.date).getFullYear && fetchedEditValues.autumn == false}>{year + "/" + Number(year + 1) + ' Spring'}</option>
+                                            <option
+                                                value={year + 'A'}
+                                                selected={year == new Date(fetchedEditValues.date).getFullYear && fetchedEditValues.autumn == true}>{year + "/" + Number(year + 1) + ' Autumn'}</option>
+                                        </React.Fragment>
+                                    })}
                                 </select>
                             </div>
                         }

@@ -36,11 +36,15 @@ const SelectList = ({ title,
     const handleBack = () => {
         if (level <= 0)
             navigate("../dashboard", { relative: "path" });
-        else setLevel(level - 1)
+        else {
+            setLoading(true)
+            setLevel(level - 1)
+        }
     }
 
     const handleForward = (id) => {
         setFormData({ ...formData, [formStructure[level].id]: id });
+        setLoading(true)
         setLevel(level + 1)
     }
 
@@ -51,7 +55,6 @@ const SelectList = ({ title,
 
     const fetchOptions = async () => {
         setSuccess(true)
-        setLoading(true)
         const replace = Object.entries(formData).filter(([key, value]) => {
             return formStructure[level]?.require ? formStructure[level].require.includes(key) : false
         }).map(([key, value]) => { return value })
@@ -60,7 +63,9 @@ const SelectList = ({ title,
             : formStructure[level].fetchUrl;
         try {
             const res = await axiosPrivate.get(url);
+            // console.log(res.data)
             setFetchedSelections(res.data)
+            setLoading(false)
         } catch (err) {
             setSuccess(false)
             if (!err?.response) {
@@ -71,13 +76,13 @@ const SelectList = ({ title,
                 setErrMsg(err.response.data.message);
             }
         }
-        setLoading(false)
     }
     if (!formStructure[level]?.type)
         return (
             <div className='component-container'>
                 {title ? <h1>{title}</h1> : <></>}
                 {!errMsg ? <></> : <p className="err-msg" style={success ? {} : { color: "red" }}>{errMsg}</p>}
+                {formStructure[level]?.selectMsg ? <h3>{formStructure[level].selectMsg}</h3> : <></>}
                 <SearchBar
                     search={search}
                     setSearch={setSearch}
@@ -85,13 +90,13 @@ const SelectList = ({ title,
                 <div className='select-list'>
                     {loading && <p>Loading...</p>}
 
-                    {fetchedSelections.length ? (
+                    {!loading && fetchedSelections.length ? (
                         fetchedSelections.filter((name) => (
                             (name[formStructure[level].fetchLabel]).toLowerCase()).includes(search.toLowerCase()
                             )).sort().map((item) => {
                                 return <section key={item.id}
                                     className="select-list-selection"
-                                    onClick={() => handleForward(item.id)}>
+                                    onClick={() => handleForward(formStructure[level]?.altId ? item[formStructure[level].altId] : item.id)}>
                                     <p style={{ fontWeight: "600" }}>{item[formStructure[level].fetchLabel]}</p>
                                     <p>{item[formStructure[level].fetchLabelSecond]}</p>
                                 </section>

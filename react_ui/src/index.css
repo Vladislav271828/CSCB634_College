@@ -63,10 +63,6 @@ select:focus:enabled {
     outline: 1px solid #132240;
 }
 
-input:disabled {
-    opacity: 0.5;
-}
-
 button {
     font-family: 'Noto Serif', serif;
     border: 1px solid #222;
@@ -97,6 +93,10 @@ input[type='checkbox']:focus {
 
 .err-msg {
     padding: 10px 0px 0px 0px;
+}
+
+h3 {
+    font-weight: 400;
 }
 
 /* 
