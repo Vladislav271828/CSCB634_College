@@ -105,7 +105,7 @@ public class DepartmentService {
 
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Department with id " + id + " not found."));
-
+        modelMapper.map(dtoDepartment, department);
         if (dtoDepartment.getFacultyId() != null && !dtoDepartment.getFacultyId().equals(department.getFaculty().getId())) {
             Faculty faculty = facultyRepository.findById(dtoDepartment.getFacultyId())
                     .orElseThrow(() -> new BadRequestException("Faculty with id " + dtoDepartment.getFacultyId() + " not found"));
