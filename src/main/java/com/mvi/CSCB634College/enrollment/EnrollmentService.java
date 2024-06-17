@@ -1,8 +1,11 @@
 package com.mvi.CSCB634College.enrollment;
 
+import com.mvi.CSCB634College.ProfessorQualification.ProfessorQualificationRepository;
 import com.mvi.CSCB634College.course.Course;
 import com.mvi.CSCB634College.course.CourseRepository;
 import com.mvi.CSCB634College.exception.BadRequestException;
+import com.mvi.CSCB634College.exception.CourseNotFoundException;
+import com.mvi.CSCB634College.major.MajorRepository;
 import com.mvi.CSCB634College.professor.Professor;
 import com.mvi.CSCB634College.professor.ProfessorRepository;
 import com.mvi.CSCB634College.student.Student;
@@ -27,17 +30,23 @@ public class EnrollmentService {
     private final CourseRepository courseRepository;
 
     private final ModelMapper modelMapper;
+    private final ProfessorQualificationRepository professorQualificationRepository;
+    private final MajorRepository majorRepository;
 
     @Autowired
-    public EnrollmentService(EnrollmentRepository enrollmentRepository, StudentRepository studentRepository, ProfessorRepository professorRepository, CourseRepository courseRepository, ModelMapper modelMapper) {
+    public EnrollmentService(EnrollmentRepository enrollmentRepository, StudentRepository studentRepository, ProfessorRepository professorRepository, CourseRepository courseRepository, ModelMapper modelMapper,
+                             ProfessorQualificationRepository professorQualificationRepository,
+                             MajorRepository majorRepository) {
         this.enrollmentRepository = enrollmentRepository;
         this.studentRepository = studentRepository;
         this.professorRepository = professorRepository;
         this.courseRepository = courseRepository;
         this.modelMapper = modelMapper;
+        this.professorQualificationRepository = professorQualificationRepository;
+        this.majorRepository = majorRepository;
     }
 
-    public DtoEnrollmentResponse createEnrollment(DtoEnrollment dtoEnrollment){
+    public DtoEnrollmentResponse createEnrollment(DtoEnrollment dtoEnrollment) {
 
         Student student = studentRepository.findById(dtoEnrollment.getStudentId())
                 .orElseThrow(() -> new BadRequestException("Student with id " + dtoEnrollment.getProfessorId() + " not found"));
@@ -45,10 +54,17 @@ public class EnrollmentService {
         Professor professor = professorRepository.findById(dtoEnrollment.getProfessorId())
                 .orElseThrow(() -> new BadRequestException("Professor with id " + dtoEnrollment.getProfessorId() + " not found"));
 
-        //TODO restrict based on Professor Qualification
 
         Course course = courseRepository.findById(dtoEnrollment.getCourseId())
                 .orElseThrow(() -> new BadRequestException("Course with id " + dtoEnrollment.getCourseId() + " not found"));
+
+        if (!Objects.equals(student.getMajor().getId(), course.getId())){
+            throw new BadRequestException("Student is of major " + student.getMajor().getId() + " and can't join course of major " + course.getMajor().getId() + ".");
+        }
+
+        if (!professorQualificationRepository.existsByCourse_IdAndProfessor_Id(dtoEnrollment.getCourseId(), professor.getId())) {
+            throw new BadRequestException("Professor with id " + professor.getId() + "(" + professor.getUser().getEmail() + ") doesn't have entry in professor qualification for course with id " + dtoEnrollment.getCourseId() + "(" + course.getName() + ").");
+        }
 
         Enrollment enrollment = modelMapper.map(dtoEnrollment, Enrollment.class);
         enrollment.setStudent(student);
@@ -57,7 +73,7 @@ public class EnrollmentService {
         return modelMapper.map(enrollmentRepository.save(enrollment), DtoEnrollmentResponse.class);
     }
 
-    public DtoEnrollmentResponse getEnrollmentById(Long enrollmentId){
+    public DtoEnrollmentResponse getEnrollmentById(Long enrollmentId) {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new BadRequestException("Enrollment with id " + enrollmentId + " not found"));
 
@@ -88,7 +104,7 @@ public class EnrollmentService {
                 .collect(Collectors.toList());
     }
 
-    public DtoEnrollmentResponse updateEnrollment(Long enrollmentId, DtoEnrollment dtoEnrollment){
+    public DtoEnrollmentResponse updateEnrollment(Long enrollmentId, DtoEnrollment dtoEnrollment) {
 
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new BadRequestException("Enrollment with id " + enrollmentId + " not found"));
@@ -98,13 +114,27 @@ public class EnrollmentService {
             Student student = studentRepository.findById(dtoEnrollment.getStudentId())
                     .orElseThrow(() -> new BadRequestException("Student with id " + dtoEnrollment.getProfessorId() + " not found"));
 
+
+            if (!courseRepository.existsById(dtoEnrollment.getCourseId())){
+                throw new CourseNotFoundException("Course with id " + dtoEnrollment.getCourseId() + " doesn't exist.");
+            }
+
+            Course course = courseRepository.findById(dtoEnrollment.getCourseId()).orElseThrow();
+
+            if (!Objects.equals(student.getMajor().getId(), course.getMajor().getId())){
+                throw new BadRequestException("Student is of major " + student.getMajor().getId() + " and can't join course of major " + course.getMajor().getId() + ".");
+            }
+
             enrollment.setStudent(student);
         }
         if (!Objects.equals(enrollment.getProfessor().getId(), dtoEnrollment.getProfessorId())) {
             Professor professor = professorRepository.findById(dtoEnrollment.getProfessorId())
                     .orElseThrow(() -> new BadRequestException("Professor with id " + dtoEnrollment.getProfessorId() + " not found"));
 
-            //TODO restrict based on Professor Qualification
+            if (!professorQualificationRepository.existsByCourse_IdAndProfessor_Id(dtoEnrollment.getCourseId(), professor.getId())) {
+                throw new BadRequestException("Professor with id " + professor.getId() + "(" + professor.getUser().getEmail() + ") doesn't have entry in professor qualification for course with id " + dtoEnrollment.getCourseId() + ".");
+            }
+
 
             enrollment.setProfessor(professor);
         }
@@ -112,24 +142,21 @@ public class EnrollmentService {
             Course course = courseRepository.findById(dtoEnrollment.getCourseId())
                     .orElseThrow(() -> new BadRequestException("Course with id " + dtoEnrollment.getCourseId() + " not found"));
 
+            if (!professorQualificationRepository.existsByCourse_IdAndProfessor_Id(dtoEnrollment.getCourseId(), dtoEnrollment.getProfessorId())) {
+                throw new BadRequestException("Professor with id " + dtoEnrollment.getId() + " doesn't have entry in professor qualification for course with id " + dtoEnrollment.getCourseId() + ".");
+            }
+
             enrollment.setCourse(course);
         }
 
         return modelMapper.map(enrollmentRepository.save(enrollment), DtoEnrollmentResponse.class);
     }
 
-    public void deleteEnrollment(Long enrollmentId){
-    enrollmentRepository.findById(enrollmentId)
+    public void deleteEnrollment(Long enrollmentId) {
+        enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new BadRequestException("Enrollment with id " + enrollmentId + " not found"));
         enrollmentRepository.deleteById(enrollmentId);
     }
-
-
-
-
-
-    
-
 
 
 }

@@ -14,8 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProfessorQualificationResponse {
 
-    private Integer professorQualificationId;
-
     private DtoCourse course;
 
     private ProfessorDto professor;

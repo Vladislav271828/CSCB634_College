@@ -9,6 +9,8 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/admin/professorQualification")
 @RequiredArgsConstructor
@@ -26,11 +28,16 @@ public class ProfessorQualificationController {
         return ResponseEntity.ok(professorQualificationService.updateProfessorQualification(request));
     }
 
+    @GetMapping("/getByProfessorId/{professorId}")
+    public ResponseEntity<List<ProfessorQualificationResponse>> getProfessorQualificationByProfessorId(@PathVariable Integer professorId){
+        return ResponseEntity.ok(professorQualificationService.getProfessorQualificationByProfessorId(professorId));
+    }
 
-    @DeleteMapping("/delete/{professorQualificationId}")
-    public ResponseEntity<Void> deleteProfessorQualification(@PathVariable Integer professorQualificationId){
-//        professorQualificationService.deleteProfessorQualification(professorQualificationId);
-        return ResponseEntity.noContent().build();
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteProfessorQualification(@Valid @RequestBody ProfessorQualificationRequest request){
+        professorQualificationService.deleteProfessorQualification(request);
+    return ResponseEntity.noContent().build();
     }
 
 }

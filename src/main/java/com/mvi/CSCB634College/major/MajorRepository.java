@@ -14,4 +14,7 @@ public interface MajorRepository extends JpaRepository<Major, Long> {
     Optional<Major> findMajorById(Long id);
 
     List<Major> findAllByDepartment(Department department);
+
+    @Override
+    Optional<Major> findById(Long aLong);
 }
