@@ -392,3 +392,7 @@ SelectList.jsx
 .select-list div.btn {
     margin-top: 20px;
 }
+
+.skip-btn {
+    margin: 0 0 20px 0 !important;
+}

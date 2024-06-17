@@ -13,7 +13,9 @@ const Form = ({ title,
     editValues,
     deleteWarningMsg,
     deleteUrl,
+    //it would be better for it to be a request type and use a switch case
     isPut,
+    isDelete,
     backFunc,
     selectListValues }) => {
 
@@ -70,9 +72,15 @@ const Form = ({ title,
         const url = formatString(requestURL, requestIds);
         try {
             var res
-            isPut ?
-                res = await axiosPrivate.put(url, formData)
-                : res = await axiosPrivate.post(url, formData)
+            if (isDelete) {
+                res = await axiosPrivate.delete(url, { data: formData });
+                alert("Operation successful.");
+                navigate("../dashboard", { relative: "path" })
+            }
+            else
+                isPut ?
+                    res = await axiosPrivate.put(url, formData)
+                    : res = await axiosPrivate.post(url, formData)
             // console.log(res.data);
             setErrMsg(successMsg);
         } catch (err) {
@@ -181,7 +189,7 @@ const Form = ({ title,
                                                 value={selection.id}
                                                 selected={(selection.id == fetchedEditValues[input.id] && !formDataNoSend[input.id])
                                                     || (selection.id == formDataNoSend[input.id])
-                                                }>{selection[input.fetchLabel]}</option>
+                                                }>{selection[input.fetchLabel] + (selection[input.fetchLabelAdd] ? " " + selection[input.fetchLabelAdd] : "")}</option>
                                         })
                                         : Object.entries(input.options).map(([value, text]) => {
                                             return <option key={value}
@@ -230,7 +238,7 @@ const Form = ({ title,
                     }
                 })}
                 <div className="btn">
-                    <button type='submit'>
+                    <button type='submit' className={isDelete ? "logout-btn" : ""}>
                         {buttonMsg}
                     </button>
                     <button type='button' onClick={() => handleBack()}>

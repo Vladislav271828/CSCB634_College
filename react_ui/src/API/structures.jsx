@@ -243,7 +243,8 @@ const structures = {
             selectMsg: "Please select who to be a department head.",
             fetchUrl: "/professor/admin/getAllProfessorsByDepartment/{0}",
             require: ["departmentId"],
-            fetchLabel: "lastname",
+            fetchLabel: "firstname",
+            fetchLabelAdd: "lastname",
             fetchLabelSecond: "email",
         },
         {
@@ -253,7 +254,8 @@ const structures = {
                     id: "departmentHeadId",
                     label: "Department Head",
                     type: "select",
-                    fetchLabel: "lastname",
+                    fetchLabel: "firstname",
+                    fetchLabelAdd: "lastname",
                     fetchUrl: "/professor/admin/getAllProfessorsByDepartment/{0}",
                     require: ["departmentId"],
                     disabled: true
@@ -426,7 +428,13 @@ const structures = {
                 {
                     id: "credits",
                     label: "Credits",
-                    type: "number"
+                    type: "select",
+                    options: {
+                        0: "0 Credits",
+                        3: "3 Credits",
+                        6: "6 Credits",
+                        12: "12 Credits",
+                    }
                 },
                 {
                     id: "majorId",
@@ -437,6 +445,141 @@ const structures = {
                     require: ["departmentId"],
                     disabled: true
                 }
+            ]
+        }
+    ],
+    addQualification: [
+        {
+            id: "collegeId",
+            selectMsg: "Please select a college.",
+            fetchUrl: "/college/admin/getAll",
+            fetchLabel: "name",
+            fetchLabelSecond: "address"
+        },
+        {
+            id: "facultyId",
+            selectMsg: "Please select a faculty.",
+            fetchUrl: "/faculty/getAllByCollege/{0}",
+            require: ["collegeId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "departmentId",
+            selectMsg: "Please select a department.",
+            fetchUrl: "/department/getAllByFaculty/{0}",
+            require: ["facultyId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "professorId",
+            selectMsg: "Please select which teacher to add a qualification to.",
+            fetchUrl: "/professor/admin/getAllProfessorsByDepartment/{0}",
+            require: ["departmentId"],
+            fetchLabel: "firstname",
+            fetchLabelAdd: "lastname",
+            fetchLabelSecond: "email",
+        },
+        {
+            id: "majorId",
+            selectMsg: "Please select the major connected to the course you want to qualify the teacher.",
+            fetchUrl: "/major/getAllByDepartment/{0}",
+            require: ["departmentId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "courseId",
+            selectMsg: "Please select the course.",
+            fetchUrl: "/course/getAllByMajor/{0}",
+            require: ["majorId"],
+            fetchLabel: "signature",
+            fetchLabelSecond: "name",
+        },
+        {
+            type: "FORM",
+            data: [
+                {
+                    id: "professorId",
+                    label: "Teacher",
+                    type: "select",
+                    fetchLabel: "firstname",
+                    fetchLabelAdd: "lastname",
+                    fetchUrl: "/professor/admin/getAllProfessorsByDepartment/{0}",
+                    require: ["departmentId"],
+                    disabled: true
+                },
+                {
+                    id: "courseId",
+                    label: "Course",
+                    type: "select",
+                    fetchLabel: "signature",
+                    fetchUrl: "/course/getAllByMajor/{0}",
+                    require: ["majorId"],
+                    disabled: true
+                },
+            ]
+        }
+    ],
+    removeQualification: [
+        {
+            id: "collegeId",
+            selectMsg: "Please select a college.",
+            fetchUrl: "/college/admin/getAll",
+            fetchLabel: "name",
+            fetchLabelSecond: "address"
+        },
+        {
+            id: "facultyId",
+            selectMsg: "Please select a faculty.",
+            fetchUrl: "/faculty/getAllByCollege/{0}",
+            require: ["collegeId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "departmentId",
+            selectMsg: "Please select a department.",
+            fetchUrl: "/department/getAllByFaculty/{0}",
+            require: ["facultyId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "professorId",
+            selectMsg: "Please select which teacher to remove a qualification from.",
+            fetchUrl: "/professor/admin/getAllProfessorsByDepartment/{0}",
+            require: ["departmentId"],
+            fetchLabel: "firstname",
+            fetchLabelAdd: "lastname",
+            fetchLabelSecond: "email",
+        },
+        {
+            id: "courseId",
+            selectMsg: "Please select the course.",
+            fetchUrl: "/admin/professorQualification/getByProfessorId/{0}",
+            require: ["professorId"],
+            fetchLabel: "signature",
+            fetchLabelSecond: "name",
+        },
+        {
+            type: "FORM",
+            data: [
+                {
+                    id: "professorId",
+                    label: "Teacher",
+                    type: "select",
+                    fetchLabel: "firstname",
+                    fetchLabelAdd: "lastname",
+                    fetchUrl: "/professor/admin/getAllProfessorsByDepartment/{0}",
+                    require: ["departmentId"],
+                    disabled: true
+                },
+                {
+                    id: "courseId",
+                    label: "Course",
+                    type: "select",
+                    fetchLabel: "signature",
+                    fetchUrl: "/admin/professorQualification/getByProfessorId/{0}",
+                    require: ["professorId"],
+                    disabled: true
+                },
             ]
         }
     ],
@@ -474,7 +617,8 @@ const structures = {
             selectMsg: "Please select which student to enroll.",
             fetchUrl: "/student/admin/getAllStudentsByMajorId/{0}",
             require: ["majorId"],
-            fetchLabel: "lastname",
+            fetchLabel: "firstname",
+            fetchLabelAdd: "lastname",
             fetchLabelSecond: "email",
         },
         {
@@ -482,7 +626,8 @@ const structures = {
             selectMsg: "Please select which teacher the student will be enrolled to.",
             fetchUrl: "/professor/admin/getAllProfessorsByDepartment/{0}",
             require: ["departmentId"],
-            fetchLabel: "lastname",
+            fetchLabel: "firstname",
+            fetchLabelAdd: "lastname",
             fetchLabelSecond: "email",
         },
         {
@@ -510,7 +655,8 @@ const structures = {
                     id: "studentId",
                     label: "Student",
                     type: "select",
-                    fetchLabel: "lastname",
+                    fetchLabel: "firstname",
+                    fetchLabelAdd: "lastname",
                     fetchUrl: "/student/admin/getAllStudentsByMajorId/{0}",
                     require: ["majorId"],
                     disabled: true
@@ -519,7 +665,8 @@ const structures = {
                     id: "professorId",
                     label: "Teacher",
                     type: "select",
-                    fetchLabel: "lastname",
+                    fetchLabel: "firstname",
+                    fetchLabelAdd: "lastname",
                     fetchUrl: "/professor/admin/getAllProfessorsByDepartment/{0}",
                     require: ["departmentId"],
                     disabled: true
@@ -626,6 +773,7 @@ const structures = {
             fetchUrl: "/faculty/getAllByCollege/{0}",
             require: ["collegeId"],
             fetchLabel: "name",
+            skip: "Don't change faculty."
         },
         {
             type: "FORM",
@@ -682,6 +830,8 @@ const structures = {
             fetchUrl: "/department/getAllByFaculty/{0}",
             require: ["facultyId"],
             fetchLabel: "name",
+            skip: "Don't change department."
+
         },
         {
             type: "FORM",
@@ -746,6 +896,7 @@ const structures = {
             fetchUrl: "/major/getAllByDepartment/{0}",
             require: ["departmentId"],
             fetchLabel: "name",
+            skip: "Don't change major."
         },
         {
             type: "FORM",
@@ -768,7 +919,13 @@ const structures = {
                 {
                     id: "credits",
                     label: "Credits",
-                    type: "number"
+                    type: "select",
+                    options: {
+                        0: "0 Credits",
+                        3: "3 Credits",
+                        6: "6 Credits",
+                        12: "12 Credits",
+                    }
                 },
                 {
                     id: "majorId",
@@ -817,7 +974,8 @@ const structures = {
             fetchUrl: "/student/admin/getAllStudentsByMajorId/{0}",
             require: ["majorId"],
             altId: "email",
-            fetchLabel: "lastname",
+            fetchLabel: "firstname",
+            fetchLabelAdd: "lastname",
             fetchLabelSecond: "email",
         },
         {
@@ -869,7 +1027,8 @@ const structures = {
             selectMsg: "Please select a teacher.",
             fetchUrl: "/professor/admin/getAllProfessorsByDepartment/{0}",
             require: ["departmentId"],
-            fetchLabel: "lastname",
+            fetchLabel: "firstname",
+            fetchLabelAdd: "lastname",
             fetchLabelSecond: "email",
             altId: "email",
         },
@@ -930,7 +1089,8 @@ const structures = {
             selectMsg: "Please select which student you want to change the enrollment of.",
             fetchUrl: "/student/admin/getAllStudentsByMajorId/{0}",
             require: ["majorId"],
-            fetchLabel: "lastname",
+            fetchLabel: "firstname",
+            fetchLabelAdd: "lastname",
             fetchLabelSecond: "email",
         },
         {
@@ -952,7 +1112,8 @@ const structures = {
             selectMsg: "Please select which teacher the student will be enrolled to.",
             fetchUrl: "/professor/admin/getAllProfessorsByDepartment/{0}",
             require: ["departmentId"],
-            fetchLabel: "lastname",
+            fetchLabel: "firstname",
+            fetchLabelAdd: "lastname",
             fetchLabelSecond: "email",
         },
         {
@@ -980,7 +1141,8 @@ const structures = {
                     id: "studentId",
                     label: "Student",
                     type: "select",
-                    fetchLabel: "lastname",
+                    fetchLabel: "firstname",
+                    fetchLabelAdd: "lastname",
                     fetchUrl: "/student/admin/getAllStudentsByMajorId/{0}",
                     require: ["majorId"],
                     disabled: true
@@ -989,7 +1151,8 @@ const structures = {
                     id: "professorId",
                     label: "Teacher",
                     type: "select",
-                    fetchLabel: "lastname",
+                    fetchLabel: "firstname",
+                    fetchLabelAdd: "lastname",
                     fetchUrl: "/professor/admin/getAllProfessorsByDepartment/{0}",
                     require: ["departmentId"],
                     disabled: true
@@ -1038,6 +1201,14 @@ const structures = {
         {
             link: "create-course",
             name: "Create a course."
+        },
+        {
+            link: "add-teacher-qualification",
+            name: "Qualify a teacher to teach a course."
+        },
+        {
+            link: "remove-teacher-qualification",
+            name: "Remove teacher qualification."
         },
         {
             link: "enroll-student",

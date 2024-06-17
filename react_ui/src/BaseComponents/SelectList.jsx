@@ -13,7 +13,8 @@ const SelectList = ({ title,
     fetchUrl,
     deleteWarningMsg,
     deleteUrl,
-    isPut
+    isPut,
+    isDelete
 }) => {
 
     const [formData, setFormData] = useState({});
@@ -46,6 +47,11 @@ const SelectList = ({ title,
         setFormData({ ...formData, [formStructure[level].id]: id });
         setLoading(true)
         setLevel(level + 1)
+    }
+
+    const handleSkip = (skiplvl = 1) => {
+        setLoading(true)
+        setLevel(level + skiplvl)
     }
 
     useEffect(() => {
@@ -88,6 +94,11 @@ const SelectList = ({ title,
                     setSearch={setSearch}
                 />
                 <div className='select-list'>
+                    {formStructure[level]?.skip && <div className="btn skip-btn">
+                        <button type='button' onClick={() => handleSkip(formStructure[level]?.skiplvl)}>
+                            {formStructure[level]?.skip}
+                        </button>
+                    </div>}
                     {loading && <p>Loading...</p>}
 
                     {!loading && fetchedSelections.length ? (
@@ -97,7 +108,7 @@ const SelectList = ({ title,
                                 return <section key={item.id}
                                     className="select-list-selection"
                                     onClick={() => handleForward(formStructure[level]?.altId ? item[formStructure[level].altId] : item.id)}>
-                                    <p style={{ fontWeight: "600" }}>{item[formStructure[level].fetchLabel]}</p>
+                                    <p style={{ fontWeight: "600" }}>{item[formStructure[level].fetchLabel] + (formStructure[level].fetchLabelAdd ? " " + item[formStructure[level].fetchLabelAdd] : "")}</p>
                                     <p>{item[formStructure[level].fetchLabelSecond]}</p>
                                 </section>
                             })) : <p>There are no options available.</p>}
@@ -130,6 +141,7 @@ const SelectList = ({ title,
                 deleteWarningMsg={deleteWarningMsg}
                 deleteUrl={deleteUrl}
                 isPut={isPut}
+                isDelete={isDelete}
                 backFunc={handleBack} />
         )
     }

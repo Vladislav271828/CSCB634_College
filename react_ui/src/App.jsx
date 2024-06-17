@@ -99,6 +99,20 @@ function App() {
                 buttonMsg="Create Course"
                 formStructure={structures.createCourse} />} />
 
+              <Route path="/admin/add-teacher-qualification" element={<SelectList
+                title="Qualify a teacher to teach a course."
+                requestURL="/admin/professorQualification/create"
+                successMsg="Teacher qualification added successfully."
+                buttonMsg="Add Qualification"
+                formStructure={structures.addQualification} />} />
+
+              <Route path="/admin/remove-teacher-qualification" element={<SelectList
+                title="Remove teacher qualification."
+                requestURL="/admin/professorQualification/delete"
+                buttonMsg="Remove Qualification"
+                formStructure={structures.removeQualification}
+                isDelete={true} />} />
+
               <Route path="/admin/enroll-student" element={<SelectList
                 title="Enroll a student."
                 requestURL="/enrollment/admin/create"
