@@ -43,8 +43,8 @@ public class ProfessorQualificationService {
     }
 
 
-    public List<ProfessorQualificationResponse> getProfessorQualificationByProfessorId(Integer professorId) {
-        if (!professorQualificationRepository.existsByProfessor_Id(professorId)){
+    public List<DtoCourse> getProfessorQualificationByProfessorId(Integer professorId) {
+        if (!professorQualificationRepository.existsByProfessor_Id(professorId)) {
             throw new ProfessorQualificationNotFound("No entries found in professor qualifications for professor with id " + professorId + ".");
         }
 
@@ -54,10 +54,10 @@ public class ProfessorQualificationService {
 
     }
 
-    private List<ProfessorQualificationResponse> mapCollectionToResponseEntitiesForProfessorQualification(List<ProfessorQualification> qualifications) {
-        List<ProfessorQualificationResponse> responses = new ArrayList<>();
-        for (ProfessorQualification professorQualification:qualifications) {
-            ProfessorQualificationResponse response = mapProfessorQualificationDtoToResponse(professorQualification);
+    private List<DtoCourse> mapCollectionToResponseEntitiesForProfessorQualification(List<ProfessorQualification> qualifications) {
+        List<DtoCourse> responses = new ArrayList<>();
+        for (ProfessorQualification professorQualification : qualifications) {
+            DtoCourse response = mapProfessorQualificationDtoToResponse(professorQualification).getCourse();
 
             responses.add(response);
         }
