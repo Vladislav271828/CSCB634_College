@@ -66,7 +66,7 @@ public class ProfessorQualificationService {
     }
 
     public void deleteProfessorQualification(ProfessorQualificationRequest request) {
-        if (professorQualificationRepository.existsByCourse_IdAndProfessor_Id(request.getCourseId().longValue(), request.getProfessorId())){
+        if (!professorQualificationRepository.existsByCourse_IdAndProfessor_Id(request.getCourseId().longValue(), request.getProfessorId())){
             throw new ProfessorQualificationNotFound("Professor qualification for professor with id " + request.getProfessorId() + " and course " + request.getCourseId() + " doesn't exists.");
         }
 
