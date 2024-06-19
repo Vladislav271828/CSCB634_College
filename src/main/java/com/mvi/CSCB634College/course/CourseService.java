@@ -75,7 +75,7 @@ public class CourseService {
 
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Course with id " + id + " not found."));
-        modelMapper.map(dtoCourse, course);
+
 
         if(dtoCourse.getMajorId() != null && !dtoCourse.getMajorId().equals(course.getMajor().getId())){
             Major major = majorRepository.findById(dtoCourse.getMajorId())
@@ -83,6 +83,7 @@ public class CourseService {
             course.setMajor(major);
         }
 
+        modelMapper.map(dtoCourse, course);
 
         return modelMapper.map(courseRepository.save(course), DtoCourse.class);
     }

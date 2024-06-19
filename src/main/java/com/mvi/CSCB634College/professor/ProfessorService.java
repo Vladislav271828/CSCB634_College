@@ -31,7 +31,7 @@ public class ProfessorService {
         return getResponseUsers(professors);
     }
 
-    private List<ResponseUser> getResponseUsers(List<Professor> professors) {
+    public List<ResponseUser> getResponseUsers(List<Professor> professors) {
         List<ResponseUser> responseUsers = new ArrayList<>();
         for (Professor professor: professors) {
             ResponseUser responseUser = new ResponseUser();
