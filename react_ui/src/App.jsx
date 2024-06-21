@@ -180,6 +180,18 @@ function App() {
                 deleteWarningMsg="delete this course"
                 isPut={true} />} />
 
+              <Route path="/admin/update-enrollment" element={<SelectList
+                title="Update an enrollment."
+                requestURL="/enrollment/admin/{0}/update"
+                requestIds={["enrollmentId"]}
+                fetchUrl="/enrollment/getById/{0}"
+                successMsg="Enrollment details changed successfully."
+                buttonMsg="Save Changes"
+                formStructure={structures.updateEnrollment}
+                deleteUrl="/enrollment/admin/{0}/delete"
+                deleteWarningMsg="delete this enrollment"
+                isPut={true} />} />
+
               <Route path="/admin/change-student-major" element={<SelectList
                 title="Change a student's major."
                 requestURL="/user/update-to-student/{1}/{0}"

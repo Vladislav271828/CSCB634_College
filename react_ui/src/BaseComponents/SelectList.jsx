@@ -43,6 +43,21 @@ const SelectList = ({ title,
         }
     }
 
+    function generateYearsArray(startYear) {
+        const years = [];
+        for (let year = startYear; year >= 2023; year--) {
+            years.push({
+                id: year + 'S',
+                year: `${year}/${year + 1} Spring`
+            });
+            years.push({
+                id: year + 'A',
+                year: `${year}/${year + 1} Autumn`
+            });
+        }
+        return years;
+    }
+
     const handleForward = (id) => {
         setFormData({ ...formData, [formStructure[level].id]: id });
         setLoading(true)
@@ -61,25 +76,72 @@ const SelectList = ({ title,
 
     const fetchOptions = async () => {
         setSuccess(true)
-        const replace = Object.entries(formData).filter(([key, value]) => {
-            return formStructure[level]?.require ? formStructure[level].require.includes(key) : false
-        }).map(([key, value]) => { return value })
-        const url = formStructure[level].require ?
-            formatString(formStructure[level].fetchUrl, replace)
-            : formStructure[level].fetchUrl;
-        try {
-            const res = await axiosPrivate.get(url);
-            // console.log(res.data)
-            setFetchedSelections(res.data)
+        if (formStructure[level].fetchUrl == "year") {
+            const yeararr = generateYearsArray(new Date().getFullYear())
+            setFetchedSelections(yeararr);
             setLoading(false)
-        } catch (err) {
-            setSuccess(false)
-            if (!err?.response) {
-                setErrMsg('Unable to connect to server.');
-                console.log(err)
-            }
-            else {
-                setErrMsg(err.response.data.message);
+        }
+        else {
+            let semester = "";
+            const replace = Object.entries(formData).filter(([key, value]) => {
+                return formStructure[level]?.require ? formStructure[level].require.includes(key) : false
+            }).map(([key, value]) => {
+                if (key == "year") {
+                    semester = value.slice(4);
+                    return value.slice(0, 4);
+                }
+                return value
+            })
+            // console.log(replace)
+            const url = formStructure[level].require ?
+                formatString(formStructure[level].fetchUrl, replace)
+                : formStructure[level].fetchUrl;
+
+            try {
+                const res = await axiosPrivate.get(url);
+                console.log(semester)
+                let dataArray;
+                if (semester) {
+                    const filteredRes = res.data.filter((data) => {
+                        return semester == 'A' ? data.autumn : !data.autumn
+                    })
+                    console.log(filteredRes)
+                    dataArray = filteredRes;
+                }
+                else dataArray = res.data;
+
+                if (formStructure[level]?.followUpUrl) {
+                    const urlTwo = formStructure[level].require ?
+                        formatString(formStructure[level].followUpUrl, replace)
+                        : formStructure[level].followUpUrl;
+
+                    const resTwo = await axiosPrivate.get(urlTwo);
+
+                    let placeholderData = [];
+                    resTwo.data.forEach((data) => {
+                        placeholderData[data.id] = data[formStructure[level].replacement];
+                    })
+
+                    console.log(placeholderData)
+
+                    dataArray.forEach((data) => {
+                        const id = data[formStructure[level].fetchLabel];
+                        data[formStructure[level].fetchLabel] = placeholderData[id]
+                    })
+                }
+
+                setFetchedSelections(dataArray)
+
+                setLoading(false)
+            } catch (err) {
+                setSuccess(false)
+                if (!err?.response) {
+                    setErrMsg('Unable to connect to server.');
+                    console.log(err)
+                }
+                else {
+                    setErrMsg(err.response.data.message);
+                }
             }
         }
     }
@@ -103,7 +165,7 @@ const SelectList = ({ title,
 
                     {!loading && fetchedSelections.length ? (
                         fetchedSelections.filter((name) => (
-                            (name[formStructure[level].fetchLabel]).toLowerCase()).includes(search.toLowerCase()
+                            (name[formStructure[level].fetchLabel] ? name[formStructure[level].fetchLabel] : "").toLowerCase()).includes(search.toLowerCase()
                             )).sort().map((item) => {
                                 return <section key={item.id}
                                     className="select-list-selection"

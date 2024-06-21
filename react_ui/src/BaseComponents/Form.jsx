@@ -215,10 +215,14 @@ const Form = ({ title,
                                         return <React.Fragment key={year}>
                                             <option
                                                 value={year + 'S'}
-                                                selected={year == new Date(fetchedEditValues.date).getFullYear && fetchedEditValues.autumn == false}>{year + "/" + Number(year + 1) + ' Spring'}</option>
+                                                selected={(year == new Date(fetchedEditValues.date).getFullYear && fetchedEditValues.autumn == false)
+                                                    || formDataNoSend[input.id] == year + 'S'
+                                                }>{year + "/" + Number(year + 1) + ' Spring'}</option>
                                             <option
                                                 value={year + 'A'}
-                                                selected={year == new Date(fetchedEditValues.date).getFullYear && fetchedEditValues.autumn == true}>{year + "/" + Number(year + 1) + ' Autumn'}</option>
+                                                selected={(year == new Date(fetchedEditValues.date).getFullYear && fetchedEditValues.autumn == true)
+                                                    || formDataNoSend[input.id] == year + 'A'
+                                                }>{year + "/" + Number(year + 1) + ' Autumn'}</option>
                                         </React.Fragment>
                                     })}
                                 </select>

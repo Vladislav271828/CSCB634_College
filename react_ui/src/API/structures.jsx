@@ -984,6 +984,7 @@ const structures = {
             fetchUrl: "/major/getAllByDepartment/{0}",
             require: ["departmentId"],
             fetchLabel: "name",
+            skip: "Don't change major."
         },
         {
             type: "FORM",
@@ -1038,6 +1039,7 @@ const structures = {
             fetchUrl: "/department/getAllByFaculty/{0}",
             require: ["facultyId"],
             fetchLabel: "name",
+            skip: "Don't change department."
         },
         {
             type: "FORM",
@@ -1096,16 +1098,18 @@ const structures = {
         {
             id: "year",
             selectMsg: "Please select the year of the enrollment.",
-            isYear: true
+            fetchUrl: "year",
+            fetchLabel: "year",
         },
         {
             id: "enrollmentId",
             selectMsg: "Please select which enrollment you want to update.",
             fetchUrl: "/enrollment/getAllByStudentAndYear/{0}/{1}",
-            require: ["studentId, year"],
-            followUpUrl: "/course/getById/{0}",
-            fetchLabel: "signature",
-            fetchLabelSecond: "name",
+            require: ["studentId", "year"],
+            followUpUrl: "/course/getAllByStudentAndYear/{0}/{1}",
+            replacement: "signature",
+            fetchLabel: "courseId",
+            fetchLabelSecond: "id",
         },
         {
             id: "professorId",
@@ -1115,6 +1119,7 @@ const structures = {
             fetchLabel: "firstname",
             fetchLabelAdd: "lastname",
             fetchLabelSecond: "email",
+            skip: "Don't change teacher."
         },
         {
             id: "courseId",
@@ -1123,6 +1128,7 @@ const structures = {
             require: ["majorId"],
             fetchLabel: "signature",
             fetchLabelSecond: "name",
+            skip: "Don't change course."
         },
         {
             type: "FORM",
