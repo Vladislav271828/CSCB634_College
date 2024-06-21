@@ -1,8 +1,9 @@
 package com.mvi.CSCB634College.student;
 
-import com.mvi.CSCB634College.department.DtoDepartment;
+import com.mvi.CSCB634College.course.Course;
+import com.mvi.CSCB634College.course.CourseRepository;
+import com.mvi.CSCB634College.exception.BadRequestException;
 import com.mvi.CSCB634College.major.DtoMajor;
-import com.mvi.CSCB634College.professor.Professor;
 import com.mvi.CSCB634College.professor.ProfessorDto;
 import com.mvi.CSCB634College.user.ResponseUser;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +17,21 @@ import java.util.List;
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final CourseRepository courseRepository;
 
 
     public List<ResponseUser> getAllStudentsByMajorId(Long majorId) {
         List<Student> students = studentRepository.findByMajor_Id(majorId);
+
+        return getResponseUsers(students);
+    }
+
+    public List<ResponseUser> getAllStudentsByCourseId(Long courseId) {
+
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new BadRequestException("Course with id " + courseId + " not found."));
+
+        List<Student> students = studentRepository.findStudentByCourse(course);
 
         return getResponseUsers(students);
     }

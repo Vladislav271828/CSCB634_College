@@ -1,6 +1,5 @@
 package com.mvi.CSCB634College.student;
 
-import com.mvi.CSCB634College.professor.ProfessorService;
 import com.mvi.CSCB634College.user.ResponseUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +19,12 @@ public class StudentController {
     public ResponseEntity<List<ResponseUser>> getAllStudentsByMajorId(
             @PathVariable Long majorId) {
         return ResponseEntity.ok(studentService.getAllStudentsByMajorId(majorId));
+    }
+
+    @GetMapping("/admin/getAllStudentsByCourseId/{courseId}")
+    public ResponseEntity<List<ResponseUser>> getAllStudentsByCourseId(
+            @PathVariable Long courseId) {
+        return ResponseEntity.ok(studentService.getAllStudentsByCourseId(courseId));
     }
 
 }
