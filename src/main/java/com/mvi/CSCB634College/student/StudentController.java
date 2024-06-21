@@ -21,7 +21,7 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getAllStudentsByMajorId(majorId));
     }
 
-    @GetMapping("/admin/getAllStudentsByCourseId/{courseId}")
+    @GetMapping("/professor/getAllStudentsByCourseId/{courseId}")
     public ResponseEntity<List<ResponseUser>> getAllStudentsByCourseId(
             @PathVariable Long courseId) {
         return ResponseEntity.ok(studentService.getAllStudentsByCourseId(courseId));
