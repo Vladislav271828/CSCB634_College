@@ -58,7 +58,7 @@ public class EnrollmentService {
         Course course = courseRepository.findById(dtoEnrollment.getCourseId())
                 .orElseThrow(() -> new BadRequestException("Course with id " + dtoEnrollment.getCourseId() + " not found"));
 
-        if (!Objects.equals(student.getMajor().getId(), course.getId())){
+        if (!Objects.equals(student.getMajor().getId(), course.getMajor().getId())){
             throw new BadRequestException("Student is of major " + student.getMajor().getId() + " and can't join course of major " + course.getMajor().getId() + ".");
         }
 
