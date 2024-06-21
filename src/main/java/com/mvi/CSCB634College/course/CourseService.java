@@ -5,6 +5,9 @@ import com.mvi.CSCB634College.major.Major;
 import com.mvi.CSCB634College.major.MajorRepository;
 import com.mvi.CSCB634College.professor.Professor;
 import com.mvi.CSCB634College.professor.ProfessorRepository;
+import com.mvi.CSCB634College.student.Student;
+import com.mvi.CSCB634College.student.StudentRepository;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class CourseService {
 
     private final CourseRepository courseRepository;
@@ -19,12 +23,7 @@ public class CourseService {
     private final MajorRepository majorRepository;
     private final ProfessorRepository professorRepository;
 
-    public CourseService(CourseRepository courseRepository, ModelMapper modelMapper, MajorRepository majorRepository, ProfessorRepository professorRepository) {
-        this.courseRepository = courseRepository;
-        this.modelMapper = modelMapper;
-        this.majorRepository = majorRepository;
-        this.professorRepository = professorRepository;
-    }
+    private final StudentRepository studentRepository;
 
     public DtoCourse createCourse(DtoCourse dtoCourse) {
 
@@ -64,6 +63,19 @@ public class CourseService {
                 .orElseThrow(() -> new BadRequestException("Professor with id " + professorId + " not found"));
 
         List<Course> courses = courseRepository.findAllByProfessorAndYear(professor, year);
+
+        return courses.stream()
+                .map(course -> modelMapper.map(course, DtoCourse.class))
+                .collect(Collectors.toList());
+
+    }
+
+    public List<DtoCourse> getAllByStudentAndYear(Integer studentId, Integer year) {
+
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new BadRequestException("Student with id " + studentId + " not found"));
+
+        List<Course> courses = courseRepository.findAllByStudentAndYear(student, year);
 
         return courses.stream()
                 .map(course -> modelMapper.map(course, DtoCourse.class))
