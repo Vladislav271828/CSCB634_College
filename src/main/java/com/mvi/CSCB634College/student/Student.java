@@ -1,6 +1,5 @@
 package com.mvi.CSCB634College.student;
 
-import com.mvi.CSCB634College.faculty.Faculty;
 import com.mvi.CSCB634College.major.Major;
 import com.mvi.CSCB634College.user.User;
 import jakarta.persistence.*;
@@ -29,6 +28,7 @@ public class Student {
     @JoinColumn(name = "major_id")
     private Major major;
 
-
+    @Column(name = "education_year")
+    private Integer educationYear;
 
 }
