@@ -37,6 +37,13 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getAllByProfessorAndYear(professorId, year));
     }
 
+    @GetMapping("/getAllByStudentAndYear/{studentId}/{year}")
+    public ResponseEntity<List<DtoCourse>> getAllByStudentAndYear(
+            @PathVariable Integer studentId,
+            @PathVariable Integer year) {
+        return ResponseEntity.ok(courseService.getAllByStudentAndYear(studentId, year));
+    }
+
 
     @PutMapping("/admin/{id}/update")
     public ResponseEntity<DtoCourse> updateCourse(
