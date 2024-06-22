@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DtoGrade {
     private Long id;
-    private Long enrollmentId;
+    private Long courseId;
     @NotEmpty(message = "Grade name is required.")
     private String name;
-    private Double grade;
+    private Integer year;
 
 }

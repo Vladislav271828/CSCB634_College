@@ -1,5 +1,6 @@
 package com.mvi.CSCB634College.course;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mvi.CSCB634College.major.Major;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,7 @@ public class Course {
 
     @ManyToOne
     @JoinColumn(name = "major_id")
+    @JsonIgnore
     private Major major;
 
     // Getters and setters

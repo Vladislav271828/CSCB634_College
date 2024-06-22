@@ -2,7 +2,7 @@ package com.mvi.CSCB634College.enrollment;
 
 import com.mvi.CSCB634College.absence.Absence;
 import com.mvi.CSCB634College.course.Course;
-import com.mvi.CSCB634College.grade.Grade;
+import com.mvi.CSCB634College.enrollmentGrade.EnrollmentGrade;
 import com.mvi.CSCB634College.professor.Professor;
 import com.mvi.CSCB634College.student.Student;
 import jakarta.persistence.*;
@@ -41,10 +41,11 @@ public class Enrollment {
     private Date date;
     private String room;
     private Boolean autumn;
+    private Integer finalGrade;
 
     @OneToMany(mappedBy = "enrollment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Absence> absences = new ArrayList<>();
 
     @OneToMany(mappedBy = "enrollment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Grade> grade = new ArrayList<>();
+    private List<EnrollmentGrade> grade = new ArrayList<>();
 }

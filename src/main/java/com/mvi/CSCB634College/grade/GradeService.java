@@ -1,39 +1,34 @@
 package com.mvi.CSCB634College.grade;
 
-import com.mvi.CSCB634College.enrollment.Enrollment;
-import com.mvi.CSCB634College.enrollment.EnrollmentRepository;
+import com.mvi.CSCB634College.course.Course;
+import com.mvi.CSCB634College.course.CourseRepository;
 import com.mvi.CSCB634College.exception.BadRequestException;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class GradeService {
 
     private final GradeRepository gradeRepository;
-    private final EnrollmentRepository enrollmentRepository;
     private final ModelMapper modelMapper;
+    private final CourseRepository courseRepository;
 
-    @Autowired
-    public GradeService(GradeRepository gradeRepository, EnrollmentRepository enrollmentRepository, ModelMapper modelMapper) {
-        this.gradeRepository = gradeRepository;
-        this.enrollmentRepository = enrollmentRepository;
-        this.modelMapper = modelMapper;
-    }
 
     public DtoGrade createGrade(DtoGrade dtoGrade) {
 
         Grade grade = modelMapper.map(dtoGrade, Grade.class);
 
-      if (dtoGrade.getEnrollmentId() != null) {
-          Enrollment enrollment = enrollmentRepository.findById(dtoGrade.getEnrollmentId())
-                  .orElseThrow(() -> new BadRequestException("Enrollment with id " + dtoGrade.getEnrollmentId() + " not found."));
-          grade.setEnrollment(enrollment);
+      if (dtoGrade.getCourseId() != null) {
+          Course course = courseRepository.findById(dtoGrade.getCourseId())
+                  .orElseThrow(() -> new BadRequestException("Course with id " + dtoGrade.getCourseId() + " not found."));
+          grade.setCourse(course);
       }
-      else throw new BadRequestException("Enrollment id is required.");
+      else throw new BadRequestException("Course id is required.");
 
       return modelMapper.map(gradeRepository.save(grade), DtoGrade.class);
     }
@@ -44,21 +39,22 @@ public class GradeService {
         return modelMapper.map(grade, DtoGrade.class);
     }
 
-    public List<DtoGrade> getAllByEnrollment(Long enrollmentId) {
-        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
-                .orElseThrow(() -> new BadRequestException("Enrollment with id " + enrollmentId + " not found."));
-        
-        return gradeRepository.findAllByEnrollment(enrollment).stream()
+    public List<DtoGrade> getAllByCourseAndYear(Long courseId, Integer year) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new BadRequestException("Course with id " + courseId + " not found."));
+
+        return gradeRepository.findAllByCourseAndYear(course, year).stream()
                 .map(grade -> modelMapper.map(grade, DtoGrade.class))
                 .collect(Collectors.toList());
     }
+
 
     public DtoGrade updateGrade(Long id, DtoGrade dtoGrade) {
         Grade grade = gradeRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Grade with id " + id + " not found."));
 
-        if (!dtoGrade.getEnrollmentId().equals(grade.getEnrollment().getId())) {
-            throw new BadRequestException("You cant change the enrollment. Create a new grade");
+        if (dtoGrade.getCourseId() != null && (!dtoGrade.getCourseId().equals(grade.getCourse().getId()))) {
+            throw new BadRequestException("You cant change the course. Create a new grade for that course");
         }
 
         modelMapper.map(dtoGrade, grade);
