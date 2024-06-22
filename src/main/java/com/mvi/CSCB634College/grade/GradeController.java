@@ -26,10 +26,11 @@ public class GradeController {
       return ResponseEntity.ok(gradeService.getGradeById(id));
   }
 
-  @GetMapping("/getAllByEnrollment/{enrollmentId}")
+  @GetMapping("/getAllByEnrollment/{courseId}/{year}")
   public ResponseEntity<List<DtoGrade>> getAllByEnrollment(
-          @PathVariable Long enrollmentId) {
-      return ResponseEntity.ok(gradeService.getAllByEnrollment(enrollmentId));
+          @PathVariable Long courseId,
+          @PathVariable Integer year) {
+      return ResponseEntity.ok(gradeService.getAllByCourseAndYear(courseId, year));
   }
 
   @PutMapping("/professor/{id}/update")
@@ -38,6 +39,7 @@ public class GradeController {
           @RequestBody DtoGrade dtoGrade) {
       return ResponseEntity.ok(gradeService.updateGrade(id, dtoGrade));
   }
+
   @DeleteMapping("/professor/{id}/delete")
   public ResponseEntity<Void> deleteGrade(
           @PathVariable Long id) {

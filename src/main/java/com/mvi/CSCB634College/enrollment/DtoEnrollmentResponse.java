@@ -1,7 +1,7 @@
 package com.mvi.CSCB634College.enrollment;
 
 import com.mvi.CSCB634College.absence.Absence;
-import com.mvi.CSCB634College.grade.Grade;
+import com.mvi.CSCB634College.enrollmentGrade.EnrollmentGrade;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +25,6 @@ public class DtoEnrollmentResponse {
     private Long courseId;
 
     private List<Absence> absences;
-    private List<Grade> grade;
+    private List<EnrollmentGrade> grades;
 
 }
