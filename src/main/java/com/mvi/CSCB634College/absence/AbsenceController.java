@@ -45,4 +45,12 @@ public class AbsenceController {
         absenceService.deleteAbsence(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/getNumberOfAbsencesBy/{something}/{somethingId}")
+    public ResponseEntity<List<Long>> getGrades(
+            @PathVariable String something,
+            @PathVariable Long somethingId
+    ){
+        return ResponseEntity.ok(absenceService.getNumber(something, somethingId));
+    }
 }
