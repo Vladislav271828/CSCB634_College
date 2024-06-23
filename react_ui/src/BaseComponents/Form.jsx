@@ -159,7 +159,7 @@ const Form = ({ title,
     const fetchOptions = async (input) => {
         setSuccess(true)
         console.log(requestIds)
-        const yearReplacedString = formDataNoSend?.year ? input.fetchUrl.replace("{year}", formDataNoSend.year.slice(0, 4)) : string
+        const yearReplacedString = formDataNoSend?.year ? input.fetchUrl.replace("{year}", formDataNoSend.year.slice(0, 4)) : input.fetchUrl
         const idReplacedString = yearReplacedString.replace("{id}", id)
         const url = idReplacedString.replace("{0}", formData[input.require]);
         try {
@@ -192,14 +192,15 @@ const Form = ({ title,
                                     name={input.id}
                                     onChange={handleChange}
                                     disabled={input.disabled}
+                                    multiple={input.multi}
                                 >
                                     <option value={""} selected disabled hidden></option>
                                     {input.fetchUrl ?
                                         fetchedSelections[input.id]?.map((selection) => {
-                                            return <option key={selection.id}
+                                            if (!input.multi || (input.multi && formDataNoSend[input.id].includes(selection.id))) return <option key={selection.id}
                                                 value={selection.id}
-                                                selected={(selection.id == fetchedEditValues[input.id] && !formDataNoSend[input.id])
-                                                    || (selection.id == formDataNoSend[input.id])
+                                                selected={!input.multi && ((selection.id == fetchedEditValues[input.id] && !formDataNoSend[input.id])
+                                                    || (selection.id == formDataNoSend[input.id]))
                                                 }>{selection[input.fetchLabel] + (selection[input.fetchLabelAdd] ? " " + selection[input.fetchLabelAdd] : "")}</option>
                                         })
                                         : Object.entries(input.options).map(([value, text]) => {

@@ -73,6 +73,30 @@ const SelectList = ({ title,
         setLevel(level + 1)
     }
 
+    const handleApplySelection = () => {
+        if (formData[formStructure[level].id]?.length > 0) {
+            setLoading(true)
+            setLevel(level + 1)
+        }
+        else {
+            setSuccess(false)
+            setErrMsg("Please select at least one before applying.")
+        }
+    }
+
+    const handleSelection = (target, id) => {
+        if (formData[formStructure[level].id]?.length > 0
+            && formData[formStructure[level].id].includes(id)) {
+            const newArr = formData[formStructure[level].id].filter(item => item !== id)
+            setFormData({ ...formData, [formStructure[level].id]: newArr });
+        }
+        else {
+            const newArr = formData[formStructure[level].id] ? [...formData[formStructure[level].id], id] : [id]
+            setFormData({ ...formData, [formStructure[level].id]: newArr });
+        }
+        console.log(formData)
+    }
+
     const handleSkip = (skiplvl = 1) => {
         setLoading(true)
         setLevel(level + skiplvl)
@@ -166,8 +190,8 @@ const SelectList = ({ title,
         return (
             <div className='component-container' style={{ paddingBottom: "1.5rem" }}>
                 {title ? <h1>{title}</h1> : <></>}
-                {!errMsg ? <></> : <p className="err-msg" style={success ? {} : { color: "red" }}>{errMsg}</p>}
                 {formStructure[level]?.selectMsg ? <h3>{formStructure[level].selectMsg}</h3> : <></>}
+                {!errMsg ? <></> : <p className="err-msg" style={success ? {} : { color: "red" }}>{errMsg}</p>}
                 <SearchBar
                     search={search}
                     setSearch={setSearch}
@@ -178,6 +202,11 @@ const SelectList = ({ title,
                             {formStructure[level]?.skip}
                         </button>
                     </div>}
+                    {formStructure[level]?.multi && <div className="btn skip-btn">
+                        <button type='button' onClick={() => handleApplySelection()}>
+                            Apply Selection
+                        </button>
+                    </div>}
                     {loading && <p>Loading...</p>}
 
                     {!loading && fetchedSelections.length ? (
@@ -185,8 +214,8 @@ const SelectList = ({ title,
                             (name[formStructure[level].fetchLabel] ? name[formStructure[level].fetchLabel] : "").toLowerCase()).includes(search.toLowerCase()
                             )).sort().map((item) => {
                                 return <section key={item.id}
-                                    className="select-list-selection"
-                                    onClick={() => handleForward(formStructure[level]?.altId ? item[formStructure[level].altId] : item.id)}>
+                                    className={"select-list-selection" + ((formData[formStructure[level].id] ?? []).includes(item.id) ? " selected-from-list" : "")}
+                                    onClick={formStructure[level].multi ? (e) => handleSelection(e.target, item.id) : () => handleForward(formStructure[level]?.altId ? item[formStructure[level].altId] : item.id)}>
                                     <p style={{ fontWeight: "600" }}>{item[formStructure[level].fetchLabel] + (formStructure[level].fetchLabelAdd ? " " + item[formStructure[level].fetchLabelAdd] : "")}</p>
                                     <p>{item[formStructure[level].fetchLabelSecond]}</p>
                                 </section>
@@ -207,6 +236,7 @@ const SelectList = ({ title,
             acc.push(value)
             return acc
         }, [])
+        console.log(formData)
         return (
             <Form
                 title={title}

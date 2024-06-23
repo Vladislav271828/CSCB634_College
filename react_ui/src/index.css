@@ -534,6 +534,11 @@ main {
     width: 60px;
 }
 
-.recently-changed-grade {
-    background-color: #bbffbb;
+.recently-changed-grade,
+.selected-from-list {
+    background-color: #d5dff2;
+}
+
+.selected-from-list:hover {
+    background-color: #b7c8e9
 }

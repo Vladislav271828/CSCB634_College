@@ -122,6 +122,13 @@ function App() {
                 buttonMsg="Enroll student"
                 formStructure={structures.enrollStudent} />} />
 
+              <Route path="/admin/add-course-to-program" element={<SelectList
+                title="Add a course to the program."
+                requestURL="/program/admin/create"
+                successMsg="Course added successfully to program."
+                buttonMsg="Add course"
+                formStructure={structures.addProgram} />} />
+
               <Route path="/admin/update-college" element={<SelectList
                 title="Update college details."
                 requestURL="/college/admin/update/{0}"

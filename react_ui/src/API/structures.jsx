@@ -1379,6 +1379,79 @@ const structures = {
             type: "GRADE"
         }
     ],
+    addProgram: [
+        {
+            id: "collegeId",
+            selectMsg: "Please select a college.",
+            fetchUrl: "/college/admin/getAll",
+            fetchLabel: "name",
+            fetchLabelSecond: "address"
+        },
+        {
+            id: "facultyId",
+            selectMsg: "Please select a faculty.",
+            fetchUrl: "/faculty/getAllByCollege/{0}",
+            require: ["collegeId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "departmentId",
+            selectMsg: "Please select a department.",
+            fetchUrl: "/department/getAllByFaculty/{0}",
+            require: ["facultyId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "majorId",
+            selectMsg: "Please select a major.",
+            fetchUrl: "/major/getAllByDepartment/{0}",
+            require: ["departmentId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "courseId",
+            selectMsg: "Please select the course you want to add to the program.",
+            fetchUrl: "/course/getAllByMajor/{0}",
+            require: ["majorId"],
+            fetchLabel: "signature",
+            fetchLabelSecond: "name",
+        },
+        {
+            id: "professorId",
+            selectMsg: "Please select the teachers that lead the course.",
+            fetchUrl: "/professor/admin/getAllProfessorsByDepartment/{0}",
+            require: ["departmentId"],
+            fetchLabel: "firstname",
+            fetchLabelAdd: "lastname",
+            fetchLabelSecond: "email",
+            multi: true
+        },
+        {
+            type: "FORM",
+            data: [
+                {
+                    id: "professorId",
+                    label: "Teachers",
+                    type: "select",
+                    fetchLabel: "firstname",
+                    fetchLabelAdd: "lastname",
+                    fetchUrl: "/professor/admin/getAllProfessorsByDepartment/{0}",
+                    require: ["departmentId"],
+                    multi: true,
+                    disabled: true
+                },
+                {
+                    id: "courseId",
+                    label: "Course",
+                    type: "select",
+                    fetchLabel: "signature",
+                    fetchUrl: "/course/getAllByMajor/{0}",
+                    require: ["majorId"],
+                    disabled: true
+                },
+            ]
+        }
+    ],
     adminDash: [
         {
             link: "register-user",
@@ -1421,6 +1494,10 @@ const structures = {
             name: "Remove teacher qualification."
         },
         {
+            link: "add-course-to-program",
+            name: "Add a course to the program."
+        },
+        {
             link: "enroll-student",
             name: "Enroll a student."
         },
@@ -1455,6 +1532,10 @@ const structures = {
         {
             link: "update-course",
             name: "Update course details."
+        },
+        {
+            link: "update-course-program",
+            name: "Update a course in the program."
         },
         {
             link: "update-enrollment",
