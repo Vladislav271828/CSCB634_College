@@ -1,28 +1,34 @@
 package com.mvi.CSCB634College.absence;
 
+import com.mvi.CSCB634College.college.CollegeRepository;
+import com.mvi.CSCB634College.course.CourseRepository;
 import com.mvi.CSCB634College.enrollment.Enrollment;
 import com.mvi.CSCB634College.enrollment.EnrollmentRepository;
 import com.mvi.CSCB634College.exception.BadRequestException;
+import com.mvi.CSCB634College.major.MajorRepository;
+import com.mvi.CSCB634College.professor.ProfessorRepository;
+import com.mvi.CSCB634College.student.StudentRepository;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class AbsenceService {
 
     private final AbsenceRepository absenceRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final ModelMapper modelMapper;
+    private final MajorRepository majorRepository;
+    private final CollegeRepository collegeRepository;
+    private final StudentRepository studentRepository;
+    private final ProfessorRepository professorRepository;
 
-    @Autowired
-    public AbsenceService(AbsenceRepository absenceRepository, EnrollmentRepository enrollmentRepository, ModelMapper modelMapper) {
-        this.absenceRepository = absenceRepository;
-        this.enrollmentRepository = enrollmentRepository;
-        this.modelMapper = modelMapper;
-    }
+    private final CourseRepository courseRepository;
+
 
     public DtoAbsence createAbsence(DtoAbsence dtoAbsence) {
 
@@ -72,7 +78,40 @@ public class AbsenceService {
         absenceRepository.delete(absence);
     }
 
-
-
-
+    public List<Long> getNumber(String thingie, Long thingieId) {
+        switch (thingie) {
+            case "Student" -> {
+                return absenceRepository.countAbsencesByStudent(studentRepository.findById(thingieId.intValue())
+                        .orElseThrow(() -> new BadRequestException("Student with id " + thingieId + " not found")));
+            }
+            case "Professor" -> {
+                return absenceRepository.countAbsencesByProfessor(
+                        professorRepository.findById(thingieId.intValue())
+                                .orElseThrow(() -> new BadRequestException("Professor with id " + thingieId + " not found"))
+                );
+            }
+            case "Course" -> {
+                return absenceRepository.countAbsencesByCourse(
+                        courseRepository.findById(thingieId)
+                                .orElseThrow(() -> new BadRequestException("Course with id " + thingieId + " not found"))
+                );
+            }
+            case "Major" -> {
+                return absenceRepository.countAbsencesByMajor(
+                        majorRepository.findById(thingieId)
+                                .orElseThrow(() -> new BadRequestException("Major with id " + thingieId + " not found"))
+                );
+            }
+            case "College" -> {
+                return absenceRepository.countAbsencesByCollege(
+                        collegeRepository.findById(thingieId)
+                                .orElseThrow(() -> new BadRequestException("College with id " + thingieId + " not found"))
+                );
+            }
+            case "Year" -> {
+                return absenceRepository.countAbsencesByYear(thingieId.intValue());
+            }
+            default -> throw new BadRequestException("You can get absences only by Student, Professor, Course, Major, College or Year");
+        }
+    }
 }
