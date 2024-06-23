@@ -149,57 +149,52 @@ public class EnrollmentService {
         enrollmentRepository.deleteById(enrollmentId);
     }
 
-    public List<Integer> getGrades(String thingie, Long thingieId){
-            switch (thingie) {
-                case "Student" -> {
-                    return enrollmentRepository.findFinalGradesByStudent(studentRepository.findById(thingieId.intValue())
-                            .orElseThrow(() -> new BadRequestException("Student with id " + thingieId + " not found")));
-                }
-                case "Professor" -> {
-                    return enrollmentRepository.findFinalGradesByProfessor(
-                            professorRepository.findById(thingieId.intValue())
-                                    .orElseThrow(() -> new BadRequestException("Professor with id " + thingieId + " not found"))
-                    );
-                }
-                case "Course" -> {
-                    return enrollmentRepository.findFinalGradesByCourse(
-                            courseRepository.findById(thingieId)
-                                    .orElseThrow(() -> new BadRequestException("Course with id " + thingieId + " not found"))
-                    );
-                }
-                case "Major" -> {
-                    return enrollmentRepository.findFinalGradesByMajor(
-                            majorRepository.findById(thingieId)
-                                    .orElseThrow(() -> new BadRequestException("Major with id " + thingieId + " not found"))
-                    );
-                }
-                case "College" -> {
-                    return enrollmentRepository.findFinalGradesByCollege(
-                            collegeRepository.findById(thingieId)
-                                    .orElseThrow(() -> new BadRequestException("College with id " + thingieId + " not found"))
-                    );
-                }
-                case "Year" -> {
-                    return enrollmentRepository.findFinalGradesByYear(thingieId.intValue());
-                }
-                default -> throw new BadRequestException("You can get grades only by Student, Professor, Course, Major, College or Year");
+    public List<Integer> getGrades(String thingie, Long thingieId) {
+        switch (thingie) {
+            case "Student" -> {
+                return enrollmentRepository.findFinalGradesByStudent(studentRepository.findById(thingieId.intValue())
+                        .orElseThrow(() -> new BadRequestException("Student with id " + thingieId + " not found")));
+            }
+            case "Professor" -> {
+                return enrollmentRepository.findFinalGradesByProfessor(
+                        professorRepository.findById(thingieId.intValue())
+                                .orElseThrow(() -> new BadRequestException("Professor with id " + thingieId + " not found"))
+                );
+            }
+            case "Course" -> {
+                return enrollmentRepository.findFinalGradesByCourse(
+                        courseRepository.findById(thingieId)
+                                .orElseThrow(() -> new BadRequestException("Course with id " + thingieId + " not found"))
+                );
+            }
+            case "Major" -> {
+                return enrollmentRepository.findFinalGradesByMajor(
+                        majorRepository.findById(thingieId)
+                                .orElseThrow(() -> new BadRequestException("Major with id " + thingieId + " not found"))
+                );
+            }
+            case "College" -> {
+                return enrollmentRepository.findFinalGradesByCollege(
+                        collegeRepository.findById(thingieId)
+                                .orElseThrow(() -> new BadRequestException("College with id " + thingieId + " not found"))
+                );
+            }
+            case "Year" -> {
+                return enrollmentRepository.findFinalGradesByYear(thingieId.intValue());
+            }
+            default -> throw new BadRequestException("You can get grades only by Student, Professor, Course, Major, College or Year");
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     }
 
+        public DtoEnrollmentResponse changeGrade(Long enrollmentId, Integer grade) {
+
+            Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+                    .orElseThrow(() -> new BadRequestException("Enrollment with id " + enrollmentId + " not found"));
+
+            enrollment.setFinalGrade(grade);
+            return modelMapper.map(enrollmentRepository.save(enrollment), DtoEnrollmentResponse.class);
+    }
 
 }
 

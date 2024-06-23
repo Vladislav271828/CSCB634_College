@@ -64,5 +64,11 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getGrades(something, somethingId));
     }
 
-
+    @GetMapping("/professor/finalGrade/{enrollmentId}/{grade}")
+    public ResponseEntity<DtoEnrollmentResponse> getGrades(
+            @PathVariable Long enrollmentId,
+            @PathVariable Integer grade
+    ){
+        return ResponseEntity.ok(enrollmentService.changeGrade(enrollmentId, grade));
+    }
 }
