@@ -47,5 +47,5 @@ public class Enrollment {
     private List<Absence> absences = new ArrayList<>();
 
     @OneToMany(mappedBy = "enrollment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<EnrollmentGrade> grade = new ArrayList<>();
+    private List<EnrollmentGrade> grades = new ArrayList<>();
 }
