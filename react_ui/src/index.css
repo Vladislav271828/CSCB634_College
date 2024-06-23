@@ -270,7 +270,8 @@ Form.jsx
     flex: 0 1 33%;
 }
 
-.form-structure-container .input-with-button {
+.form-structure-container .input-with-button,
+.form-structure-container .table-input {
     flex: 100%;
     display: flex;
     align-items: center;
@@ -278,7 +279,8 @@ Form.jsx
     flex-direction: column;
 }
 
-.input-with-button div {
+.input-with-button div,
+.table-input div {
     display: flex;
     width: 100%;
     max-width: 400px;
@@ -291,7 +293,8 @@ Form.jsx
     margin-left: 10px;
 }
 
-.input-with-button label {
+.input-with-button label,
+.table-input label {
     width: 100%;
     max-width: 400px;
 }
@@ -384,7 +387,6 @@ SelectList.jsx
 }
 
 .select-list-selection:hover {
-    /* clever hack using currentcolor as a dynamic variable as it is not visible */
     background-color: #dddddd;
     cursor: pointer;
 }
@@ -395,4 +397,143 @@ SelectList.jsx
 
 .skip-btn {
     margin: 0 0 20px 0 !important;
+}
+
+/* 
+---------------------------
+...Table.jsx
+---------------------------
+*/
+
+.table-input {
+    padding-bottom: 0 !important;
+    height: 90px !important;
+}
+
+.table-back-btn {
+    padding-top: 0.5rem !important;
+    height: 100px !important;
+}
+
+table {
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+    border: #1c325e solid 2px;
+}
+
+.tg {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.tg td {
+    background-color: #fff;
+    font-size: 14px;
+    overflow: hidden;
+    padding: 10px;
+    word-break: normal;
+}
+
+tbody tr:nth-child(even) td {
+    background-color: #eee !important;
+}
+
+.tg th {
+    font-size: 14px;
+    font-weight: normal;
+    overflow: hidden;
+    padding: 10px;
+    word-break: normal;
+}
+
+.tg .tg-kiqf {
+    background-color: #1c325e;
+    border-color: inherit;
+    color: #eee;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.tg .tg-0pky {
+    border-color: inherit;
+    text-align: left;
+    vertical-align: middle
+}
+
+.tg .tg-dvpl {
+    border-color: inherit;
+    text-align: right;
+    vertical-align: middle
+}
+
+.tg .tg-fymr {
+    border-color: inherit;
+    font-weight: bold;
+    text-align: left;
+    vertical-align: middle
+}
+
+.tg .tg-6ic8 {
+    border-color: inherit;
+    font-weight: bold;
+    text-align: right;
+    vertical-align: middle
+}
+
+/* 
+---------------------------
+GradePage.jsx
+---------------------------
+*/
+
+main {
+    width: 100%;
+    overflow-x: scroll;
+}
+
+.tg .tg-1wig {
+    font-weight: bold;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.tg .tg-0pkx {
+    text-align: left;
+    vertical-align: middle;
+}
+
+.tg .tg-g6sd {
+    background-color: #1c325e;
+    border-color: inherit;
+    color: #eee;
+    font-weight: bold;
+    text-align: left;
+    vertical-align: middle
+}
+
+.grade-table {
+    margin-top: 1rem;
+    table-layout: fixed;
+}
+
+.grade-table select {
+    appearance: none;
+    text-align: center;
+    height: 30px;
+}
+
+/* for IE10 */
+.dropdown-container select::-ms-expand {
+    display: none;
+}
+
+
+.grade-col {
+    width: 60px;
+}
+
+.recently-changed-grade {
+    background-color: #bbffbb;
 }

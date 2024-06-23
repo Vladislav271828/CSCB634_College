@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import useAxiosPrivate from '../Login/useAxiosPrivate';
 import { useNavigate } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import Form from './Form';
+import UserContext from '../Context/UserProvider';
+import GradePage from '../SpecialComponents/GradePage';
 
 const SelectList = ({ title,
     requestURL,
@@ -27,9 +29,11 @@ const SelectList = ({ title,
 
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
+    const { id } = useContext(UserContext);
 
     function formatString(string, params) {
-        return string.replace(/{(\d+)}/g, (match, index) => {
+        const idReplacedString = string.replace("{id}", id)
+        return idReplacedString.replace(/{(\d+)}/g, (match, index) => {
             return typeof params[index] !== 'undefined' ? params[index] : match;
         });
     }
@@ -39,6 +43,11 @@ const SelectList = ({ title,
             navigate("../dashboard", { relative: "path" });
         else {
             setLoading(true)
+            const fixedFormData = Object.keys(formData).reduce((acc, key) => {
+                if (key != formStructure[level - 1].id) acc[key] = formData[key];
+                return acc
+            }, {})
+            setFormData(fixedFormData)
             setLevel(level - 1)
         }
     }
@@ -99,13 +108,11 @@ const SelectList = ({ title,
 
             try {
                 const res = await axiosPrivate.get(url);
-                console.log(semester)
                 let dataArray;
                 if (semester) {
                     const filteredRes = res.data.filter((data) => {
                         return semester == 'A' ? data.autumn : !data.autumn
                     })
-                    console.log(filteredRes)
                     dataArray = filteredRes;
                 }
                 else dataArray = res.data;
@@ -118,15 +125,25 @@ const SelectList = ({ title,
                     const resTwo = await axiosPrivate.get(urlTwo);
 
                     let placeholderData = [];
-                    resTwo.data.forEach((data) => {
-                        placeholderData[data.id] = data[formStructure[level].replacement];
-                    })
-
-                    console.log(placeholderData)
+                    let placeholderDataEmail = [];
+                    if (formStructure[level].replacement == "FLNAME") {
+                        resTwo.data.forEach((data) => {
+                            placeholderData[data.id] = data.firstname + " " + data.lastname;
+                            placeholderDataEmail[data.id] = data.email;
+                        })
+                    }
+                    else if (formStructure[level].replacement == "COURSE") {
+                        resTwo.data.forEach((data) => {
+                            placeholderData[data.id] = data.signature + " " + data.name;
+                        })
+                    }
 
                     dataArray.forEach((data) => {
                         const id = data[formStructure[level].fetchLabel];
                         data[formStructure[level].fetchLabel] = placeholderData[id]
+                        if (placeholderDataEmail.length) {
+                            data.email = placeholderDataEmail[id]
+                        }
                     })
                 }
 
@@ -147,7 +164,7 @@ const SelectList = ({ title,
     }
     if (!formStructure[level]?.type)
         return (
-            <div className='component-container'>
+            <div className='component-container' style={{ paddingBottom: "1.5rem" }}>
                 {title ? <h1>{title}</h1> : <></>}
                 {!errMsg ? <></> : <p className="err-msg" style={success ? {} : { color: "red" }}>{errMsg}</p>}
                 {formStructure[level]?.selectMsg ? <h3>{formStructure[level].selectMsg}</h3> : <></>}
@@ -204,6 +221,14 @@ const SelectList = ({ title,
                 deleteUrl={deleteUrl}
                 isPut={isPut}
                 isDelete={isDelete}
+                backFunc={handleBack} />
+        )
+    }
+    else if (formStructure[level].type == "GRADE") {
+        return (
+            <GradePage
+                title={title}
+                selectListValues={{ ...formData }}
                 backFunc={handleBack} />
         )
     }

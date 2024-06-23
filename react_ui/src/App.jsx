@@ -13,8 +13,10 @@ import UserContext from './Context/UserProvider';
 import Form from './BaseComponents/Form';
 
 import structures from "./API/structures"
-import SearchEditForm from './BaseComponents/SearchEditForm';
+import SearchEditForm from './SpecialComponents/SearchEditForm';
 import SelectList from './BaseComponents/SelectList';
+import AbsGradeTable from './SpecialComponents/AbsGradeTable';
+import GradePage from './SpecialComponents/GradePage';
 
 function App() {
 
@@ -238,6 +240,14 @@ function App() {
             <Route element={<PrivateRoute allowedRoles={["STUDENT"]} />}>
               <Route path="/student/dashboard" element={<HomePage title="Student" dashStructure={structures.studentDash} />} />
 
+              <Route path="/student/view-absences" element={<AbsGradeTable
+                title="View your absences."
+                type="ABSENCE" />} />
+
+              <Route path="/student/view-grades" element={<AbsGradeTable
+                title="View your grades."
+                type="GRADE" />} />
+
               <Route path={"/student/change-user-details"} element={<Form
                 title="Change my user details."
                 requestURL="/user/update/{0}"
@@ -252,6 +262,42 @@ function App() {
 
             <Route element={<PrivateRoute allowedRoles={["PROFESSOR"]} />}>
               <Route path="/professor/dashboard" element={<HomePage title="Teacher" dashStructure={structures.profesorDash} />} />
+
+              <Route path="/professor/add-absence" element={<SelectList
+                title="Give an absence."
+                requestURL="/absence/professor/create"
+                successMsg="Absence added successfully."
+                buttonMsg="Add Absence"
+                formStructure={structures.addAbsence} />} />
+
+              <Route path="/professor/add-grade-field" element={<SelectList
+                title="Add a grade field."
+                requestURL="/grade/professor/create"
+                successMsg="Grade field added successfully."
+                buttonMsg="Add Grade Field"
+                formStructure={structures.addGrade} />} />
+
+              <Route path="/professor/grade-students" element={<SelectList
+                title="Grade Students."
+                formStructure={structures.gradeStudent} />} />
+
+              <Route path="/professor/remove-grade-field" element={<SelectList
+                title="Remove a grade field."
+                requestURL="/grade/professor/{0}/delete"
+                requestIds={["gradeId"]}
+                buttonMsg="Remove Grade Field"
+                formStructure={structures.removeGrade}
+                fetchUrl="/grade/getById/{0}"
+                isDelete={true} />} />
+
+              <Route path="/professor/remove-absence" element={<SelectList
+                title="Remove an absence."
+                requestURL="/absence/professor/{0}/delete"
+                requestIds={["absenceId"]}
+                buttonMsg="Remove Absence"
+                formStructure={structures.removeAbsence}
+                fetchUrl="/absence/getById/{0}"
+                isDelete={true} />} />
 
               <Route path={"/professor/change-user-details"} element={<Form
                 title="Change my user details."

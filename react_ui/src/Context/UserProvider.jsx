@@ -7,7 +7,7 @@ const FETCH_USER_URL = '/user/getUserDetails'
 
 export const UserProvider = ({ children }) => {
     // const [firstname, setFirstName] = useState("");
-    // const [lastname, setLastName] = useState("");
+    const [id, setId] = useState();
     const [email, setEmail] = useState("");
     const [role, setRole] = useState("");
 
@@ -22,7 +22,7 @@ export const UserProvider = ({ children }) => {
                 headers: { "Authorization": `Bearer ${overwrite}` }
             });
             // setFirstName(response.data.firstname);
-            // setLastName(response.data.lastname);
+            setId(response.data.id)
             setEmail(response.data.email);
             setRole(response.data.role);
             return response.data;
@@ -41,7 +41,7 @@ export const UserProvider = ({ children }) => {
     }
 
     return (
-        <UserContext.Provider value={{ fetchUser, setErrMsg, errMsg, role, email }}>
+        <UserContext.Provider value={{ fetchUser, setErrMsg, errMsg, role, email, id }}>
             {children}
         </UserContext.Provider>
     )

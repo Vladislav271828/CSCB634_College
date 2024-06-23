@@ -1,7 +1,8 @@
 //sisyphus must be imagined happy the same way i must be imagined happy dealing with all this mess
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import useAxiosPrivate from '../Login/useAxiosPrivate';
 import { useNavigate } from 'react-router-dom';
+import UserContext from '../Context/UserProvider';
 
 const Form = ({ title,
     requestURL,
@@ -28,9 +29,13 @@ const Form = ({ title,
 
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
+    const { id } = useContext(UserContext);
 
     function formatString(string, params) {
-        return string.replace(/{(\d+)}/g, (match, index) => {
+        const yearReplacedString = formDataNoSend?.year ? string.replace("{year}", formDataNoSend.year.slice(0, 4)) : string
+        const idReplacedString = yearReplacedString.replace("{id}", id)
+        console.log(idReplacedString)
+        return idReplacedString.replace(/{(\d+)}/g, (match, index) => {
             return typeof params[index] !== 'undefined' ? params[index] : match;
         });
     }
@@ -50,6 +55,7 @@ const Form = ({ title,
             setFormData({ ...formData, date: e.target.value.match(/\d+/g)[0] + "-10-01", autumn: true });
         else
             setFormData({ ...formData, date: e.target.value.match(/\d+/g)[0] + "-10-01", autumn: false });
+        console.log(formData)
     };
 
     function generateYearsArray(startYear) {
@@ -69,18 +75,20 @@ const Form = ({ title,
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSuccess(true)
+        let yearFixFormData = formData;
+        if (formData?.year) yearFixFormData = { ...formData, year: new Number(formData.year.slice(0, 4)) }
         const url = formatString(requestURL, requestIds);
         try {
             var res
             if (isDelete) {
-                res = await axiosPrivate.delete(url, { data: formData });
+                res = await axiosPrivate.delete(url, { data: yearFixFormData });
                 alert("Operation successful.");
                 navigate("../dashboard", { relative: "path" })
             }
             else
                 isPut ?
-                    res = await axiosPrivate.put(url, formData)
-                    : res = await axiosPrivate.post(url, formData)
+                    res = await axiosPrivate.put(url, yearFixFormData)
+                    : res = await axiosPrivate.post(url, yearFixFormData)
             // console.log(res.data);
             setErrMsg(successMsg);
         } catch (err) {
@@ -150,7 +158,10 @@ const Form = ({ title,
 
     const fetchOptions = async (input) => {
         setSuccess(true)
-        const url = input.fetchUrl.replace("{0}", formData[input.require]);
+        console.log(requestIds)
+        const yearReplacedString = formDataNoSend?.year ? input.fetchUrl.replace("{year}", formDataNoSend.year.slice(0, 4)) : string
+        const idReplacedString = yearReplacedString.replace("{id}", id)
+        const url = idReplacedString.replace("{0}", formData[input.require]);
         try {
             const res = await axiosPrivate.get(url);
             //state updater saving lives
@@ -173,7 +184,7 @@ const Form = ({ title,
             {!errMsg ? <></> : <p className="err-msg" style={success ? {} : { color: "red" }}>{errMsg}</p>}
             <form className='form-structure-container' onSubmit={handleSubmit}>
                 {formStructure.map((input) => {
-                    if (formDataNoSend[input.require] || !input.require) {
+                    if ((formDataNoSend[input.require] || !input.require) && !input?.hide) {
                         if (input.type == "select") {
                             return <div key={input.id} style={input.disabled && { opacity: "0.5" }}>
                                 <label>{input.label}</label>
@@ -202,8 +213,8 @@ const Form = ({ title,
                             </div>
                         }
                         else if (input.type == "year") {
-                            return <div key={input.id}>
-                                <label style={input.disabled && { opacity: "0.5" }}>{input.label}</label>
+                            return <div key={input.id} style={input.disabled && { opacity: "0.5" }}>
+                                <label>{input.label}</label>
                                 <select
                                     name={input.id}
                                     onChange={handleYearChange}
@@ -229,8 +240,8 @@ const Form = ({ title,
                             </div>
                         }
                         else {
-                            return <div key={input.id}>
-                                <label style={input.disabled && { opacity: "0.5" }}>{input.label}</label>
+                            return <div key={input.id} style={input.disabled && { opacity: "0.5" }}>
+                                <label >{input.label}</label>
                                 <input type={input.type}
                                     name={input.id}
                                     defaultValue={fetchedEditValues[input.id]}

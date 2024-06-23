@@ -643,7 +643,7 @@ const structures = {
             data: [
                 {
                     id: "year",
-                    label: "Year",
+                    label: "Semester",
                     type: "year"
                 },
                 {
@@ -1056,7 +1056,6 @@ const structures = {
             ]
         }
     ],
-    //TODO: ADD FUNCTIONALITY FOR THIS
     updateEnrollment: [
         {
             id: "collegeId",
@@ -1107,7 +1106,7 @@ const structures = {
             fetchUrl: "/enrollment/getAllByStudentAndYear/{0}/{1}",
             require: ["studentId", "year"],
             followUpUrl: "/course/getAllByStudentAndYear/{0}/{1}",
-            replacement: "signature",
+            replacement: "COURSE",
             fetchLabel: "courseId",
             fetchLabelSecond: "id",
         },
@@ -1135,7 +1134,7 @@ const structures = {
             data: [
                 {
                     id: "year",
-                    label: "Year",
+                    label: "Semester",
                     type: "year"
                 },
                 {
@@ -1173,6 +1172,211 @@ const structures = {
                     disabled: true
                 },
             ]
+        }
+    ],
+    addAbsence: [
+        {
+            id: "year",
+            selectMsg: "Please select the year.",
+            fetchUrl: "year",
+            fetchLabel: "year",
+        },
+        {
+            id: "courseId",
+            selectMsg: "Please select the course.",
+            require: ["year"],
+            fetchUrl: "/course/getAllByProfessorAndYear/{id}/{0}",
+            fetchLabel: "signature",
+            fetchLabelSecond: "name",
+        },
+        {
+            id: "enrollmentId",
+            selectMsg: "Please select the student.",
+            fetchUrl: "/enrollment/getAllByProfessorIdAndYearAndCourse/{id}/{0}/{1}",
+            require: ["year", "courseId"],
+            followUpUrl: "/student/professor/getAllStudentsByCourseId/{1}",
+            replacement: "FLNAME",
+            fetchLabel: "studentId",
+            fetchLabelSecond: "email",
+        },
+        {
+            type: "FORM",
+            data: [
+                {
+                    id: "date",
+                    label: "Date",
+                    type: "date"
+                },
+                {
+                    id: "note",
+                    label: "Absence Note",
+                    type: "text"
+                },
+                {
+                    id: "enrollmentId",
+                    hide: true
+                },
+            ]
+        }
+    ],
+    removeAbsence: [
+        {
+            id: "year",
+            selectMsg: "Please select the year.",
+            fetchUrl: "year",
+            fetchLabel: "year",
+        },
+        {
+            id: "courseId",
+            selectMsg: "Please select the course.",
+            require: ["year"],
+            fetchUrl: "/course/getAllByProfessorAndYear/{id}/{0}",
+            fetchLabel: "signature",
+            fetchLabelSecond: "name",
+        },
+        {
+            id: "enrollmentId",
+            selectMsg: "Please select the student.",
+            fetchUrl: "/enrollment/getAllByProfessorIdAndYearAndCourse/{id}/{0}/{1}",
+            require: ["year", "courseId"],
+            followUpUrl: "/student/professor/getAllStudentsByCourseId/{1}",
+            replacement: "FLNAME",
+            fetchLabel: "studentId",
+            fetchLabelSecond: "email",
+        },
+        {
+            id: "absenceId",
+            selectMsg: "Please select which absence to remove.",
+            require: ["enrollmentId"],
+            fetchUrl: "/absence/getAllByEnrollment/{0}",
+            fetchLabel: "date",
+            fetchLabelSecond: "note",
+        },
+        {
+            type: "FORM",
+            data: [
+                {
+                    id: "date",
+                    label: "Date",
+                    type: "date",
+                    disabled: true
+                },
+                {
+                    id: "note",
+                    label: "Absence Note",
+                    type: "text",
+                    disabled: true
+                },
+            ]
+        }
+    ],
+    addGrade: [
+        {
+            id: "year",
+            selectMsg: "Please select the year.",
+            fetchUrl: "year",
+            fetchLabel: "year",
+        },
+        {
+            id: "courseId",
+            selectMsg: "Please select the course.",
+            require: ["year"],
+            fetchUrl: "/course/getAllByProfessorAndYear/{id}/{0}",
+            fetchLabel: "signature",
+            fetchLabelSecond: "name",
+        },
+        {
+            type: "FORM",
+            data: [
+                {
+                    id: "name",
+                    label: "Grade Field Name",
+                    type: "text"
+                },
+                {
+                    id: "year",
+                    label: "Semester",
+                    type: "year",
+                    disabled: true
+                },
+                {
+                    id: "courseId",
+                    label: "Course",
+                    type: "select",
+                    fetchLabel: "signature",
+                    fetchUrl: "/course/getAllByProfessorAndYear/{id}/{year}",
+                    require: ["year"],
+                    disabled: true
+                },
+            ]
+        }
+    ],
+    removeGrade: [
+        {
+            id: "year",
+            selectMsg: "Please select the year.",
+            fetchUrl: "year",
+            fetchLabel: "year",
+        },
+        {
+            id: "courseId",
+            selectMsg: "Please select the course.",
+            require: ["year"],
+            fetchUrl: "/course/getAllByProfessorAndYear/{id}/{0}",
+            fetchLabel: "signature",
+            fetchLabelSecond: "name",
+        },
+        {
+            id: "gradeId",
+            selectMsg: "Please select which grade to remove.",
+            require: ["courseId", "year"],
+            fetchUrl: "/grade/getAllByEnrollment/{1}/{0}",
+            fetchLabel: "name",
+        },
+        {
+            type: "FORM",
+            data: [
+                {
+                    id: "name",
+                    label: "Grade Field Name",
+                    type: "text",
+                    disabled: true
+                },
+                {
+                    id: "year",
+                    label: "Semester",
+                    type: "year",
+                    disabled: true
+                },
+                {
+                    id: "courseId",
+                    label: "Course",
+                    type: "select",
+                    fetchLabel: "signature",
+                    fetchUrl: "/course/getAllByProfessorAndYear/{id}/{year}",
+                    require: ["year"],
+                    disabled: true
+                },
+            ]
+        }
+    ],
+    gradeStudent: [
+        {
+            id: "year",
+            selectMsg: "Please select the year.",
+            fetchUrl: "year",
+            fetchLabel: "year",
+        },
+        {
+            id: "courseId",
+            selectMsg: "Please select the course.",
+            require: ["year"],
+            fetchUrl: "/course/getAllByProfessorAndYear/{id}/{0}",
+            fetchLabel: "signature",
+            fetchLabelSecond: "name",
+        },
+        {
+            type: "GRADE"
         }
     ],
     adminDash: [
@@ -1263,22 +1467,34 @@ const structures = {
     ],
     profesorDash: [
         {
-            link: "add-grade-fields",
-            name: "Add grade fields."
+            link: "add-grade-field",
+            name: "Add a grade field."
         },
         {
-            link: "edit-grade-fields",
-            name: "Edit grade fields."
+            link: "remove-grade-field",
+            name: "Remove a grade field."
         },
         {
             link: "grade-students",
             name: "Grade students."
+        },
+        {
+            link: "add-absence",
+            name: "Give an absence."
+        },
+        {
+            link: "remove-absence",
+            name: "Remove an absence."
         },
     ],
     studentDash: [
         {
             link: "view-grades",
             name: "View your grades."
+        },
+        {
+            link: "view-absences",
+            name: "View your absences."
         }
     ],
     userDash: []
