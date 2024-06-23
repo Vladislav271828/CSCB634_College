@@ -1,6 +1,7 @@
 package com.mvi.CSCB634College.enrollment;
 
 import com.mvi.CSCB634College.ProfessorQualification.ProfessorQualificationRepository;
+import com.mvi.CSCB634College.college.CollegeRepository;
 import com.mvi.CSCB634College.course.Course;
 import com.mvi.CSCB634College.course.CourseRepository;
 import com.mvi.CSCB634College.exception.BadRequestException;
@@ -10,8 +11,8 @@ import com.mvi.CSCB634College.professor.Professor;
 import com.mvi.CSCB634College.professor.ProfessorRepository;
 import com.mvi.CSCB634College.student.Student;
 import com.mvi.CSCB634College.student.StudentRepository;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class EnrollmentService {
 
     private final EnrollmentRepository enrollmentRepository;
@@ -32,19 +34,8 @@ public class EnrollmentService {
     private final ModelMapper modelMapper;
     private final ProfessorQualificationRepository professorQualificationRepository;
     private final MajorRepository majorRepository;
+    private final CollegeRepository collegeRepository;
 
-    @Autowired
-    public EnrollmentService(EnrollmentRepository enrollmentRepository, StudentRepository studentRepository, ProfessorRepository professorRepository, CourseRepository courseRepository, ModelMapper modelMapper,
-                             ProfessorQualificationRepository professorQualificationRepository,
-                             MajorRepository majorRepository) {
-        this.enrollmentRepository = enrollmentRepository;
-        this.studentRepository = studentRepository;
-        this.professorRepository = professorRepository;
-        this.courseRepository = courseRepository;
-        this.modelMapper = modelMapper;
-        this.professorQualificationRepository = professorQualificationRepository;
-        this.majorRepository = majorRepository;
-    }
 
     public DtoEnrollmentResponse createEnrollment(DtoEnrollment dtoEnrollment) {
 
@@ -156,6 +147,57 @@ public class EnrollmentService {
         enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new BadRequestException("Enrollment with id " + enrollmentId + " not found"));
         enrollmentRepository.deleteById(enrollmentId);
+    }
+
+    public List<Integer> getGrades(String thingie, Long thingieId){
+            switch (thingie) {
+                case "Student" -> {
+                    return enrollmentRepository.findFinalGradesByStudent(studentRepository.findById(thingieId.intValue())
+                            .orElseThrow(() -> new BadRequestException("Student with id " + thingieId + " not found")));
+                }
+                case "Professor" -> {
+                    return enrollmentRepository.findFinalGradesByProfessor(
+                            professorRepository.findById(thingieId.intValue())
+                                    .orElseThrow(() -> new BadRequestException("Professor with id " + thingieId + " not found"))
+                    );
+                }
+                case "Course" -> {
+                    return enrollmentRepository.findFinalGradesByCourse(
+                            courseRepository.findById(thingieId)
+                                    .orElseThrow(() -> new BadRequestException("Course with id " + thingieId + " not found"))
+                    );
+                }
+                case "Major" -> {
+                    return enrollmentRepository.findFinalGradesByMajor(
+                            majorRepository.findById(thingieId)
+                                    .orElseThrow(() -> new BadRequestException("Major with id " + thingieId + " not found"))
+                    );
+                }
+                case "College" -> {
+                    return enrollmentRepository.findFinalGradesByCollege(
+                            collegeRepository.findById(thingieId)
+                                    .orElseThrow(() -> new BadRequestException("College with id " + thingieId + " not found"))
+                    );
+                }
+                case "Year" -> {
+                    return enrollmentRepository.findFinalGradesByYear(thingieId.intValue());
+                }
+                default -> throw new BadRequestException("You can get grades only by Student, Professor, Course, Major, College or Year");
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
 

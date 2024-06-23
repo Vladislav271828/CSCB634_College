@@ -56,7 +56,13 @@ public class EnrollmentController {
         return ResponseEntity.noContent().build();
     }
 
-
+    @GetMapping("/getGradesBy/{something}/{somethingId}")
+    public ResponseEntity<List<Integer>> getGrades(
+            @PathVariable String something,
+            @PathVariable Long somethingId
+    ){
+        return ResponseEntity.ok(enrollmentService.getGrades(something, somethingId));
+    }
 
 
 }
