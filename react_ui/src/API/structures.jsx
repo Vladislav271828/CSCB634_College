@@ -1501,12 +1501,32 @@ const structures = {
         {
             id: "programId",
             selectMsg: "Please select which course in the program you want to update.",
-            fetchUrl: "/program/getAllBy............/{0}/{1}",
-            require: ["studentId", "year", "majorId"],
-            followUpUrl: "/course/getAllByMajor/{2}",
+            fetchUrl: "/program/getByYearAndMajor/{1}/{0}",
+            require: ["year", "majorId"],
+            followUpUrl: "/course/getAllByMajor/{0}",
             replacement: "COURSE",
             fetchLabel: "courseId",
-            fetchLabelSecond: "year",
+            fetchLabelSecond: "educationYear",
+        },
+        {
+            id: "courseId",
+            selectMsg: "Please select the new course you want to add to the program.",
+            fetchUrl: "/course/getAllByMajor/{0}",
+            require: ["majorId"],
+            fetchLabel: "signature",
+            fetchLabelSecond: "name",
+            skip: "Don't change course."
+        },
+        {
+            id: "professorIds",
+            selectMsg: "Please select new teachers to lead the course.",
+            fetchUrl: "/professor/admin/getAllProfessorsByDepartment/{0}",
+            require: ["departmentId"],
+            fetchLabel: "firstname",
+            fetchLabelAdd: "lastname",
+            fetchLabelSecond: "email",
+            multi: true,
+            skip: "Don't change teachers."
         },
         {
             type: "FORM",
@@ -1543,6 +1563,39 @@ const structures = {
                     disabled: true
                 },
             ]
+        }
+    ],
+    viewProgram: [
+        {
+            id: "collegeId",
+            selectMsg: "Please select a college.",
+            fetchUrl: "/college/admin/getAll",
+            fetchLabel: "name",
+            fetchLabelSecond: "address"
+        },
+        {
+            id: "facultyId",
+            selectMsg: "Please select a faculty.",
+            fetchUrl: "/faculty/getAllByCollege/{0}",
+            require: ["collegeId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "departmentId",
+            selectMsg: "Please select a department.",
+            fetchUrl: "/department/getAllByFaculty/{0}",
+            require: ["facultyId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "majorId",
+            selectMsg: "Please select a major.",
+            fetchUrl: "/major/getAllByDepartment/{0}",
+            require: ["departmentId"],
+            fetchLabel: "name",
+        },
+        {
+            type: "PROGRAM",
         }
     ],
     viewStudentStats: [
@@ -1766,34 +1819,6 @@ const structures = {
             name: "Create a course."
         },
         {
-            link: "add-teacher-qualification",
-            name: "Qualify a teacher to teach a course."
-        },
-        {
-            link: "remove-teacher-qualification",
-            name: "Remove teacher qualification."
-        },
-        {
-            link: "add-course-to-program",
-            name: "Add a course to the program."
-        },
-        {
-            link: "enroll-student",
-            name: "Enroll a student."
-        },
-        {
-            link: "set-department-head",
-            name: "Set a department head."
-        },
-        {
-            link: "change-teacher-department",
-            name: "Change a teacher's department."
-        },
-        {
-            link: "change-student-major",
-            name: "Change a student's major."
-        },
-        {
             link: "update-college",
             name: "Update college details."
         },
@@ -1814,21 +1839,49 @@ const structures = {
             name: "Update course details."
         },
         {
-            link: "update-course-program",
-            name: "Update a course in the program."
+            link: "set-department-head",
+            name: "Set a department head."
+        },
+        {
+            link: "change-teacher-department",
+            name: "Change a teacher's department."
+        },
+        {
+            link: "change-student-major",
+            name: "Change a student's major."
+        },
+        {
+            link: "add-teacher-qualification",
+            name: "Qualify a teacher to teach a course."
+        },
+        {
+            link: "remove-teacher-qualification",
+            name: "Remove teacher qualification."
+        },
+        {
+            link: "enroll-student",
+            name: "Enroll a student."
         },
         {
             link: "update-enrollment",
             name: "Update an enrollment."
         },
         {
-            link: "edit-all-user-details",
-            name: "Edit all user details."
+            link: "add-course-to-program",
+            name: "Add a course to the program."
+        },
+        {
+            link: "update-course-program",
+            name: "Update a course in the program."
         },
         {
             link: "view-statistics",
             name: "View statistics."
-        }
+        },
+        {
+            link: "edit-all-user-details",
+            name: "Edit all user details."
+        },
     ],
     profesorDash: [
         {

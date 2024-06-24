@@ -241,6 +241,18 @@ function App() {
                 fetchUrl="/user/getUserDetails"
                 isPut={true} />} />
 
+              <Route path="/admin/update-course-program" element={<SelectList
+                title="Update a course in the program."
+                requestURL="/program/admin/{0}/update"
+                fetchUrl="/program/getById/{0}"
+                requestIds={["programId"]}
+                successMsg="Course in program changed successfully."
+                buttonMsg="Save Changes"
+                formStructure={structures.updateProgram}
+                deleteUrl="/program/admin/{0}/delete"
+                deleteWarningMsg="delete this course from the program"
+                isPut={true} />} />
+
               <Route path="/admin/view-statistics" element={<HomePage
                 title="View Statistics"
                 dashStructure={structures.statisticsDash}
@@ -270,6 +282,10 @@ function App() {
                 title="View Statistics By Year."
                 formStructure={structures.viewYearStats} />} />
 
+              <Route path="/admin/view-program" element={<SelectList
+                title="View Program."
+                formStructure={structures.viewProgram} />} />
+
               <Route path="/admin/" element={<Navigate to="/admin/dashboard" replace />} />
             </Route>
 
@@ -283,6 +299,10 @@ function App() {
               <Route path="/student/view-grades" element={<AbsGradeTable
                 title="View your grades."
                 type="GRADE" />} />
+
+              <Route path="/student/view-program" element={<SelectList
+                title="View Program."
+                formStructure={structures.viewProgram} />} />
 
               <Route path={"/student/change-user-details"} element={<Form
                 title="Change my user details."
@@ -298,6 +318,10 @@ function App() {
 
             <Route element={<PrivateRoute allowedRoles={["PROFESSOR"]} />}>
               <Route path="/professor/dashboard" element={<HomePage title="Teacher Dashboard" dashStructure={structures.profesorDash} />} />
+
+              <Route path="/professor/view-program" element={<SelectList
+                title="View Program."
+                formStructure={structures.viewProgram} />} />
 
               <Route path="/professor/add-absence" element={<SelectList
                 title="Give an absence."
@@ -350,6 +374,10 @@ function App() {
             <Route element={<PrivateRoute allowedRoles={["USER"]} />}>
               <Route path="/user/dashboard" element={<HomePage title="User Dashboard" dashStructure={[]} />} />
 
+              <Route path="/user/view-program" element={<SelectList
+                title="View Program."
+                formStructure={structures.viewProgram} />} />
+
               <Route path={"/user/change-user-details"} element={<Form
                 title="Change my user details."
                 requestURL="/user/update/{0}"
@@ -364,6 +392,10 @@ function App() {
 
             <Route element={<PrivateRoute allowedRoles={["RECTOR"]} />}>
               <Route path="/rector/dashboard" element={<HomePage title="Rector Dashboard" dashStructure={structures.rectorDash} />} />
+
+              <Route path="/rector/view-program" element={<SelectList
+                title="View Program."
+                formStructure={structures.viewProgram} />} />
 
               <Route path="/rector/view-statistics" element={<HomePage
                 title="View Statistics"

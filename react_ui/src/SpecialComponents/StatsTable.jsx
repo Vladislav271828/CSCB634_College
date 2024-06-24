@@ -14,7 +14,7 @@ const StatsTable = ({ title, name, require, backFunc }) => {
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
 
-    function formatString(string, params) {
+    const formatString = (string, params) => {
         return string.replace(/{(\d+)}/g, (match, index) => {
             return typeof params[index] !== 'undefined' ? params[index] : match;
         });
@@ -28,6 +28,8 @@ const StatsTable = ({ title, name, require, backFunc }) => {
 
     const handleChange = async (e) => {
         setLoading(true)
+        setErrMsg("")
+        setSuccess(true)
         setIsGrade(e.target.value == "GRADE")
         const preUrl = e.target.value == "GRADE" ? "/enrollment/getGradesBy/{0}/{1}" : "/absence/getNumberOfAbsencesBy/{0}/{1}"
         const url = formatString(preUrl, require);

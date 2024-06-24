@@ -516,6 +516,15 @@ main {
     vertical-align: middle
 }
 
+.tg .tg-grsd {
+    background-color: #1c325e;
+    border-color: inherit;
+    color: #eee;
+    font-weight: bold;
+    text-align: right;
+    vertical-align: middle
+}
+
 .grade-table {
     margin-top: 1rem;
     table-layout: fixed;
@@ -535,4 +544,8 @@ main {
 
 .grade-col {
     width: 60px;
+}
+
+.tg:nth-of-type(n+2) .only-first {
+    display: none;
 }

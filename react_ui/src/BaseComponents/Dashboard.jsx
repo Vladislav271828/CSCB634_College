@@ -22,8 +22,12 @@ const HomePage = ({ title, dashStructure, sub }) => {
         })}
         {!sub ? (<><div>
           <button className='change-user-details' type="button"
-            onClick={() => navigate("../" + "change-user-details", { relative: "path" })}>Change my user details.</button>
+            onClick={() => navigate("../" + "view-program", { relative: "path" })}>View Program.</button>
         </div>
+          <div>
+            <button className='change-user-details' type="button"
+              onClick={() => navigate("../" + "change-user-details", { relative: "path" })}>Change my user details.</button>
+          </div>
           <LogoutComponent />
         </>) : <div><button type="button"
           onClick={() => navigate("../", { relative: "path" })}>Go back.</button>

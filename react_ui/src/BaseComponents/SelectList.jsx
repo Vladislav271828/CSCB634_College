@@ -6,6 +6,7 @@ import Form from './Form';
 import UserContext from '../Context/UserProvider';
 import GradePage from '../SpecialComponents/GradePage';
 import StatsTable from '../SpecialComponents/StatsTable';
+import Program from '../SpecialComponents/Program';
 
 const SelectList = ({ title,
     requestURL,
@@ -32,7 +33,7 @@ const SelectList = ({ title,
     const navigate = useNavigate();
     const { id } = useContext(UserContext);
 
-    function formatString(string, params) {
+    const formatString = (string, params) => {
         const idReplacedString = string.replace("{id}", id)
         return idReplacedString.replace(/{(\d+)}/g, (match, index) => {
             return typeof params[index] !== 'undefined' ? params[index] : match;
@@ -53,7 +54,7 @@ const SelectList = ({ title,
         }
     }
 
-    function generateYearsArray(startYear) {
+    const generateYearsArray = (startYear) => {
         const years = [];
         for (let year = startYear; year >= 2023; year--) {
             if (formStructure[level].isNumber) {
@@ -272,12 +273,16 @@ const SelectList = ({ title,
                 backFunc={handleBack} />
         )
     }
+    else if (formStructure[level].type == "PROGRAM") {
+        return (
+            <Program
+                title={title}
+                backFunc={handleBack}
+                selectListValues={{ ...formData }} />
+        )
+    }
     else if (formStructure[level].type == "STATS") {
-        console.log(formData[formStructure[level - 1].id])
-        console.log(fetchedSelections)
-
         const match = fetchedSelections.find((item) => item.id == formData[formStructure[level - 1].id])
-        console.log(match)
         return (
             <StatsTable
                 title={title}

@@ -15,7 +15,7 @@ const AbsGradeTable = ({ title, type }) => {
 
     const { id } = useContext(UserContext);
 
-    function formatString(string, params) {
+    const formatString = (string, params) => {
         const idReplacedString = string.replace("{id}", id)
         return idReplacedString.replace(/{(\d+)}/g, (match, index) => {
             return typeof params[index] !== 'undefined' ? params[index] : match;
@@ -88,7 +88,7 @@ const AbsGradeTable = ({ title, type }) => {
         }
     };
 
-    function generateYearsArray(startYear) {
+    const generateYearsArray = (startYear) => {
         const years = [];
         for (let year = startYear; year >= 2023; year--) {
             years.push({

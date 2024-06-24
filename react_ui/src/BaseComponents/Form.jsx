@@ -31,7 +31,7 @@ const Form = ({ title,
     const navigate = useNavigate();
     const { id } = useContext(UserContext);
 
-    function formatString(string, params) {
+    const formatString = (string, params) => {
         const yearReplacedString = formDataNoSend?.year ? string.replace("{year}", formDataNoSend.year.slice(0, 4)) : string
         const idReplacedString = yearReplacedString.replace("{id}", id)
         console.log(idReplacedString)
@@ -40,7 +40,7 @@ const Form = ({ title,
         });
     }
 
-    function containsAllElements(arr1, arr2) {
+    const containsAllElements = (arr1, arr2) => {
         return arr2.every(element => arr1.includes(element));
     }
 
@@ -66,7 +66,7 @@ const Form = ({ title,
         }
     };
 
-    function generateYearsArray(startYear) {
+    const generateYearsArray = (startYear) => {
         const years = [];
         for (let year = startYear; year >= 2023; year--) {
             years.push(year);
@@ -204,11 +204,14 @@ const Form = ({ title,
                                     <option value={""} selected disabled hidden></option>
                                     {input.fetchUrl ?
                                         fetchedSelections[input.id]?.map((selection) => {
-                                            if (!input.multi || (input.multi && (formDataNoSend[input.id] ?? []).includes(selection.id))) return <option key={selection.id}
-                                                value={selection.id}
-                                                selected={!input.multi && ((selection.id == fetchedEditValues[input.id] && !formDataNoSend[input.id])
-                                                    || (selection.id == formDataNoSend[input.id]))
-                                                }>{selection[input.fetchLabel] + (selection[input.fetchLabelAdd] ? " " + selection[input.fetchLabelAdd] : "")}</option>
+                                            if (!input.multi || (input.multi &&
+                                                ((formDataNoSend[input.id] ?? []).includes(selection.id)
+                                                    || (fetchedEditValues[input.id] ?? []).includes(selection.id))))
+                                                return <option key={selection.id}
+                                                    value={selection.id}
+                                                    selected={!input.multi && ((selection.id == fetchedEditValues[input.id] && !formDataNoSend[input.id])
+                                                        || (selection.id == formDataNoSend[input.id]))
+                                                    }>{selection[input.fetchLabel] + (selection[input.fetchLabelAdd] ? " " + selection[input.fetchLabelAdd] : "")}</option>
                                         })
                                         : Object.entries(input.options).map(([value, text]) => {
                                             return <option key={value}
