@@ -5,6 +5,7 @@ import SearchBar from './SearchBar';
 import Form from './Form';
 import UserContext from '../Context/UserProvider';
 import GradePage from '../SpecialComponents/GradePage';
+import StatsTable from '../SpecialComponents/StatsTable';
 
 const SelectList = ({ title,
     requestURL,
@@ -40,7 +41,7 @@ const SelectList = ({ title,
 
     const handleBack = () => {
         if (level <= 0)
-            navigate("../dashboard", { relative: "path" });
+            navigate("../", { relative: "path" });
         else {
             setLoading(true)
             const fixedFormData = Object.keys(formData).reduce((acc, key) => {
@@ -55,14 +56,22 @@ const SelectList = ({ title,
     function generateYearsArray(startYear) {
         const years = [];
         for (let year = startYear; year >= 2023; year--) {
-            years.push({
-                id: year + 'S',
-                year: `${year}/${year + 1} Spring`
-            });
-            years.push({
-                id: year + 'A',
-                year: `${year}/${year + 1} Autumn`
-            });
+            if (formStructure[level].isNumber) {
+                years.push({
+                    id: year,
+                    year: `${year}/${year + 1}`
+                });
+            }
+            else {
+                years.push({
+                    id: year + 'S',
+                    year: `${year}/${year + 1} Spring`
+                });
+                years.push({
+                    id: year + 'A',
+                    year: `${year}/${year + 1} Autumn`
+                });
+            }
         }
         return years;
     }
@@ -146,6 +155,7 @@ const SelectList = ({ title,
                         formatString(formStructure[level].followUpUrl, replace)
                         : formStructure[level].followUpUrl;
 
+                    console.log("%s %s", url, urlTwo)
                     const resTwo = await axiosPrivate.get(urlTwo);
 
                     let placeholderData = [];
@@ -259,6 +269,20 @@ const SelectList = ({ title,
             <GradePage
                 title={title}
                 selectListValues={{ ...formData }}
+                backFunc={handleBack} />
+        )
+    }
+    else if (formStructure[level].type == "STATS") {
+        console.log(formData[formStructure[level - 1].id])
+        console.log(fetchedSelections)
+
+        const match = fetchedSelections.find((item) => item.id == formData[formStructure[level - 1].id])
+        console.log(match)
+        return (
+            <StatsTable
+                title={title}
+                name={match[formStructure[level - 1].fetchLabel] + (formStructure[level - 1].fetchLabelAdd ? " " + match[formStructure[level - 1].fetchLabelAdd] : "")}
+                require={[formStructure[level].statistic, formData[formStructure[level - 1].id]]}
                 backFunc={handleBack} />
         )
     }

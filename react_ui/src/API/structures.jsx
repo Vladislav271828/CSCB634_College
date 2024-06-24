@@ -1417,7 +1417,7 @@ const structures = {
             fetchLabelSecond: "name",
         },
         {
-            id: "professorId",
+            id: "professorIds",
             selectMsg: "Please select the teachers that lead the course.",
             fetchUrl: "/professor/admin/getAllProfessorsByDepartment/{0}",
             require: ["departmentId"],
@@ -1430,7 +1430,18 @@ const structures = {
             type: "FORM",
             data: [
                 {
-                    id: "professorId",
+                    id: "year",
+                    label: "Semester",
+                    type: "year",
+                    isNumber: true
+                },
+                {
+                    id: "educationYear",
+                    label: "School Year",
+                    type: "number"
+                },
+                {
+                    id: "professorIds",
                     label: "Teachers",
                     type: "select",
                     fetchLabel: "firstname",
@@ -1450,6 +1461,275 @@ const structures = {
                     disabled: true
                 },
             ]
+        }
+    ],
+    updateProgram: [
+        {
+            id: "collegeId",
+            selectMsg: "Please select a college.",
+            fetchUrl: "/college/admin/getAll",
+            fetchLabel: "name",
+            fetchLabelSecond: "address"
+        },
+        {
+            id: "facultyId",
+            selectMsg: "Please select a faculty.",
+            fetchUrl: "/faculty/getAllByCollege/{0}",
+            require: ["collegeId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "departmentId",
+            selectMsg: "Please select a department.",
+            fetchUrl: "/department/getAllByFaculty/{0}",
+            require: ["facultyId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "majorId",
+            selectMsg: "Please select a major.",
+            fetchUrl: "/major/getAllByDepartment/{0}",
+            require: ["departmentId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "year",
+            selectMsg: "Please select the year.",
+            fetchUrl: "year",
+            fetchLabel: "year",
+        },
+        {
+            id: "programId",
+            selectMsg: "Please select which course in the program you want to update.",
+            fetchUrl: "/program/getAllBy............/{0}/{1}",
+            require: ["studentId", "year", "majorId"],
+            followUpUrl: "/course/getAllByMajor/{2}",
+            replacement: "COURSE",
+            fetchLabel: "courseId",
+            fetchLabelSecond: "year",
+        },
+        {
+            type: "FORM",
+            data: [
+                {
+                    id: "year",
+                    label: "Semester",
+                    type: "year",
+                    isNumber: true
+                },
+                {
+                    id: "educationYear",
+                    label: "School Year",
+                    type: "number"
+                },
+                {
+                    id: "professorIds",
+                    label: "Teachers",
+                    type: "select",
+                    fetchLabel: "firstname",
+                    fetchLabelAdd: "lastname",
+                    fetchUrl: "/professor/admin/getAllProfessorsByDepartment/{0}",
+                    require: ["departmentId"],
+                    multi: true,
+                    disabled: true
+                },
+                {
+                    id: "courseId",
+                    label: "Course",
+                    type: "select",
+                    fetchLabel: "signature",
+                    fetchUrl: "/course/getAllByMajor/{0}",
+                    require: ["majorId"],
+                    disabled: true
+                },
+            ]
+        }
+    ],
+    viewStudentStats: [
+        {
+            id: "collegeId",
+            selectMsg: "Please select a college.",
+            fetchUrl: "/college/admin/getAll",
+            fetchLabel: "name",
+            fetchLabelSecond: "address"
+        },
+        {
+            id: "facultyId",
+            selectMsg: "Please select a faculty.",
+            fetchUrl: "/faculty/getAllByCollege/{0}",
+            require: ["collegeId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "departmentId",
+            selectMsg: "Please select a department.",
+            fetchUrl: "/department/getAllByFaculty/{0}",
+            require: ["facultyId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "majorId",
+            selectMsg: "Please select a major.",
+            fetchUrl: "/major/getAllByDepartment/{0}",
+            require: ["departmentId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "studentId",
+            selectMsg: "Please select a student.",
+            fetchUrl: "/student/admin/getAllStudentsByMajorId/{0}",
+            require: ["majorId"],
+            fetchLabel: "firstname",
+            fetchLabelAdd: "lastname",
+            fetchLabelSecond: "email",
+        },
+        {
+            type: "STATS",
+            statistic: "Student",
+            require: "studentId"
+        }
+    ],
+    viewTeacherStats: [
+        {
+            id: "collegeId",
+            selectMsg: "Please select a college.",
+            fetchUrl: "/college/admin/getAll",
+            fetchLabel: "name",
+            fetchLabelSecond: "address"
+        },
+        {
+            id: "facultyId",
+            selectMsg: "Please select a faculty.",
+            fetchUrl: "/faculty/getAllByCollege/{0}",
+            require: ["collegeId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "departmentId",
+            selectMsg: "Please select a department.",
+            fetchUrl: "/department/getAllByFaculty/{0}",
+            require: ["facultyId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "professorId",
+            selectMsg: "Please select a teacher.",
+            fetchUrl: "/professor/admin/getAllProfessorsByDepartment/{0}",
+            require: ["departmentId"],
+            fetchLabel: "firstname",
+            fetchLabelAdd: "lastname",
+            fetchLabelSecond: "email",
+        },
+        {
+            type: "STATS",
+            statistic: "Professor",
+            require: "professorId"
+        }
+    ],
+    viewCourseStats: [
+        {
+            id: "collegeId",
+            selectMsg: "Please select a college.",
+            fetchUrl: "/college/admin/getAll",
+            fetchLabel: "name",
+            fetchLabelSecond: "address"
+        },
+        {
+            id: "facultyId",
+            selectMsg: "Please select a faculty.",
+            fetchUrl: "/faculty/getAllByCollege/{0}",
+            require: ["collegeId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "departmentId",
+            selectMsg: "Please select a department.",
+            fetchUrl: "/department/getAllByFaculty/{0}",
+            require: ["facultyId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "majorId",
+            selectMsg: "Please select a major.",
+            fetchUrl: "/major/getAllByDepartment/{0}",
+            require: ["departmentId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "courseId",
+            selectMsg: "Please select a course.",
+            fetchUrl: "/course/getAllByMajor/{0}",
+            require: ["majorId"],
+            fetchLabel: "signature",
+            fetchLabelSecond: "name",
+        },
+        {
+            type: "STATS",
+            statistic: "Course",
+            require: "courseId"
+        }
+    ],
+    viewMajorStats: [
+        {
+            id: "collegeId",
+            selectMsg: "Please select a college.",
+            fetchUrl: "/college/admin/getAll",
+            fetchLabel: "name",
+            fetchLabelSecond: "address"
+        },
+        {
+            id: "facultyId",
+            selectMsg: "Please select a faculty.",
+            fetchUrl: "/faculty/getAllByCollege/{0}",
+            require: ["collegeId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "departmentId",
+            selectMsg: "Please select a department.",
+            fetchUrl: "/department/getAllByFaculty/{0}",
+            require: ["facultyId"],
+            fetchLabel: "name",
+        },
+        {
+            id: "majorId",
+            selectMsg: "Please select a major.",
+            fetchUrl: "/major/getAllByDepartment/{0}",
+            require: ["departmentId"],
+            fetchLabel: "name",
+        },
+        {
+            type: "STATS",
+            statistic: "Major",
+            require: "majorId"
+        }
+    ],
+    viewCollegeStats: [
+        {
+            id: "collegeId",
+            selectMsg: "Please select a college.",
+            fetchUrl: "/college/admin/getAll",
+            fetchLabel: "name",
+            fetchLabelSecond: "address"
+        },
+        {
+            type: "STATS",
+            statistic: "College",
+            require: "collegeId"
+        }
+    ],
+    viewYearStats: [
+        {
+            id: "year",
+            selectMsg: "Please select the year of the enrollment.",
+            fetchUrl: "year",
+            fetchLabel: "year",
+            isNumber: true
+        },
+        {
+            type: "STATS",
+            statistic: "Year",
+            require: "year"
         }
     ],
     adminDash: [
@@ -1544,6 +1824,10 @@ const structures = {
         {
             link: "edit-all-user-details",
             name: "Edit all user details."
+        },
+        {
+            link: "view-statistics",
+            name: "View statistics."
         }
     ],
     profesorDash: [
@@ -1578,7 +1862,38 @@ const structures = {
             name: "View your absences."
         }
     ],
-    userDash: []
+    rectorDash: [
+        {
+            link: "view-statistics",
+            name: "View statistics."
+        }
+    ],
+    statisticsDash: [
+        {
+            link: "student-statistics",
+            name: "View by students."
+        },
+        {
+            link: "teacher-statistics",
+            name: "View by teachers."
+        },
+        {
+            link: "course-statistics",
+            name: "View by courses."
+        },
+        {
+            link: "major-statistics",
+            name: "View by majors."
+        },
+        {
+            link: "college-statistics",
+            name: "View by college."
+        },
+        {
+            link: "year-statistics",
+            name: "View by year."
+        },
+    ],
 }
 
 export default structures

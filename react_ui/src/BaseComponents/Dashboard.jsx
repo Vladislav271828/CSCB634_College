@@ -1,30 +1,33 @@
-//placeholder homepage
+//TODO: Add view program here.
 
 import { useNavigate } from "react-router-dom";
 import LogoutComponent from "../Login/LogoutComponent";
 
-const HomePage = ({ title, dashStructure }) => {
+const HomePage = ({ title, dashStructure, sub }) => {
 
   const navigate = useNavigate();
 
   return (
     <div className="component-container">
-      <h1>{title} Dashboard</h1>
+      <h1>{title}</h1>
       <div className="dash-container">
         {dashStructure.map((menu) => {
           return <div key={menu.link}>
             <button
               type="button"
-              onClick={() => navigate("../" + menu.link, { relative: "path" })}>
+              onClick={() => navigate((sub ? "" : "../") + menu.link, { relative: "path" })}>
               {menu.name}
             </button>
           </div>
         })}
-        <div>
+        {!sub ? (<><div>
           <button className='change-user-details' type="button"
             onClick={() => navigate("../" + "change-user-details", { relative: "path" })}>Change my user details.</button>
         </div>
-        <LogoutComponent />
+          <LogoutComponent />
+        </>) : <div><button type="button"
+          onClick={() => navigate("../", { relative: "path" })}>Go back.</button>
+        </div>}
       </div>
     </div>
   )

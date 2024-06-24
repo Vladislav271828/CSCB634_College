@@ -34,7 +34,7 @@ function App() {
           <Route element={<PersistLogin />}>
 
             <Route element={<PrivateRoute allowedRoles={["ADMIN"]} />}>
-              <Route path="/admin/dashboard" element={<HomePage title="Admin" dashStructure={structures.adminDash} />} />
+              <Route path="/admin/dashboard" element={<HomePage title="Admin Dashboard" dashStructure={structures.adminDash} />} />
 
               <Route path="/admin/register-user" element={<Form
                 title="Register a new user."
@@ -241,11 +241,40 @@ function App() {
                 fetchUrl="/user/getUserDetails"
                 isPut={true} />} />
 
+              <Route path="/admin/view-statistics" element={<HomePage
+                title="View Statistics"
+                dashStructure={structures.statisticsDash}
+                sub={true} />} />
+
+              <Route path="/admin/view-statistics/student-statistics" element={<SelectList
+                title="View Statistics By Student."
+                formStructure={structures.viewStudentStats} />} />
+
+              <Route path="/admin/view-statistics/teacher-statistics" element={<SelectList
+                title="View Statistics By Teacher."
+                formStructure={structures.viewTeacherStats} />} />
+
+              <Route path="/admin/view-statistics/course-statistics" element={<SelectList
+                title="View Statistics By Course."
+                formStructure={structures.viewCourseStats} />} />
+
+              <Route path="/admin/view-statistics/major-statistics" element={<SelectList
+                title="View Statistics By Major."
+                formStructure={structures.viewMajorStats} />} />
+
+              <Route path="/admin/view-statistics/college-statistics" element={<SelectList
+                title="View Statistics By College."
+                formStructure={structures.viewCollegeStats} />} />
+
+              <Route path="/admin/view-statistics/year-statistics" element={<SelectList
+                title="View Statistics By Year."
+                formStructure={structures.viewYearStats} />} />
+
               <Route path="/admin/" element={<Navigate to="/admin/dashboard" replace />} />
             </Route>
 
             <Route element={<PrivateRoute allowedRoles={["STUDENT"]} />}>
-              <Route path="/student/dashboard" element={<HomePage title="Student" dashStructure={structures.studentDash} />} />
+              <Route path="/student/dashboard" element={<HomePage title="Student Dashboard" dashStructure={structures.studentDash} />} />
 
               <Route path="/student/view-absences" element={<AbsGradeTable
                 title="View your absences."
@@ -268,7 +297,7 @@ function App() {
             </Route>
 
             <Route element={<PrivateRoute allowedRoles={["PROFESSOR"]} />}>
-              <Route path="/professor/dashboard" element={<HomePage title="Teacher" dashStructure={structures.profesorDash} />} />
+              <Route path="/professor/dashboard" element={<HomePage title="Teacher Dashboard" dashStructure={structures.profesorDash} />} />
 
               <Route path="/professor/add-absence" element={<SelectList
                 title="Give an absence."
@@ -319,7 +348,7 @@ function App() {
             </Route>
 
             <Route element={<PrivateRoute allowedRoles={["USER"]} />}>
-              <Route path="/user/dashboard" element={<HomePage title="User" dashStructure={structures.userDash} />} />
+              <Route path="/user/dashboard" element={<HomePage title="User Dashboard" dashStructure={[]} />} />
 
               <Route path={"/user/change-user-details"} element={<Form
                 title="Change my user details."
@@ -331,6 +360,50 @@ function App() {
                 fetchUrl="/user/getUserDetails"
                 isPut={true} />} />
               <Route path="/user/" element={<Navigate to="/user/dashboard" replace />} />
+            </Route>
+
+            <Route element={<PrivateRoute allowedRoles={["RECTOR"]} />}>
+              <Route path="/rector/dashboard" element={<HomePage title="Rector Dashboard" dashStructure={structures.rectorDash} />} />
+
+              <Route path="/rector/view-statistics" element={<HomePage
+                title="View Statistics"
+                dashStructure={structures.statisticsDash}
+                sub={true} />} />
+
+              <Route path="/rector/view-statistics/student-statistics" element={<SelectList
+                title="View Statistics By Student."
+                formStructure={structures.viewStudentStats} />} />
+
+              <Route path="/rector/view-statistics/teacher-statistics" element={<SelectList
+                title="View Statistics By Teacher."
+                formStructure={structures.viewTeacherStats} />} />
+
+              <Route path="/rector/view-statistics/course-statistics" element={<SelectList
+                title="View Statistics By Course."
+                formStructure={structures.viewCourseStats} />} />
+
+              <Route path="/rector/view-statistics/major-statistics" element={<SelectList
+                title="View Statistics By Major."
+                formStructure={structures.viewMajorStats} />} />
+
+              <Route path="/rector/view-statistics/college-statistics" element={<SelectList
+                title="View Statistics By College."
+                formStructure={structures.viewCollegeStats} />} />
+
+              <Route path="/rector/view-statistics/year-statistics" element={<SelectList
+                title="View Statistics By Year."
+                formStructure={structures.viewYearStats} />} />
+
+              <Route path={"/rector/change-user-details"} element={<Form
+                title="Change my user details."
+                requestURL="/user/update/{0}"
+                requestIds={[email]}
+                successMsg="User details changed successfully."
+                buttonMsg="Save Changes"
+                formStructure={structures.changeUserDetails}
+                fetchUrl="/user/getUserDetails"
+                isPut={true} />} />
+              <Route path="/rector/" element={<Navigate to="/rector/dashboard" replace />} />
             </Route>
 
             <Route path="/" element={<Navigate to={role ? `/${role.toLowerCase()}/dashboard` : "/login"} replace />} />

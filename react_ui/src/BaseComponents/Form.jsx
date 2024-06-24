@@ -49,13 +49,21 @@ const Form = ({ title,
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleYearChange = (e) => {
+    const handleYearChange = (e, isNumber) => {
         setErrMsg("");
-        if (e.target.value.includes('A'))
-            setFormData({ ...formData, date: e.target.value.match(/\d+/g)[0] + "-10-01", autumn: true });
-        else
-            setFormData({ ...formData, date: e.target.value.match(/\d+/g)[0] + "-10-01", autumn: false });
-        console.log(formData)
+        if (!isNumber) {
+            if (e.target.value.includes('A'))
+                setFormData({ ...formData, date: e.target.value.match(/\d+/g)[0] + "-10-01", autumn: true });
+            else
+                setFormData({ ...formData, date: e.target.value.match(/\d+/g)[0] + "-10-01", autumn: false });
+        }
+        else {
+            console.log(e.target.value.match(/\d+/g)[0])
+            if (e.target.value.includes('A'))
+                setFormData({ ...formData, year: e.target.value.match(/\d+/g)[0], autumn: true });
+            else
+                setFormData({ ...formData, year: e.target.value.match(/\d+/g)[0], autumn: false });
+        }
     };
 
     function generateYearsArray(startYear) {
@@ -158,7 +166,6 @@ const Form = ({ title,
 
     const fetchOptions = async (input) => {
         setSuccess(true)
-        console.log(requestIds)
         const yearReplacedString = formDataNoSend?.year ? input.fetchUrl.replace("{year}", formDataNoSend.year.slice(0, 4)) : input.fetchUrl
         const idReplacedString = yearReplacedString.replace("{id}", id)
         const url = idReplacedString.replace("{0}", formData[input.require]);
@@ -197,7 +204,7 @@ const Form = ({ title,
                                     <option value={""} selected disabled hidden></option>
                                     {input.fetchUrl ?
                                         fetchedSelections[input.id]?.map((selection) => {
-                                            if (!input.multi || (input.multi && formDataNoSend[input.id].includes(selection.id))) return <option key={selection.id}
+                                            if (!input.multi || (input.multi && (formDataNoSend[input.id] ?? []).includes(selection.id))) return <option key={selection.id}
                                                 value={selection.id}
                                                 selected={!input.multi && ((selection.id == fetchedEditValues[input.id] && !formDataNoSend[input.id])
                                                     || (selection.id == formDataNoSend[input.id]))
@@ -218,7 +225,7 @@ const Form = ({ title,
                                 <label>{input.label}</label>
                                 <select
                                     name={input.id}
-                                    onChange={handleYearChange}
+                                    onChange={(e) => handleYearChange(e, input.isNumber)}
                                     disabled={input.disabled}
 
                                 >
