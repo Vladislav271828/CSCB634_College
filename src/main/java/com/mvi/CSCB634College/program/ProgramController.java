@@ -27,6 +27,13 @@ public class ProgramController {
         return ResponseEntity.ok(programService.getProgramsByYear(year));
     }
 
+    @GetMapping("/getByYearAndMajor/{year}/{majorId}")
+    public ResponseEntity<List<DtoProgramResponse>> getProgramsByYearAndMajor(
+            @PathVariable Integer year,
+            @PathVariable Long majorId) {
+        return ResponseEntity.ok(programService.getProgramsByYearAndMajor(year, majorId));
+    }
+
     @GetMapping("/getById/{programId}")
     public ResponseEntity<DtoProgramResponse> getProgramById(
             @PathVariable Long programId) {
