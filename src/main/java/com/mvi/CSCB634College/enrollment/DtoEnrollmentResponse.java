@@ -23,6 +23,7 @@ public class DtoEnrollmentResponse {
     private Integer studentId;
     private Integer professorId;
     private Long courseId;
+    private Integer finalGrade;
 
     private List<Absence> absences;
     private List<EnrollmentGrade> grades;

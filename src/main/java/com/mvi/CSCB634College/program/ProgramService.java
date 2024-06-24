@@ -9,6 +9,7 @@ import com.mvi.CSCB634College.major.MajorRepository;
 import com.mvi.CSCB634College.professor.Professor;
 import com.mvi.CSCB634College.professor.ProfessorRepository;
 import com.mvi.CSCB634College.professor.ProfessorService;
+import com.mvi.CSCB634College.user.ResponseUser;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -82,11 +83,12 @@ public class ProgramService {
                 .toList();
     }
 
-    public DtoProgramResponse getProgramById(Long programId) {
+    public DtoProgram getProgramById(Long programId) {
         Program program = programRepository.findById(programId)
                 .orElseThrow(() -> new BadRequestException("Program with id " + programId + " not found"));
-        DtoProgramResponse response = modelMapper.map(program, DtoProgramResponse.class);
-        response.setProfessors(professorService.getResponseUsers(program.getProfessors()));
+        DtoProgram response = modelMapper.map(program, DtoProgram.class);
+        response.setProfessorIds(professorService.getResponseUsers(program.getProfessors())
+                .stream().map(ResponseUser::getId).toList());
         return response;
     }
     

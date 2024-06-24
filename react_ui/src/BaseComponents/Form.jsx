@@ -1,7 +1,8 @@
 //sisyphus must be imagined happy the same way i must be imagined happy dealing with all this mess
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import useAxiosPrivate from '../Login/useAxiosPrivate';
 import { useNavigate } from 'react-router-dom';
+import UserContext from '../Context/UserProvider';
 
 const Form = ({ title,
     requestURL,
@@ -13,7 +14,9 @@ const Form = ({ title,
     editValues,
     deleteWarningMsg,
     deleteUrl,
+    //it would be better for it to be a request type and use a switch case
     isPut,
+    isDelete,
     backFunc,
     selectListValues }) => {
 
@@ -26,14 +29,17 @@ const Form = ({ title,
 
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
+    const { id } = useContext(UserContext);
 
-    function formatString(string, params) {
-        return string.replace(/{(\d+)}/g, (match, index) => {
+    const formatString = (string, params) => {
+        const yearReplacedString = formDataNoSend?.year ? string.replace("{year}", formDataNoSend.year.slice(0, 4)) : string
+        const idReplacedString = yearReplacedString.replace("{id}", id)
+        return idReplacedString.replace(/{(\d+)}/g, (match, index) => {
             return typeof params[index] !== 'undefined' ? params[index] : match;
         });
     }
 
-    function containsAllElements(arr1, arr2) {
+    const containsAllElements = (arr1, arr2) => {
         return arr2.every(element => arr1.includes(element));
     }
 
@@ -42,15 +48,23 @@ const Form = ({ title,
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleYearChange = (e) => {
+    const handleYearChange = (e, isNumber) => {
         setErrMsg("");
-        if (e.target.value.includes('A'))
-            setFormData({ ...formData, date: e.target.value.match(/\d+/g)[0] + "-10-01", autumn: true });
-        else
-            setFormData({ ...formData, date: e.target.value.match(/\d+/g)[0] + "-10-01", autumn: false });
+        if (!isNumber) {
+            if (e.target.value.includes('A'))
+                setFormData({ ...formData, date: e.target.value.match(/\d+/g)[0] + "-10-01", autumn: true });
+            else
+                setFormData({ ...formData, date: e.target.value.match(/\d+/g)[0] + "-10-01", autumn: false });
+        }
+        else {
+            if (e.target.value.includes('A'))
+                setFormData({ ...formData, year: e.target.value.match(/\d+/g)[0], autumn: true });
+            else
+                setFormData({ ...formData, year: e.target.value.match(/\d+/g)[0], autumn: false });
+        }
     };
 
-    function generateYearsArray(startYear) {
+    const generateYearsArray = (startYear) => {
         const years = [];
         for (let year = startYear; year >= 2023; year--) {
             years.push(year);
@@ -67,13 +81,20 @@ const Form = ({ title,
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSuccess(true)
+        let yearFixFormData = formData;
+        if (formData?.year) yearFixFormData = { ...formData, year: new Number(formData.year.slice(0, 4)) }
         const url = formatString(requestURL, requestIds);
         try {
             var res
-            isPut ?
-                res = await axiosPrivate.put(url, formData)
-                : res = await axiosPrivate.post(url, formData)
-            // console.log(res.data);
+            if (isDelete) {
+                res = await axiosPrivate.delete(url, { data: yearFixFormData });
+                alert("Operation successful.");
+                navigate("../dashboard", { relative: "path" })
+            }
+            else
+                isPut ?
+                    res = await axiosPrivate.put(url, yearFixFormData)
+                    : res = await axiosPrivate.post(url, yearFixFormData)
             setErrMsg(successMsg);
         } catch (err) {
             setSuccess(false)
@@ -91,7 +112,6 @@ const Form = ({ title,
         const url = formatString(fetchUrl, requestIds);
         try {
             const res = await axiosPrivate.get(url);
-            // console.log(res.data);
             setFetchedEditValues(res.data);
         } catch (err) {
             setSuccess(false)
@@ -142,7 +162,9 @@ const Form = ({ title,
 
     const fetchOptions = async (input) => {
         setSuccess(true)
-        const url = input.fetchUrl.replace("{0}", formData[input.require]);
+        const yearReplacedString = formDataNoSend?.year ? input.fetchUrl.replace("{year}", formDataNoSend.year.slice(0, 4)) : input.fetchUrl
+        const idReplacedString = yearReplacedString.replace("{id}", id)
+        const url = idReplacedString.replace("{0}", formData[input.require]);
         try {
             const res = await axiosPrivate.get(url);
             //state updater saving lives
@@ -165,7 +187,7 @@ const Form = ({ title,
             {!errMsg ? <></> : <p className="err-msg" style={success ? {} : { color: "red" }}>{errMsg}</p>}
             <form className='form-structure-container' onSubmit={handleSubmit}>
                 {formStructure.map((input) => {
-                    if (formDataNoSend[input.require] || !input.require) {
+                    if ((formDataNoSend[input.require] || !input.require) && !input?.hide) {
                         if (input.type == "select") {
                             return <div key={input.id} style={input.disabled && { opacity: "0.5" }}>
                                 <label>{input.label}</label>
@@ -173,15 +195,19 @@ const Form = ({ title,
                                     name={input.id}
                                     onChange={handleChange}
                                     disabled={input.disabled}
+                                    multiple={input.multi}
                                 >
                                     <option value={""} selected disabled hidden></option>
                                     {input.fetchUrl ?
                                         fetchedSelections[input.id]?.map((selection) => {
-                                            return <option key={selection.id}
-                                                value={selection.id}
-                                                selected={(selection.id == fetchedEditValues[input.id] && !formDataNoSend[input.id])
-                                                    || (selection.id == formDataNoSend[input.id])
-                                                }>{selection[input.fetchLabel]}</option>
+                                            if (!input.multi || (input.multi &&
+                                                ((formDataNoSend[input.id] ?? []).includes(selection.id)
+                                                    || (fetchedEditValues[input.id] ?? []).includes(selection.id))))
+                                                return <option key={selection.id}
+                                                    value={selection.id}
+                                                    selected={!input.multi && ((selection.id == fetchedEditValues[input.id] && !formDataNoSend[input.id])
+                                                        || (selection.id == formDataNoSend[input.id]))
+                                                    }>{selection[input.fetchLabel] + (selection[input.fetchLabelAdd] ? " " + selection[input.fetchLabelAdd] : "")}</option>
                                         })
                                         : Object.entries(input.options).map(([value, text]) => {
                                             return <option key={value}
@@ -194,11 +220,11 @@ const Form = ({ title,
                             </div>
                         }
                         else if (input.type == "year") {
-                            return <div key={input.id}>
-                                <label style={input.disabled && { opacity: "0.5" }}>{input.label}</label>
+                            return <div key={input.id} style={input.disabled && { opacity: "0.5" }}>
+                                <label>{input.label}</label>
                                 <select
                                     name={input.id}
-                                    onChange={handleYearChange}
+                                    onChange={(e) => handleYearChange(e, input.isNumber)}
                                     disabled={input.disabled}
 
                                 >
@@ -207,18 +233,22 @@ const Form = ({ title,
                                         return <React.Fragment key={year}>
                                             <option
                                                 value={year + 'S'}
-                                                selected={year == new Date(fetchedEditValues.date).getFullYear && fetchedEditValues.autumn == false}>{year + "/" + Number(year + 1) + ' Spring'}</option>
+                                                selected={(year == new Date(fetchedEditValues.date).getFullYear && fetchedEditValues.autumn == false)
+                                                    || formDataNoSend[input.id] == year + 'S'
+                                                }>{year + "/" + Number(year + 1) + ' Spring'}</option>
                                             <option
                                                 value={year + 'A'}
-                                                selected={year == new Date(fetchedEditValues.date).getFullYear && fetchedEditValues.autumn == true}>{year + "/" + Number(year + 1) + ' Autumn'}</option>
+                                                selected={(year == new Date(fetchedEditValues.date).getFullYear && fetchedEditValues.autumn == true)
+                                                    || formDataNoSend[input.id] == year + 'A'
+                                                }>{year + "/" + Number(year + 1) + ' Autumn'}</option>
                                         </React.Fragment>
                                     })}
                                 </select>
                             </div>
                         }
                         else {
-                            return <div key={input.id}>
-                                <label style={input.disabled && { opacity: "0.5" }}>{input.label}</label>
+                            return <div key={input.id} style={input.disabled && { opacity: "0.5" }}>
+                                <label >{input.label}</label>
                                 <input type={input.type}
                                     name={input.id}
                                     defaultValue={fetchedEditValues[input.id]}
@@ -230,7 +260,7 @@ const Form = ({ title,
                     }
                 })}
                 <div className="btn">
-                    <button type='submit'>
+                    <button type='submit' className={isDelete ? "logout-btn" : ""}>
                         {buttonMsg}
                     </button>
                     <button type='button' onClick={() => handleBack()}>

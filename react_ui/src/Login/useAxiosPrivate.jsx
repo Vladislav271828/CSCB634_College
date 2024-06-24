@@ -29,6 +29,10 @@ const useAxiosPrivate = () => {
                     prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                     return axiosPrivate(prevRequest);
                 }
+                if (error?.response?.status === 403) {
+                    alert("ERROR 403: Session expired.\nReloading Page.")
+                    location.reload();
+                }
                 return Promise.reject(error);
             }
         );

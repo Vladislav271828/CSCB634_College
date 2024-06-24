@@ -35,7 +35,7 @@ public class ProgramController {
     }
 
     @GetMapping("/getById/{programId}")
-    public ResponseEntity<DtoProgramResponse> getProgramById(
+    public ResponseEntity<DtoProgram> getProgramById(
             @PathVariable Long programId) {
         return ResponseEntity.ok(programService.getProgramById(programId));
     }

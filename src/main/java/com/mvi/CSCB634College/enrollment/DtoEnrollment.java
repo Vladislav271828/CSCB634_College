@@ -20,5 +20,6 @@ public class DtoEnrollment {
     private Integer studentId;
     private Integer professorId;
     private Long courseId;
+    private Integer finalGrade;
 
 }

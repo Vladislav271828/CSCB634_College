@@ -19,7 +19,6 @@ const useRefreshToken = () => {
                 withCredentials: true
             });
             token = response.data.accessToken;
-            console.log(token)
             await fetchUser(response.data.accessToken);
             persist && localStorage.setItem("jwtToken", response.data.accessToken);
             setAuth(response.data.accessToken);
@@ -31,7 +30,6 @@ const useRefreshToken = () => {
                 await fetchUser(token);
                 return token;
             }
-            console.log(error.response?.data.message);
             localStorage.removeItem("jwtToken");
             localStorage.removeItem("persist");
 
