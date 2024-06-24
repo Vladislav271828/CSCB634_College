@@ -4,6 +4,8 @@ package com.mvi.CSCB634College.program;
 import com.mvi.CSCB634College.course.Course;
 import com.mvi.CSCB634College.course.CourseRepository;
 import com.mvi.CSCB634College.exception.BadRequestException;
+import com.mvi.CSCB634College.major.Major;
+import com.mvi.CSCB634College.major.MajorRepository;
 import com.mvi.CSCB634College.professor.Professor;
 import com.mvi.CSCB634College.professor.ProfessorRepository;
 import com.mvi.CSCB634College.professor.ProfessorService;
@@ -26,6 +28,7 @@ public class ProgramService {
 
     private final ProgramRepository programRepository;
     private final ProfessorService professorService;
+    private final MajorRepository majorRepository;
 
     public DtoProgramResponse createProgram(DtoProgram dtoProgram){
 
@@ -55,6 +58,21 @@ public class ProgramService {
 
     public List<DtoProgramResponse> getProgramsByYear(Integer year) {
         List<Program> programs = programRepository.findAllByYear(year);
+        return programs.stream()
+                .map(program -> {
+                    DtoProgramResponse response = modelMapper.map(program, DtoProgramResponse.class);
+                    response.setProfessors(professorService.getResponseUsers(program.getProfessors()));
+                    return response;
+                })
+                .toList();
+    }
+
+    public List<DtoProgramResponse> getProgramsByYearAndMajor(Integer year, Long majorId) {
+
+        Major major = majorRepository.findById(majorId)
+                .orElseThrow(() -> new BadRequestException("Major with id " + majorId + " not found"));
+
+        List<Program> programs = programRepository.findAllByYearAndMajor(year, major);
         return programs.stream()
                 .map(program -> {
                     DtoProgramResponse response = modelMapper.map(program, DtoProgramResponse.class);
