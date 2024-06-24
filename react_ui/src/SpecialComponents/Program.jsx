@@ -80,7 +80,6 @@ const Program = ({ title, backFunc, selectListValues }) => {
                 return acc
             }, [])
 
-            console.log(prettyRes)
             setFetchedData(prettyRes);
             setLoading(false)
         } catch (err) {

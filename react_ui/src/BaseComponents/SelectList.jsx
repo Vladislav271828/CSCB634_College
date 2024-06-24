@@ -104,7 +104,6 @@ const SelectList = ({ title,
             const newArr = formData[formStructure[level].id] ? [...formData[formStructure[level].id], id] : [id]
             setFormData({ ...formData, [formStructure[level].id]: newArr });
         }
-        console.log(formData)
     }
 
     const handleSkip = (skiplvl = 1) => {
@@ -135,7 +134,6 @@ const SelectList = ({ title,
                 }
                 return value
             })
-            // console.log(replace)
             const url = formStructure[level].require ?
                 formatString(formStructure[level].fetchUrl, replace)
                 : formStructure[level].fetchUrl;
@@ -156,7 +154,6 @@ const SelectList = ({ title,
                         formatString(formStructure[level].followUpUrl, replace)
                         : formStructure[level].followUpUrl;
 
-                    console.log("%s %s", url, urlTwo)
                     const resTwo = await axiosPrivate.get(urlTwo);
 
                     let placeholderData = [];
@@ -247,7 +244,6 @@ const SelectList = ({ title,
             acc.push(value)
             return acc
         }, [])
-        console.log(formData)
         return (
             <Form
                 title={title}

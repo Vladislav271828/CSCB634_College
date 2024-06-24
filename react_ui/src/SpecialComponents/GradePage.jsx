@@ -89,7 +89,6 @@ const GradePage = ({ title,
                 });
                 return acc
             }, {})
-            console.log(studentEnrollmentMap)
             setFetchedEditValues(studentEnrollmentMap);
             setGradeFields(gradeFieldRes.data);
             setStudents(studentRes.data)

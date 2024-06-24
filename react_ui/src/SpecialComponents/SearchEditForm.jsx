@@ -32,7 +32,6 @@ const SearchEditForm = ({ title,
         try {
             const url = fetchUrl.replace("{0}", formData)
             const res = await axiosPrivate.get(url);
-            console.log(res.data);
             setFetchedEditValues(res.data);
         } catch (err) {
             setSuccess(false)

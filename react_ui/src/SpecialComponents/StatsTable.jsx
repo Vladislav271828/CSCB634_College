@@ -35,7 +35,6 @@ const StatsTable = ({ title, name, require, backFunc }) => {
         const url = formatString(preUrl, require);
         try {
             const res = await axiosPrivate.get(url);
-            console.log(res.data);
             if (e.target.value == "GRADE")
                 setFetchedData(res.data.filter(x => x != null).map(x => x / 100));
             else setFetchedData(res.data)

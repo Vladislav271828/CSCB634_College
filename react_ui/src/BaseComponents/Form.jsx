@@ -34,7 +34,6 @@ const Form = ({ title,
     const formatString = (string, params) => {
         const yearReplacedString = formDataNoSend?.year ? string.replace("{year}", formDataNoSend.year.slice(0, 4)) : string
         const idReplacedString = yearReplacedString.replace("{id}", id)
-        console.log(idReplacedString)
         return idReplacedString.replace(/{(\d+)}/g, (match, index) => {
             return typeof params[index] !== 'undefined' ? params[index] : match;
         });
@@ -58,7 +57,6 @@ const Form = ({ title,
                 setFormData({ ...formData, date: e.target.value.match(/\d+/g)[0] + "-10-01", autumn: false });
         }
         else {
-            console.log(e.target.value.match(/\d+/g)[0])
             if (e.target.value.includes('A'))
                 setFormData({ ...formData, year: e.target.value.match(/\d+/g)[0], autumn: true });
             else
@@ -97,7 +95,6 @@ const Form = ({ title,
                 isPut ?
                     res = await axiosPrivate.put(url, yearFixFormData)
                     : res = await axiosPrivate.post(url, yearFixFormData)
-            // console.log(res.data);
             setErrMsg(successMsg);
         } catch (err) {
             setSuccess(false)
@@ -115,7 +112,6 @@ const Form = ({ title,
         const url = formatString(fetchUrl, requestIds);
         try {
             const res = await axiosPrivate.get(url);
-            // console.log(res.data);
             setFetchedEditValues(res.data);
         } catch (err) {
             setSuccess(false)
