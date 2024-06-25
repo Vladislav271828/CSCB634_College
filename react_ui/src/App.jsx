@@ -254,7 +254,7 @@ function App() {
                 isPut={true} />} />
 
               <Route path="/admin/view-statistics" element={<Dashboard
-                title="View Statistics"
+                title="View Statistics."
                 dashStructure={structures.statisticsDash}
                 sub={true} />} />
 
@@ -413,7 +413,7 @@ function App() {
                 formStructure={structures.viewProgram} />} />
 
               <Route path="/rector/view-statistics" element={<Dashboard
-                title="View Statistics"
+                title="View Statistics."
                 dashStructure={structures.statisticsDash}
                 sub={true} />} />
 
