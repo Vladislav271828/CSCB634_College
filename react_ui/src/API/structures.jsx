@@ -1941,27 +1941,27 @@ const structures = {
     ],
     statisticsDash: [
         {
-            link: "student-statistics",
+            link: "student",
             name: "View by students."
         },
         {
-            link: "teacher-statistics",
+            link: "teacher",
             name: "View by teachers."
         },
         {
-            link: "course-statistics",
+            link: "course",
             name: "View by courses."
         },
         {
-            link: "major-statistics",
+            link: "major",
             name: "View by majors."
         },
         {
-            link: "college-statistics",
+            link: "college",
             name: "View by college."
         },
         {
-            link: "year-statistics",
+            link: "year",
             name: "View by year."
         },
     ],

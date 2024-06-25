@@ -273,27 +273,27 @@ function App() {
                 dashStructure={structures.adminUserDash}
                 sub={true} />} />
 
-              <Route path="/admin/view-statistics/student-statistics" element={<SelectList
+              <Route path="/admin/view-statistics/student" element={<SelectList
                 title="View Statistics By Student."
                 formStructure={structures.viewStudentStats} />} />
 
-              <Route path="/admin/view-statistics/teacher-statistics" element={<SelectList
+              <Route path="/admin/view-statistics/teacher" element={<SelectList
                 title="View Statistics By Teacher."
                 formStructure={structures.viewTeacherStats} />} />
 
-              <Route path="/admin/view-statistics/course-statistics" element={<SelectList
+              <Route path="/admin/view-statistics/course" element={<SelectList
                 title="View Statistics By Course."
                 formStructure={structures.viewCourseStats} />} />
 
-              <Route path="/admin/view-statistics/major-statistics" element={<SelectList
+              <Route path="/admin/view-statistics/major" element={<SelectList
                 title="View Statistics By Major."
                 formStructure={structures.viewMajorStats} />} />
 
-              <Route path="/admin/view-statistics/college-statistics" element={<SelectList
+              <Route path="/admin/view-statistics/college" element={<SelectList
                 title="View Statistics By College."
                 formStructure={structures.viewCollegeStats} />} />
 
-              <Route path="/admin/view-statistics/year-statistics" element={<SelectList
+              <Route path="/admin/view-statistics/year" element={<SelectList
                 title="View Statistics By Year."
                 formStructure={structures.viewYearStats} />} />
 
@@ -417,27 +417,27 @@ function App() {
                 dashStructure={structures.statisticsDash}
                 sub={true} />} />
 
-              <Route path="/rector/view-statistics/student-statistics" element={<SelectList
+              <Route path="/rector/view-statistics/student" element={<SelectList
                 title="View Statistics By Student."
                 formStructure={structures.viewStudentStats} />} />
 
-              <Route path="/rector/view-statistics/teacher-statistics" element={<SelectList
+              <Route path="/rector/view-statistics/teacher" element={<SelectList
                 title="View Statistics By Teacher."
                 formStructure={structures.viewTeacherStats} />} />
 
-              <Route path="/rector/view-statistics/course-statistics" element={<SelectList
+              <Route path="/rector/view-statistics/course" element={<SelectList
                 title="View Statistics By Course."
                 formStructure={structures.viewCourseStats} />} />
 
-              <Route path="/rector/view-statistics/major-statistics" element={<SelectList
+              <Route path="/rector/view-statistics/major" element={<SelectList
                 title="View Statistics By Major."
                 formStructure={structures.viewMajorStats} />} />
 
-              <Route path="/rector/view-statistics/college-statistics" element={<SelectList
+              <Route path="/rector/view-statistics/college" element={<SelectList
                 title="View Statistics By College."
                 formStructure={structures.viewCollegeStats} />} />
 
-              <Route path="/rector/view-statistics/year-statistics" element={<SelectList
+              <Route path="/rector/view-statistics/year" element={<SelectList
                 title="View Statistics By Year."
                 formStructure={structures.viewYearStats} />} />
 
