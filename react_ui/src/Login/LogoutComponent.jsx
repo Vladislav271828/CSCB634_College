@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from "../API/axios.jsx";
+// import axios from "../API/axios.jsx";
 
 function LogoutComponent() {
   const handleLogout = async () => {
@@ -20,7 +20,7 @@ function LogoutComponent() {
 
   return (
     <div>
-      <button className='logout-btn' onClick={handleLogout}>Log out</button>
+      <button className='logout-btn' onClick={handleLogout}>Log out.</button>
     </div>
   );
 }
