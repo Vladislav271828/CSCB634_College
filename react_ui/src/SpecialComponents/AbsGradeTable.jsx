@@ -129,7 +129,7 @@ const AbsGradeTable = ({ title, type }) => {
                     </div>
                 </div>
                 <div className="btn table-back-btn">
-                    <button type='button' onClick={() => navigate("../dashboard", { relative: "path" })}>
+                    <button type='button' onClick={() => navigate("../", { relative: "path" })}>
                         Go Back
                     </button>
                 </div>

@@ -66,7 +66,7 @@ const GradePage = ({ title,
     const handleBack = () => {
         if (backFunc) backFunc();
         else
-            navigate("../dashboard", { relative: "path" });
+            navigate("../", { relative: "path" });
     }
 
     useEffect(() => {

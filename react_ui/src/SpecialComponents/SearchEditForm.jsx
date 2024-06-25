@@ -64,7 +64,7 @@ const SearchEditForm = ({ title,
                     </div>
                 </div>
                 {fetchedEditValues ? <></> : <div className="btn">
-                    <button type='button' onClick={() => navigate("../dashboard", { relative: "path" })}>
+                    <button type='button' onClick={() => navigate("../", { relative: "path" })}>
                         Go Back
                     </button>
                 </div>}

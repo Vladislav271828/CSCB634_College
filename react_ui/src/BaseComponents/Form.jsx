@@ -75,7 +75,7 @@ const Form = ({ title,
     const handleBack = () => {
         if (backFunc) backFunc();
         else
-            navigate("../dashboard", { relative: "path" });
+            navigate("../", { relative: "path" });
     }
 
     const handleSubmit = async (e) => {
@@ -89,7 +89,7 @@ const Form = ({ title,
             if (isDelete) {
                 res = await axiosPrivate.delete(url, { data: yearFixFormData });
                 alert("Operation successful.");
-                navigate("../dashboard", { relative: "path" })
+                navigate("../", { relative: "path" })
             }
             else
                 isPut ?
@@ -131,7 +131,7 @@ const Form = ({ title,
                 const url = formatString(deleteUrl, requestIds);
                 await axiosPrivate.delete(url);
                 alert("Operation successful.");
-                navigate("../dashboard", { relative: "path" })
+                navigate("../", { relative: "path" })
             } catch (err) {
                 setSuccess(false)
                 if (!err?.response) {

@@ -3,7 +3,7 @@
 import { useNavigate } from "react-router-dom";
 import LogoutComponent from "../Login/LogoutComponent";
 
-const HomePage = ({ title, dashStructure, sub }) => {
+const Dashboard = ({ title, dashStructure, sub }) => {
 
   const navigate = useNavigate();
 
@@ -29,7 +29,7 @@ const HomePage = ({ title, dashStructure, sub }) => {
               onClick={() => navigate("../" + "change-user-details", { relative: "path" })}>Change my user details.</button>
           </div>
           <LogoutComponent />
-        </>) : <div><button type="button"
+        </>) : <div><button className='change-user-details' type="button"
           onClick={() => navigate("../", { relative: "path" })}>Go back.</button>
         </div>}
       </div>
@@ -37,4 +37,4 @@ const HomePage = ({ title, dashStructure, sub }) => {
   )
 }
 
-export default HomePage
+export default Dashboard

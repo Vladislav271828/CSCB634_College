@@ -42,7 +42,7 @@ const Program = ({ title, backFunc, selectListValues }) => {
     const handleBack = () => {
         if (backFunc) backFunc();
         else
-            navigate("../dashboard", { relative: "path" });
+            navigate("../", { relative: "path" });
     }
 
     const handleChange = async (e) => {

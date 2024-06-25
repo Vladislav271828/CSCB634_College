@@ -1785,7 +1785,7 @@ const structures = {
             require: "year"
         }
     ],
-    adminDash: [
+    adminUserDash: [
         {
             link: "register-user",
             name: "Register a new user."
@@ -1797,46 +1797,6 @@ const structures = {
         {
             link: "register-student",
             name: "Register a new student."
-        },
-        {
-            link: "create-college",
-            name: "Create a college."
-        },
-        {
-            link: "create-faculty",
-            name: "Create a faculty."
-        },
-        {
-            link: "create-department",
-            name: "Create a department."
-        },
-        {
-            link: "create-major",
-            name: "Create a major."
-        },
-        {
-            link: "create-course",
-            name: "Create a course."
-        },
-        {
-            link: "update-college",
-            name: "Update college details."
-        },
-        {
-            link: "update-faculty",
-            name: "Update faculty details."
-        },
-        {
-            link: "update-department",
-            name: "Update department details."
-        },
-        {
-            link: "update-major",
-            name: "Update a major's details."
-        },
-        {
-            link: "update-course",
-            name: "Update course details."
         },
         {
             link: "set-department-head",
@@ -1863,24 +1823,82 @@ const structures = {
             name: "Enroll a student."
         },
         {
-            link: "update-enrollment",
+            link: "enrollment",
             name: "Update an enrollment."
         },
         {
-            link: "add-course-to-program",
-            name: "Add a course to the program."
+            link: "update-any-user",
+            name: "Update any user."
+        },
+    ],
+    adminCreateDash: [
+        {
+            link: "college",
+            name: "Create a college."
         },
         {
-            link: "update-course-program",
-            name: "Update a course in the program."
+            link: "faculty",
+            name: "Create a faculty."
+        },
+        {
+            link: "department",
+            name: "Create a department."
+        },
+        {
+            link: "major",
+            name: "Create a major."
+        },
+        {
+            link: "course",
+            name: "Create a course."
+        },
+    ],
+    adminUpdateDash: [
+        {
+            link: "college",
+            name: "Update college details."
+        },
+        {
+            link: "faculty",
+            name: "Update faculty details."
+        },
+        {
+            link: "department",
+            name: "Update department details."
+        },
+        {
+            link: "major",
+            name: "Update a major's details."
+        },
+        {
+            link: "course",
+            name: "Update course details."
+        },
+    ],
+    adminDash: [
+        {
+            link: "create",
+            name: "Create."
+        },
+        {
+            link: "update",
+            name: "Update."
+        },
+        {
+            link: "user",
+            name: "User Options."
         },
         {
             link: "view-statistics",
             name: "View statistics."
         },
         {
-            link: "edit-all-user-details",
-            name: "Edit all user details."
+            link: "add-course-to-program",
+            name: "Add a course to the program."
+        },
+        {
+            link: "change-course-program",
+            name: "Change a course in the program."
         },
     ],
     profesorDash: [

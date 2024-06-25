@@ -183,6 +183,7 @@ const SelectList = ({ title,
 
                 setLoading(false)
             } catch (err) {
+                setLoading(false)
                 setSuccess(false)
                 if (!err?.response) {
                     setErrMsg('Unable to connect to server.');

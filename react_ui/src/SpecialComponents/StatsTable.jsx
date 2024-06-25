@@ -23,7 +23,7 @@ const StatsTable = ({ title, name, require, backFunc }) => {
     const handleBack = () => {
         if (backFunc) backFunc();
         else
-            navigate("../dashboard", { relative: "path" });
+            navigate("../", { relative: "path" });
     }
 
     const handleChange = async (e) => {

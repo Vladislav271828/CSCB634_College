@@ -3,7 +3,7 @@ import PrivateRoute from './Login/PrivateRoute';
 import PersistLogin from './Login/PersistLogin'
 
 import SignUpForm from './Login/SignUpForm';
-import HomePage from './BaseComponents/Dashboard';
+import Dashboard from './BaseComponents/Dashboard';
 import Login from './Login/Login';
 import Header from './BaseComponents/Header';
 import Footer from './BaseComponents/Footer';
@@ -34,30 +34,30 @@ function App() {
           <Route element={<PersistLogin />}>
 
             <Route element={<PrivateRoute allowedRoles={["ADMIN"]} />}>
-              <Route path="/admin/dashboard" element={<HomePage title="Admin Dashboard" dashStructure={structures.adminDash} />} />
+              <Route path="/admin/dashboard" element={<Dashboard title="Admin Dashboard" dashStructure={structures.adminDash} />} />
 
-              <Route path="/admin/register-user" element={<Form
+              <Route path="/admin/user/register-user" element={<Form
                 title="Register a new user."
                 requestURL="/auth/admin/register-user"
                 successMsg="User registered successfully."
                 buttonMsg="Register User"
                 formStructure={structures.registerUser} />} />
 
-              <Route path="/admin/register-teacher" element={<SelectList
+              <Route path="/admin/user/register-teacher" element={<SelectList
                 title="Register a new teacher."
                 requestURL="/auth/admin/register-professor"
                 successMsg="Teacher created successfully."
                 buttonMsg="Create Teacher"
                 formStructure={structures.registerTeacher} />} />
 
-              <Route path="/admin/register-student" element={<SelectList
+              <Route path="/admin/user/register-student" element={<SelectList
                 title="Register a new student."
                 requestURL="/auth/admin/register-student"
                 successMsg="Student created successfully."
                 buttonMsg="Create Student"
                 formStructure={structures.registerStudent} />} />
 
-              <Route path="/admin/set-department-head" element={<SelectList
+              <Route path="/admin/user/set-department-head" element={<SelectList
                 title="Set a department head."
                 requestURL="/department/admin/{0}/update"
                 requestIds={["collegeId"]}
@@ -66,56 +66,56 @@ function App() {
                 formStructure={structures.setDepartmentHead}
                 isPut={true} />} />
 
-              <Route path="/admin/create-college" element={<Form
+              <Route path="/admin/create/college" element={<Form
                 title="Create a college."
                 requestURL="/college/admin/create"
                 successMsg="College created successfully."
                 buttonMsg="Create College"
                 formStructure={structures.createCollege} />} />
 
-              <Route path="/admin/create-faculty" element={<Form
+              <Route path="/admin/create/faculty" element={<Form
                 title="Create a faculty."
                 requestURL="/faculty/admin/create"
                 successMsg="Faculty created successfully."
                 buttonMsg="Create Faculty"
                 formStructure={structures.createFaculty} />} />
 
-              <Route path="/admin/create-department" element={<SelectList
+              <Route path="/admin/create/department" element={<SelectList
                 title="Create a department."
                 requestURL="/department/admin/create"
                 successMsg="Department created successfully."
                 buttonMsg="Create Department"
                 formStructure={structures.createDepartment} />} />
 
-              <Route path="/admin/create-major" element={<SelectList
+              <Route path="/admin/create/major" element={<SelectList
                 title="Create a major."
                 requestURL="/major/admin/create"
                 successMsg="Major created successfully."
                 buttonMsg="Create Major"
                 formStructure={structures.createMajor} />} />
 
-              <Route path="/admin/create-course" element={<SelectList
+              <Route path="/admin/create/course" element={<SelectList
                 title="Create a course."
                 requestURL="/course/admin/create/"
                 successMsg="Course created successfully."
                 buttonMsg="Create Course"
                 formStructure={structures.createCourse} />} />
 
-              <Route path="/admin/add-teacher-qualification" element={<SelectList
+              <Route path="/admin/user/add-teacher-qualification" element={<SelectList
                 title="Qualify a teacher to teach a course."
                 requestURL="/admin/professorQualification/create"
                 successMsg="Teacher qualification added successfully."
                 buttonMsg="Add Qualification"
                 formStructure={structures.addQualification} />} />
 
-              <Route path="/admin/remove-teacher-qualification" element={<SelectList
+              <Route path="/admin/user/remove-teacher-qualification" element={<SelectList
                 title="Remove teacher qualification."
                 requestURL="/admin/professorQualification/delete"
                 buttonMsg="Remove Qualification"
                 formStructure={structures.removeQualification}
                 isDelete={true} />} />
 
-              <Route path="/admin/enroll-student" element={<SelectList
+              <Route path="/admin/user/enroll-student" element={<SelectList
                 title="Enroll a student."
                 requestURL="/enrollment/admin/create"
                 successMsg="Student enrolled successfully."
@@ -129,7 +129,7 @@ function App() {
                 buttonMsg="Add course"
                 formStructure={structures.addProgram} />} />
 
-              <Route path="/admin/update-college" element={<SelectList
+              <Route path="/admin/update/college" element={<SelectList
                 title="Update college details."
                 requestURL="/college/admin/update/{0}"
                 requestIds={["collegeId"]}
@@ -141,7 +141,7 @@ function App() {
                 deleteWarningMsg="delete this college"
                 isPut={true} />} />
 
-              <Route path="/admin/update-faculty" element={<SelectList
+              <Route path="/admin/update/faculty" element={<SelectList
                 title="Update faculty details."
                 requestURL="/faculty/admin/{0}/update"
                 requestIds={["facultyId"]}
@@ -153,7 +153,7 @@ function App() {
                 deleteWarningMsg="delete this faculty"
                 isPut={true} />} />
 
-              <Route path="/admin/update-department" element={<SelectList
+              <Route path="/admin/update/department" element={<SelectList
                 title="Update department details."
                 requestURL="/department/admin/{0}/update"
                 requestIds={["departmentId"]}
@@ -165,7 +165,7 @@ function App() {
                 deleteWarningMsg="delete this department"
                 isPut={true} />} />
 
-              <Route path="/admin/update-major" element={<SelectList
+              <Route path="/admin/update/major" element={<SelectList
                 title="Update a major's details."
                 requestURL="/major/admin/{0}/update"
                 requestIds={["majorId"]}
@@ -177,7 +177,7 @@ function App() {
                 deleteWarningMsg="delete this major"
                 isPut={true} />} />
 
-              <Route path="/admin/update-course" element={<SelectList
+              <Route path="/admin/update/course" element={<SelectList
                 title="Update course details."
                 requestURL="/course/admin/{0}/update"
                 requestIds={["courseId"]}
@@ -189,7 +189,7 @@ function App() {
                 deleteWarningMsg="delete this course"
                 isPut={true} />} />
 
-              <Route path="/admin/update-enrollment" element={<SelectList
+              <Route path="/admin/user/enrollment" element={<SelectList
                 title="Update an enrollment."
                 requestURL="/enrollment/admin/{0}/update"
                 requestIds={["enrollmentId"]}
@@ -201,7 +201,7 @@ function App() {
                 deleteWarningMsg="delete this enrollment"
                 isPut={true} />} />
 
-              <Route path="/admin/change-student-major" element={<SelectList
+              <Route path="/admin/user/change-student-major" element={<SelectList
                 title="Change a student's major."
                 requestURL="/user/update-to-student/{1}/{0}"
                 requestIds={["email", "majorId"]}
@@ -210,7 +210,7 @@ function App() {
                 formStructure={structures.changeStudentMajor}
                 isPut={true} />} />
 
-              <Route path="/admin/change-teacher-department" element={<SelectList
+              <Route path="/admin/user/change-teacher-department" element={<SelectList
                 title="Change a teacher's department."
                 requestURL="/user/update-professor-department/{1}/{0}"
                 requestIds={["email", "departmentId"]}
@@ -219,8 +219,8 @@ function App() {
                 formStructure={structures.changeTeacherDepartment}
                 isPut={true} />} />
 
-              <Route path="/admin/edit-all-user-details" element={<SearchEditForm
-                title="Edit all user details."
+              <Route path="/admin/user/update-any-user" element={<SearchEditForm
+                title="Update any user."
                 requestURL="/user/update/{0}"
                 fetchUrl="/user/admin/getUserDetails/{0}"
                 successMsg="User details changed successfully."
@@ -241,8 +241,8 @@ function App() {
                 fetchUrl="/user/getUserDetails"
                 isPut={true} />} />
 
-              <Route path="/admin/update-course-program" element={<SelectList
-                title="Update a course in the program."
+              <Route path="/admin/change-course-program" element={<SelectList
+                title="Change a course in the program."
                 requestURL="/program/admin/{0}/update"
                 fetchUrl="/program/getById/{0}"
                 requestIds={["programId"]}
@@ -253,9 +253,24 @@ function App() {
                 deleteWarningMsg="delete this course from the program"
                 isPut={true} />} />
 
-              <Route path="/admin/view-statistics" element={<HomePage
+              <Route path="/admin/view-statistics" element={<Dashboard
                 title="View Statistics"
                 dashStructure={structures.statisticsDash}
+                sub={true} />} />
+
+              <Route path="/admin/create" element={<Dashboard
+                title="Create."
+                dashStructure={structures.adminCreateDash}
+                sub={true} />} />
+
+              <Route path="/admin/update" element={<Dashboard
+                title="Update."
+                dashStructure={structures.adminUpdateDash}
+                sub={true} />} />
+
+              <Route path="/admin/user" element={<Dashboard
+                title="User Options."
+                dashStructure={structures.adminUserDash}
                 sub={true} />} />
 
               <Route path="/admin/view-statistics/student-statistics" element={<SelectList
@@ -290,7 +305,7 @@ function App() {
             </Route>
 
             <Route element={<PrivateRoute allowedRoles={["STUDENT"]} />}>
-              <Route path="/student/dashboard" element={<HomePage title="Student Dashboard" dashStructure={structures.studentDash} />} />
+              <Route path="/student/dashboard" element={<Dashboard title="Student Dashboard" dashStructure={structures.studentDash} />} />
 
               <Route path="/student/view-absences" element={<AbsGradeTable
                 title="View your absences."
@@ -317,7 +332,7 @@ function App() {
             </Route>
 
             <Route element={<PrivateRoute allowedRoles={["PROFESSOR"]} />}>
-              <Route path="/professor/dashboard" element={<HomePage title="Teacher Dashboard" dashStructure={structures.profesorDash} />} />
+              <Route path="/professor/dashboard" element={<Dashboard title="Teacher Dashboard" dashStructure={structures.profesorDash} />} />
 
               <Route path="/professor/view-program" element={<SelectList
                 title="View Program."
@@ -372,7 +387,7 @@ function App() {
             </Route>
 
             <Route element={<PrivateRoute allowedRoles={["USER"]} />}>
-              <Route path="/user/dashboard" element={<HomePage title="User Dashboard" dashStructure={[]} />} />
+              <Route path="/user/dashboard" element={<Dashboard title="User Dashboard" dashStructure={[]} />} />
 
               <Route path="/user/view-program" element={<SelectList
                 title="View Program."
@@ -391,13 +406,13 @@ function App() {
             </Route>
 
             <Route element={<PrivateRoute allowedRoles={["RECTOR"]} />}>
-              <Route path="/rector/dashboard" element={<HomePage title="Rector Dashboard" dashStructure={structures.rectorDash} />} />
+              <Route path="/rector/dashboard" element={<Dashboard title="Rector Dashboard" dashStructure={structures.rectorDash} />} />
 
               <Route path="/rector/view-program" element={<SelectList
                 title="View Program."
                 formStructure={structures.viewProgram} />} />
 
-              <Route path="/rector/view-statistics" element={<HomePage
+              <Route path="/rector/view-statistics" element={<Dashboard
                 title="View Statistics"
                 dashStructure={structures.statisticsDash}
                 sub={true} />} />
