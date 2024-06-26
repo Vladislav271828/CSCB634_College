@@ -3,11 +3,11 @@ CSCB634_College
 
 A web information system and web app made with React and Spring that is meant for universities, colleges and other higher education institutions.
 
-<!-- ![preview](preview.jpg) -->
+![preview1](preview1.jpg) ![preview2](preview2.jpg)
 
 ## Developers
 
-- **Simeon** - Back-End Development (User Logic, Security Configuration)<!--, Testing, Documentation -->
+- **Simeon** - Back-End Development (User Logic, Security Configuration)
 - **Vladislav** - Project Manager, Back-End Development, Database
 - **Ivaylo** - Front-End Development, UI Design and Branding
 
@@ -15,10 +15,7 @@ A web information system and web app made with React and Spring that is meant fo
 
 - `/src` - Source code for the back-end.
 - `/react_ui` - Source code for the front-end.
-<!-- 
-TODO: add documentation
-- `/Documentation` - Project documentation.
--->
+- `/documentation` - Project documentation.
 
 ## Run the project locally
 
@@ -40,3 +37,20 @@ npm run dev #runs server in developer mode
 ```
 
 You can then access the app at http://localhost:5173/.
+
+---
+
+**NOTE:** When you first run the project there will be no admin users. To create the first admin user, you need to send an http request:
+
+```http
+POST http://localhost:8080/api/v1/auth/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "firstname": "ADMIN",
+  "lastname": "ADMIN",
+  "email": "admin@gmail.com",
+  "password": "STRONGPASSWORD!@#"
+}
+```
+This request will only work if there are no users in the database.
