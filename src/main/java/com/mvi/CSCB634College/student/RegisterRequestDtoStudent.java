@@ -1,8 +1,5 @@
 package com.mvi.CSCB634College.student;
 
-import com.mvi.CSCB634College.major.Major;
-import com.mvi.CSCB634College.user.User;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,5 +30,8 @@ public class RegisterRequestDtoStudent {
     @NotNull(message = "Major Id is required.")
     @Positive
     private Long majorId;
+
+    @Positive
+    private Integer educationYear;
 
 }

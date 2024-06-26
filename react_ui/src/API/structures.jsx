@@ -144,7 +144,7 @@ const structures = {
             data: [
                 {
                     id: "name",
-                    label: "Major Name",
+                    label: "Department Name",
                     type: "text"
                 },
                 {
@@ -374,6 +374,18 @@ const structures = {
                     fetchUrl: "/major/getAllByDepartment/{0}",
                     require: ["departmentId"],
                     disabled: true
+                },
+                {
+                    id: "educationYear",
+                    label: "Education Year",
+                    type: "select",
+                    options: {
+                        1: "1st year",
+                        2: "2nd year",
+                        3: "3rd year",
+                        4: "4th year",
+                        5: "5th year"
+                    }
                 }
             ]
         }

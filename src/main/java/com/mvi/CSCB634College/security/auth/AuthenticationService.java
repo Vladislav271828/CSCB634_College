@@ -549,6 +549,8 @@ public class AuthenticationService {
         Student student = new Student();
         student.setUser(user);
         student.setMajor(majorRepository.findMajorById(request.getMajorId()).orElseThrow());
+        student.setEducationYear(request.getEducationYear());
+        System.out.println("AAA STUDENT ED YEAR IS " + request.getEducationYear());
         studentRepository.save(student);
 
 
