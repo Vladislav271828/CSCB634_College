@@ -63,6 +63,10 @@ public class CollegeService {
         College college = modelMapper.map(dtoCollegeRequest, College.class);
         college.setRector(rector);
 
+        assert rector != null;
+        rector.setRole(Role.RECTOR);
+
+
 
         return saveAndRetrieveDtoCollege(college);//Saves and returns the college
     }
