@@ -22,6 +22,7 @@ const SelectList = ({ title,
 }) => {
 
     const [formData, setFormData] = useState({});
+    const [noSkipFormData, setNoSkipFormData] = useState({});
     const [fetchedSelections, setFetchedSelections] = useState([]);
     const [errMsg, setErrMsg] = useState("");
     const [success, setSuccess] = useState(true);
@@ -41,15 +42,17 @@ const SelectList = ({ title,
     }
 
     const handleBack = () => {
+        setErrMsg("")
         if (level <= 0)
             navigate("../", { relative: "path" });
         else {
             setLoading(true)
-            const fixedFormData = Object.keys(formData).reduce((acc, key) => {
-                if (key != formStructure[level - 1].id) acc[key] = formData[key];
+            const fixedFormData = Object.keys(noSkipFormData).reduce((acc, key) => {
+                if (key != formStructure[level - 1].id || formStructure[level - 1].skip) acc[key] = noSkipFormData[key];
                 return acc
             }, {})
             setFormData(fixedFormData)
+            setNoSkipFormData(fixedFormData)
             setLevel(level - 1)
         }
     }
@@ -79,6 +82,7 @@ const SelectList = ({ title,
 
     const handleForward = (id) => {
         setFormData({ ...formData, [formStructure[level].id]: id });
+        if (!formStructure[level].skip) setNoSkipFormData({ ...noSkipFormData, [formStructure[level].id]: id });
         setLoading(true)
         setLevel(level + 1)
     }
@@ -99,10 +103,12 @@ const SelectList = ({ title,
             && formData[formStructure[level].id].includes(id)) {
             const newArr = formData[formStructure[level].id].filter(item => item !== id)
             setFormData({ ...formData, [formStructure[level].id]: newArr });
+            if (!formStructure[level].skip) setNoSkipFormData({ ...noSkipFormData, [formStructure[level].id]: newArr });
         }
         else {
             const newArr = formData[formStructure[level].id] ? [...formData[formStructure[level].id], id] : [id]
             setFormData({ ...formData, [formStructure[level].id]: newArr });
+            if (!formStructure[level].skip) setNoSkipFormData({ ...noSkipFormData, [formStructure[level].id]: newArr });
         }
     }
 
@@ -117,6 +123,7 @@ const SelectList = ({ title,
     }, [level])
 
     const fetchOptions = async () => {
+        console.log(noSkipFormData)
         setSuccess(true)
         if (formStructure[level].fetchUrl == "year") {
             const yeararr = generateYearsArray(new Date().getFullYear())
@@ -125,10 +132,10 @@ const SelectList = ({ title,
         }
         else {
             let semester = "";
-            const replace = Object.entries(formData).filter(([key, value]) => {
+            const replace = Object.entries(noSkipFormData).filter(([key, value]) => {
                 return formStructure[level]?.require ? formStructure[level].require.includes(key) : false
             }).map(([key, value]) => {
-                if (key == "year") {
+                if (key == "year" && !Number.isInteger(value)) {
                     semester = value.slice(4);
                     return value.slice(0, 4);
                 }
@@ -143,6 +150,8 @@ const SelectList = ({ title,
                 let dataArray;
                 if (semester) {
                     const filteredRes = res.data.filter((data) => {
+                        console.log(semester == 'A')
+                        console.log(data)
                         return semester == 'A' ? data.autumn : !data.autumn
                     })
                     dataArray = filteredRes;
@@ -218,12 +227,12 @@ const SelectList = ({ title,
                     </div>}
                     {loading && <p>Loading...</p>}
 
-                    {!loading && fetchedSelections.length ? (
+                    {!loading && fetchedSelections.length && success ? (
                         fetchedSelections.filter((name) => (
                             (name[formStructure[level].fetchLabel] ? name[formStructure[level].fetchLabel] : "").toLowerCase()).includes(search.toLowerCase()
                             )).sort().map((item) => {
                                 return <section key={item.id}
-                                    className={"select-list-selection" + ((formData[formStructure[level].id] ?? []).includes(item.id) ? " selected-from-list" : "")}
+                                    className={"select-list-selection" + (formStructure[level].multi ? ((formData[formStructure[level].id] ?? []).includes(item.id) ? " selected-from-list" : "") : "")}
                                     onClick={formStructure[level].multi ? (e) => handleSelection(e.target, item.id) : () => handleForward(formStructure[level]?.altId ? item[formStructure[level].altId] : item.id)}>
                                     <p style={{ fontWeight: "600" }}>{item[formStructure[level].fetchLabel] + (formStructure[level].fetchLabelAdd ? " " + item[formStructure[level].fetchLabelAdd] : "")}</p>
                                     <p>{item[formStructure[level].fetchLabelSecond]}</p>

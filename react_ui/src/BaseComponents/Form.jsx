@@ -32,7 +32,7 @@ const Form = ({ title,
     const { id } = useContext(UserContext);
 
     const formatString = (string, params) => {
-        const yearReplacedString = formDataNoSend?.year ? string.replace("{year}", formDataNoSend.year.slice(0, 4)) : string
+        const yearReplacedString = formDataNoSend?.year ? string.replace("{year}", (Number.isInteger(formDataNoSend.year) ? formDataNoSend.year : formDataNoSend.year.slice(0, 4))) : string
         const idReplacedString = yearReplacedString.replace("{id}", id)
         return idReplacedString.replace(/{(\d+)}/g, (match, index) => {
             return typeof params[index] !== 'undefined' ? params[index] : match;
@@ -54,7 +54,7 @@ const Form = ({ title,
             if (e.target.value.includes('A'))
                 setFormData({ ...formData, date: e.target.value.match(/\d+/g)[0] + "-10-01", autumn: true });
             else
-                setFormData({ ...formData, date: e.target.value.match(/\d+/g)[0] + "-10-01", autumn: false });
+                setFormData({ ...formData, date: e.target.value.match(/\d+/g)[0] + "-03-01", autumn: false });
         }
         else {
             if (e.target.value.includes('A'))
@@ -82,7 +82,7 @@ const Form = ({ title,
         e.preventDefault();
         setSuccess(true)
         let yearFixFormData = formData;
-        if (formData?.year) yearFixFormData = { ...formData, year: new Number(formData.year.slice(0, 4)) }
+        if (formData?.year) yearFixFormData = { ...formData, year: (Number.isInteger(formData.year) ? formData.year : new Number(formData.year.slice(0, 4))) }
         const url = formatString(requestURL, requestIds);
         try {
             var res
@@ -162,7 +162,7 @@ const Form = ({ title,
 
     const fetchOptions = async (input) => {
         setSuccess(true)
-        const yearReplacedString = formDataNoSend?.year ? input.fetchUrl.replace("{year}", formDataNoSend.year.slice(0, 4)) : input.fetchUrl
+        const yearReplacedString = formDataNoSend?.year ? input.fetchUrl.replace("{year}", Number.isInteger(formDataNoSend.year) ? formDataNoSend.year : formDataNoSend.year.slice(0, 4)) : input.fetchUrl
         const idReplacedString = yearReplacedString.replace("{id}", id)
         const url = idReplacedString.replace("{0}", formData[input.require]);
         try {

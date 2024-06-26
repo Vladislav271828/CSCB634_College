@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import PrivateRoute from './Login/PrivateRoute';
 import PersistLogin from './Login/PersistLogin'
 
-import SignUpForm from './Login/SignUpForm';
 import Dashboard from './BaseComponents/Dashboard';
 import Login from './Login/Login';
 import Header from './BaseComponents/Header';
@@ -16,7 +15,6 @@ import structures from "./API/structures"
 import SearchEditForm from './SpecialComponents/SearchEditForm';
 import SelectList from './BaseComponents/SelectList';
 import AbsGradeTable from './SpecialComponents/AbsGradeTable';
-import GradePage from './SpecialComponents/GradePage';
 
 function App() {
 
@@ -28,7 +26,6 @@ function App() {
       <div className='app-content'>
 
         <Routes>
-          <Route path="/signup" element={<SignUpForm />} />
           <Route path="/login" element={<Login />} />
 
           <Route element={<PersistLogin />}>

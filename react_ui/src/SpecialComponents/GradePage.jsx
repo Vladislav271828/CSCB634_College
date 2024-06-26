@@ -76,7 +76,7 @@ const GradePage = ({ title,
     const fetchEditValues = async () => {
         setLoading(true)
         try {
-            const year = selectListValues.year.slice(0, 4)
+            const year = Number.isInteger(selectListValues.year) ? selectListValues.year : selectListValues.year.slice(0, 4)
 
             const editres = await axiosPrivate.get(`/enrollment/getAllByProfessorIdAndYearAndCourse/${id}/${year}/${selectListValues.courseId}`);
             const gradeFieldRes = await axiosPrivate.get(`/grade/getAllByEnrollment/${selectListValues.courseId}/${year}`);

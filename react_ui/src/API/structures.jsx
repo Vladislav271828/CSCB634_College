@@ -1192,6 +1192,7 @@ const structures = {
             selectMsg: "Please select the year.",
             fetchUrl: "year",
             fetchLabel: "year",
+            isNumber: true
         },
         {
             id: "courseId",
@@ -1237,6 +1238,7 @@ const structures = {
             selectMsg: "Please select the year.",
             fetchUrl: "year",
             fetchLabel: "year",
+            isNumber: true
         },
         {
             id: "courseId",
@@ -1288,6 +1290,7 @@ const structures = {
             selectMsg: "Please select the year.",
             fetchUrl: "year",
             fetchLabel: "year",
+            isNumber: true
         },
         {
             id: "courseId",
@@ -1307,8 +1310,8 @@ const structures = {
                 },
                 {
                     id: "year",
-                    label: "Semester",
-                    type: "year",
+                    label: "Year",
+                    type: "number",
                     disabled: true
                 },
                 {
@@ -1329,6 +1332,7 @@ const structures = {
             selectMsg: "Please select the year.",
             fetchUrl: "year",
             fetchLabel: "year",
+            isNumber: true
         },
         {
             id: "courseId",
@@ -1356,8 +1360,8 @@ const structures = {
                 },
                 {
                     id: "year",
-                    label: "Semester",
-                    type: "year",
+                    label: "Year",
+                    type: "number",
                     disabled: true
                 },
                 {
@@ -1378,6 +1382,7 @@ const structures = {
             selectMsg: "Please select the year.",
             fetchUrl: "year",
             fetchLabel: "year",
+            isNumber: true
         },
         {
             id: "courseId",

@@ -425,6 +425,10 @@ table {
     border: #1c325e solid 2px;
 }
 
+.program-table {
+    max-width: 800px;
+}
+
 .tg {
     border-collapse: collapse;
     border-spacing: 0;

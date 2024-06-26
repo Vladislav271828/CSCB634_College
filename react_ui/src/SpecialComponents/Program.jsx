@@ -129,7 +129,7 @@ const Program = ({ title, backFunc, selectListValues }) => {
                 !loading ?
                     fetchedData?.length > 0 ?
                         fetchedData.map((data, index) => (
-                            <table className="tg" key={index}>
+                            <table className="tg program-table" key={index}>
                                 <thead>
                                     <tr>
                                         <th className="tg-kiqf" colSpan="2">{getOrdinal(index)} School Year</th>

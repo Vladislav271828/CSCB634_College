@@ -101,11 +101,6 @@ function SignInForm() {
         </div>
         <div>
           <button type="submit">Sign In</button>
-          <button
-            type="button"
-            onClick={handleSignUpRedirect}
-          > Register (debug)
-          </button>
         </div>
       </form>
     </div>
